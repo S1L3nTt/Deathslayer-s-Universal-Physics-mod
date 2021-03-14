@@ -29,7 +29,7 @@ void Element::Element_SAND()
 	HeatConduct = 150;
 	Description = "Sand, Heavy particles. Melts into glass.";
 
-	Properties = TYPE_SOLID;
+	Properties = TYPE_PART;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
