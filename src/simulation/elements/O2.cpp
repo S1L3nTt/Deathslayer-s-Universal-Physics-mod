@@ -29,7 +29,7 @@ void Element::Element_O2()
 	Weight = 1;
 
 	HeatConduct = 70;
-	Description = "Oxygen gas. needed for most things to burn.";
+	Description = "Oxygen gas. Needed for most things to burn.";
 
 	Properties = TYPE_GAS;
 
