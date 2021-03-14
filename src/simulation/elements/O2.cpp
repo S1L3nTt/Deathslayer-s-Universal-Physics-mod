@@ -29,7 +29,7 @@ void Element::Element_O2()
 	Weight = 1;
 
 	HeatConduct = 70;
-	Description = "Oxygen gas. Ignites easily.";
+	Description = "Oxygen gas. needed for most things to burn.";
 
 	Properties = TYPE_GAS;
 
@@ -56,23 +56,6 @@ static int update(UPDATE_FUNC_ARGS)
 				if (!r)
 					continue;
 
-				if (TYP(r)==PT_FIRE)
-				{
-					parts[ID(r)].temp += RNG::Ref().between(0, 99);
-					if (parts[ID(r)].tmp & 0x01)
-						parts[ID(r)].temp = 3473;
-					parts[ID(r)].tmp |= 2;
-
-					sim->create_part(i,x,y,PT_FIRE);
-					parts[i].temp += RNG::Ref().between(0, 99);
-					parts[i].tmp |= 2;
-				}
-				else if (TYP(r)==PT_PLSM && !(parts[ID(r)].tmp&4))
-				{
-					sim->create_part(i,x,y,PT_FIRE);
-					parts[i].temp += RNG::Ref().between(0, 99);
-					parts[i].tmp |= 2;
-				}
 			}
 	if (parts[i].temp > 9973.15 && sim->pv[y/CELL][x/CELL] > 250.0f)
 	{
