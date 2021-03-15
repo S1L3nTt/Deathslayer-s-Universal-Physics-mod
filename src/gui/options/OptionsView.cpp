@@ -92,6 +92,9 @@ OptionsView::OptionsView():
 	tempLabel->Appearance.VerticalAlign = ui::Appearance::AlignMiddle;
 	scrollPanel->AddChild(tempLabel);
 
+
+
+
 	currentY+=16;
 	waterEqualisation = new ui::Checkbox(ui::Point(8, currentY), ui::Point(1, 16), "Water equalisation \bgIntroduced in version 61", "");
 	autowidth(waterEqualisation);
@@ -103,6 +106,21 @@ OptionsView::OptionsView():
 	tempLabel->Appearance.HorizontalAlign = ui::Appearance::AlignLeft;
 	tempLabel->Appearance.VerticalAlign = ui::Appearance::AlignMiddle;
 	scrollPanel->AddChild(tempLabel);
+
+
+	currentY += 16;
+	NoWeightSwitch = new ui::Checkbox(ui::Point(8, currentY), ui::Point(1, 16), "Turns off particles switching because weight", "");
+	autowidth(NoWeightSwitch);
+	NoWeightSwitch->SetActionCallback({ [this] { c->SetNoWeightSwitch(NoWeightSwitch->GetChecked()); } });
+	scrollPanel->AddChild(NoWeightSwitch);
+	currentY += 14;
+	tempLabel = new ui::Label(ui::Point(24, currentY), ui::Point(1, 16), "\bgMakes game around 10x more realistic");
+	autowidth(tempLabel);
+	tempLabel->Appearance.HorizontalAlign = ui::Appearance::AlignLeft;
+	tempLabel->Appearance.VerticalAlign = ui::Appearance::AlignMiddle;
+	scrollPanel->AddChild(tempLabel);
+
+
 
 	currentY+=19;
 	airMode = new ui::DropDown(ui::Point(Size.X-95, currentY), ui::Point(80, 16));
@@ -347,6 +365,7 @@ void OptionsView::NotifySettingsChanged(OptionsModel * sender)
 	ambientHeatSimulation->SetChecked(sender->GetAmbientHeatSimulation());
 	newtonianGravity->SetChecked(sender->GetNewtonianGravity());
 	waterEqualisation->SetChecked(sender->GetWaterEqualisation());
+	NoWeightSwitch->SetChecked(sender->GetNoWeightSwitching());
 	airMode->SetOption(sender->GetAirMode());
 	gravityMode->SetOption(sender->GetGravityMode());
 	decoSpace->SetOption(sender->GetDecoSpace());

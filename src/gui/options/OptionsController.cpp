@@ -37,6 +37,11 @@ void OptionsController::SetWaterEqualisation(bool state)
 	model->SetWaterEqualisation(state);
 }
 
+void OptionsController::SetNoWeightSwitch(bool state)
+{
+	model->SetNoWeightSwitching(state);
+}
+
 void OptionsController::SetGravityMode(int gravityMode)
 {
 	model->SetGravityMode(gravityMode);

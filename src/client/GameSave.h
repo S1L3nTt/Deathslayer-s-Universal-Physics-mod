@@ -93,6 +93,7 @@ public:
 	bool legacyEnable;
 	bool gravityEnable;
 	bool aheatEnable;
+	bool NoWeightSwitch;
 	bool paused;
 	int gravityMode;
 	int airMode;

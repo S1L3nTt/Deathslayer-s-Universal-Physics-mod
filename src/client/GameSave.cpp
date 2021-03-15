@@ -23,6 +23,7 @@ GameSave::GameSave(GameSave & save):
 	legacyEnable(save.legacyEnable),
 	gravityEnable(save.gravityEnable),
 	aheatEnable(save.aheatEnable),
+	NoWeightSwitch(save.NoWeightSwitch),
 	paused(save.paused),
 	gravityMode(save.gravityMode),
 	airMode(save.airMode),
@@ -170,6 +171,7 @@ void GameSave::InitVars()
 	legacyEnable = false;
 	gravityEnable = false;
 	aheatEnable = false;
+	NoWeightSwitch = false;
 	paused = false;
 	gravityMode = 0;
 	airMode = 0;
@@ -665,6 +667,7 @@ void GameSave::readOPS(char * data, int dataLength)
 		CheckBsonFieldBool(iter, "gravityEnable", &gravityEnable);
 		CheckBsonFieldBool(iter, "aheat_enable", &aheatEnable);
 		CheckBsonFieldBool(iter, "waterEEnabled", &waterEEnabled);
+		CheckBsonFieldBool(iter, "NoWeightSwitch", &NoWeightSwitch);
 		CheckBsonFieldBool(iter, "paused", &paused);
 		CheckBsonFieldInt(iter, "gravityMode", &gravityMode);
 		CheckBsonFieldInt(iter, "airMode", &airMode);
@@ -2547,6 +2550,7 @@ char * GameSave::serialiseOPS(unsigned int & dataLength)
 	bson_append_bool(&b, "legacyEnable", legacyEnable);
 	bson_append_bool(&b, "gravityEnable", gravityEnable);
 	bson_append_bool(&b, "aheat_enable", aheatEnable);
+	bson_append_bool(&b, "NoWeightSwitch", NoWeightSwitch);
 	bson_append_bool(&b, "paused", paused);
 	bson_append_int(&b, "gravityMode", gravityMode);
 	bson_append_int(&b, "airMode", airMode);

@@ -102,11 +102,13 @@ public:
 	int photons[YRES][XRES];
 	unsigned int pmap_count[YRES][XRES];
 	//Simulation Settings
+	
 	int edgeMode;
 	int gravityMode;
 	int legacy_enable;
 	int aheat_enable;
 	int water_equal_test;
+	int NoWeightSwitching;
 	int sys_pause;
 	int framerender;
 	int pretty_powder;

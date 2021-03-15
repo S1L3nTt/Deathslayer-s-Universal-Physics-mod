@@ -746,6 +746,7 @@ void GameModel::SetSave(SaveInfo * newSave, bool invertIncludePressure)
 		sim->edgeMode = saveData->edgeMode;
 		sim->legacy_enable = saveData->legacyEnable;
 		sim->water_equal_test = saveData->waterEEnabled;
+		sim->NoWeightSwitching = saveData->NoWeightSwitch;
 		sim->aheat_enable = saveData->aheatEnable;
 		if(saveData->gravityEnable)
 			sim->grav->start_grav_async();
@@ -807,6 +808,7 @@ void GameModel::SetSaveFile(SaveFile * newSave, bool invertIncludePressure)
 		sim->edgeMode = saveData->edgeMode;
 		sim->legacy_enable = saveData->legacyEnable;
 		sim->water_equal_test = saveData->waterEEnabled;
+		sim->NoWeightSwitching = saveData->NoWeightSwitch;
 		sim->aheat_enable = saveData->aheatEnable;
 		if(saveData->gravityEnable && !sim->grav->IsEnabled())
 		{
@@ -1118,6 +1120,7 @@ void GameModel::ClearSimulation()
 	sim->air->airMode = 0;
 	sim->legacy_enable = false;
 	sim->water_equal_test = false;
+	sim->NoWeightSwitching = false;
 	sim->SetEdgeMode(edgeMode);
 
 	sim->clear_sim();

@@ -63,11 +63,25 @@ bool OptionsModel::GetWaterEqualisation()
 	return sim->water_equal_test?true:false;
 }
 
+
 void OptionsModel::SetWaterEqualisation(bool state)
 {
 	sim->water_equal_test = state?1:0;
 	notifySettingsChanged();
 }
+
+bool OptionsModel::GetNoWeightSwitching()
+{
+	return sim->NoWeightSwitching ? true : false;
+}
+
+void OptionsModel::SetNoWeightSwitching(bool state)
+{
+	sim->NoWeightSwitching = state?1:0;
+	notifySettingsChanged();
+	sim->init_can_move();
+}
+
 
 int OptionsModel::GetAirMode()
 {

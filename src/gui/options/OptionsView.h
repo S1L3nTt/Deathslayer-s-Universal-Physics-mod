@@ -20,6 +20,7 @@ class OptionsView: public ui::Window
 	ui::Checkbox * ambientHeatSimulation;
 	ui::Checkbox * newtonianGravity;
 	ui::Checkbox * waterEqualisation;
+	ui::Checkbox * NoWeightSwitch;
 	ui::DropDown * airMode;
 	ui::DropDown * gravityMode;
 	ui::DropDown * edgeMode;

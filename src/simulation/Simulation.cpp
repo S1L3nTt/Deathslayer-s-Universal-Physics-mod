@@ -513,6 +513,7 @@ void Simulation::SaveSimOptions(GameSave * gameSave)
 	gameSave->edgeMode = edgeMode;
 	gameSave->legacyEnable = legacy_enable;
 	gameSave->waterEEnabled = water_equal_test;
+	gameSave->NoWeightSwitch = NoWeightSwitching;
 	gameSave->gravityEnable = grav->IsEnabled();
 	gameSave->aheatEnable = aheat_enable;
 }
@@ -2340,8 +2341,18 @@ void Simulation::init_can_move()
 		for (destinationType = 1; destinationType < PT_NUM; destinationType++)
 		{
 			//weight check, also prevents particles of same type displacing each other
-			if (elements[movingType].Weight <= elements[destinationType].Weight || destinationType == PT_GEL)
-				can_move[movingType][destinationType] = 0;
+
+			if (!NoWeightSwitching)
+			{
+				if (elements[movingType].Weight <= elements[destinationType].Weight || destinationType == PT_GEL)
+					can_move[movingType][destinationType] = 0;
+			}
+			else if (NoWeightSwitching)
+			{
+				if (destinationType != PT_NONE || elements[destinationType].Properties == TYPE_SOLID || elements[movingType].Properties == elements[destinationType].Properties || (elements[movingType].Properties == TYPE_LIQUID && elements[destinationType].Properties == TYPE_PART || elements[movingType].Properties == TYPE_PART && elements[destinationType].Properties == TYPE_GAS || elements[movingType].Properties == TYPE_LIQUID && elements[destinationType].Properties == TYPE_GAS))
+					can_move[movingType][destinationType] = 0;
+			}
+
 
 			//other checks for NEUT and energy particles
 			if (movingType == PT_NEUT && (elements[destinationType].Properties&PROP_NEUTPASS))
@@ -5228,6 +5239,7 @@ Simulation::Simulation():
 	legacy_enable(0),
 	aheat_enable(0),
 	water_equal_test(0),
+	NoWeightSwitching(0),
 	sys_pause(0),
 	framerender(0),
 	pretty_powder(0),
