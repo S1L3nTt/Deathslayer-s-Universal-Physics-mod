@@ -37,6 +37,7 @@
 #include "simulation/SimulationData.h"
 #include "simulation/ElementDefs.h"
 #include "simulation/ElementClasses.h"
+#include "simulation/NuclearProperties.cpp"
 
 #include <cstring>
 
