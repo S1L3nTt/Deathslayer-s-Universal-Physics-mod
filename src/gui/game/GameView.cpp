@@ -2128,7 +2128,22 @@ void GameView::OnDraw()
 
 			if (type == PT_PHOT || type == PT_BIZR || type == PT_BIZRG || type == PT_BIZRS || type == PT_FILT || type == PT_BRAY || type == PT_C5)
 				wavelengthGfx = (ctype&0x3FFFFFFF);
-
+			
+			else if (type == PT_ATOM)
+			{
+				StringBuilder atomInfo;
+				atomInfo << Format::Precision(2);
+				int life = sample.particle.life;
+				int tmp = sample.particle.tmp;
+				float pavg0 = sample.particle.pavg[0];
+				atomInfo << PeriodicProperties(life) << "-" << tmp;
+				atomInfo << ", Energy: " << ctype;
+				atomInfo << ", Binding energy: " << pavg0;
+				atomInfo << ", per nucleon: " << pavg0 / tmp;
+				int textWidth = Graphics::textwidth(atomInfo.Build());
+				g->fillrect(140, 41, textWidth + 8, 15, 0, 0, 0, int(alpha * 0.5f));
+				g->drawtext(140, 45, atomInfo.Build(), 255, 255, 255, int(alpha * 0.75f));
+			}
 			if (showDebug)
 			{
 				if (type == PT_LAVA && c->IsValidElement(ctype))
