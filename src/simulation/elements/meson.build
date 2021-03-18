@@ -190,6 +190,7 @@ simulation_elem_ids = [
 	[ 'PTNM',   188 ],
 	[ 'VSNS',   189 ],
 	[ 'ROCK',   190 ],
+	[ 'ATOM',   220 ],
 ]
 
 simulation_elem_src = []
