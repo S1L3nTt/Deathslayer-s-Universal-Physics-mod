@@ -11,6 +11,7 @@ simulation_files = files(
 	'SimulationData.cpp',
 	'ToolClasses.cpp',
 	'Simulation.cpp',
+	'NuclearProperties.cpp',
 )
 
 subdir('elements')
