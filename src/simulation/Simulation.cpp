@@ -526,7 +526,7 @@ Snapshot * Simulation::CreateSnapshot()
 	snap->AirVelocityY.insert(snap->AirVelocityY.begin(), &vy[0][0], &vy[0][0]+((XRES/CELL)*(YRES/CELL)));
 	snap->AmbientHeat.insert(snap->AmbientHeat.begin(), &hv[0][0], &hv[0][0]+((XRES/CELL)*(YRES/CELL)));
 	snap->Particles.insert(snap->Particles.begin(), parts, parts+parts_lastActiveIndex+1);
-	snap->PortalParticles.insert(snap->PortalParticles.begin(), &portalp[0][0][0], &portalp[CHANNELS-1][8-1][80-1]);
+	//snap->PortalParticles.insert(snap->PortalParticles.begin(), &portalp[0][0][0], &portalp[CHANNELS-1][8-1][80-1]);
 	snap->WirelessData.insert(snap->WirelessData.begin(), &wireless[0][0], &wireless[CHANNELS-1][2-1]);
 	snap->GravVelocityX.insert(snap->GravVelocityX.begin(), gravx, gravx+((XRES/CELL)*(YRES/CELL)));
 	snap->GravVelocityY.insert(snap->GravVelocityY.begin(), gravy, gravy+((XRES/CELL)*(YRES/CELL)));
@@ -4958,7 +4958,7 @@ void Simulation::CheckStacking()
 		{
 			// Use a threshold, since some particle stacking can be normal (e.g. BIZR + FILT)
 			// Setting pmap_count[y][x] > NPART means BHOL will form in that spot
-			if (pmap_count[y][x]>5)
+			if (pmap_count[y][x]>5000)
 			{
 				if (bmap[y/CELL][x/CELL]==WL_EHOLE)
 				{
@@ -5007,6 +5007,13 @@ void Simulation::CheckStacking()
 			}
 		}
 	}
+}
+String Simulation::ElementFullName(int type)//cyens toy
+{
+	if (type >= 0 && type < PT_NUM)
+		return elements[type].FullName;
+
+	return "Empty";
 }
 
 //updates pmap, gol, and some other simulation stuff (but not particles)

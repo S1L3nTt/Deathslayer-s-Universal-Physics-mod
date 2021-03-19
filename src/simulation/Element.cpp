@@ -4,6 +4,7 @@
 Element::Element():
 	Identifier("DEFAULT_INVALID"),
 	Name(""),
+	FullName(""),
 	Colour(PIXPACK(0xFF00FF)),
 	MenuVisible(0),
 	MenuSection(0),
@@ -55,6 +56,7 @@ std::vector<StructProperty> const &Element::GetProperties()
 {
 	static std::vector<StructProperty> properties = {
 		{ "Name",                      StructProperty::String,   offsetof(Element, Name                     ) },
+		{ "FullName",				   StructProperty::String,   offsetof(Element, FullName					) },
 		{ "Colour",                    StructProperty::Colour,   offsetof(Element, Colour                   ) },
 		{ "Color",                     StructProperty::Colour,   offsetof(Element, Colour                   ) },
 		{ "MenuVisible",               StructProperty::Integer,  offsetof(Element, MenuVisible              ) },

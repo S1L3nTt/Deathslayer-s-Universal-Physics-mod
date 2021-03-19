@@ -1044,6 +1044,16 @@ bool GameController::GetHudEnable()
 	return gameView->GetHudEnable();
 }
 
+void GameController::SetBrushEnable(bool brushState)
+{
+	gameView->SetBrushEnable(brushState);
+}
+
+bool GameController::GetBrushEnable()
+{
+	return gameView->GetBrushEnable();
+}
+
 void GameController::SetDebugHUD(bool hudState)
 {
 	gameView->SetDebugHUD(hudState);
@@ -1589,6 +1599,148 @@ void GameController::NotifyNewNotification(Client * sender, std::pair<String, By
 	};
 	gameModel->AddNotification(new LinkNotification(notification.second, notification.first));
 }
+
+//Cyens Toy's code. Credits and thanks to my boi Firefreak11, aka TheCyentist, aka cbeimers113.
+String GameController::hydrocarbonName(int t, int c, int h, int b, int a) {
+	//type, carbons, hydrogens, bond location, alcohol bond location
+	StringBuilder ss;
+
+	//What state is it
+	switch (t) {
+	case PT_GAS:
+		ss << "Gas: ";
+		break;
+	case PT_MWAX:
+		ss << "Melted Wax: ";
+		break;
+	case PT_WAX:
+		ss << "Wax: ";
+		break;
+	case PT_DESL:
+		ss << "Diesel Fuel: ";
+		break;
+	/*case PT_PRFN:
+		ss << "Paraffin Wax: ";
+		break;*/
+	case PT_OIL:
+		ss << "Oil: ";
+		break;
+	/*case PT_ALCL:
+		ss << "Alcohol: ";
+		break;*/
+	}
+	//If it has a double or triple bond, where is it?
+	if (b)
+		ss << b << "-";
+
+	switch (c) {
+	case 1:
+		ss << "Meth";
+		break;
+	case 2:
+		ss << "Eth";
+		break;
+	case 3:
+		ss << "Prop";
+		break;
+	case 4:
+		ss << "But";
+		break;
+	case 5:
+		ss << "Pent";
+		break;
+	case 6:
+		ss << "Hex";
+		break;
+	case 7:
+		ss << "Hept";
+		break;
+	case 8:
+		ss << "Oct";
+		break;
+	case 9:
+		ss << "Non";
+		break;
+	case 10:
+		ss << "Dec";
+		break;
+	case 11:
+		ss << "Undec";
+		break;
+	case 12:
+		ss << "Dodec";
+		break;
+	case 13:
+		ss << "Tridec";
+		break;
+	case 14:
+		ss << "Tetradec";
+		break;
+	case 15:
+		ss << "Pentadec";
+		break;
+	case 16:
+		ss << "Hexadec";
+		break;
+	case 17:
+		ss << "Heptadec";
+		break;
+	case 18:
+		ss << "Octadec";
+		break;
+	case 19:
+		ss << "Nonadec";
+		break;
+	case 20:
+		ss << "Icos";
+		break;
+	case 30:
+		ss << "Triacont";
+		break;
+	case 40:
+		ss << "Tetracont";
+		break;
+	case 50:
+		ss << "Pentacont";
+		break;
+	case 60:
+		ss << "Hexacont";
+		break;
+	default:
+		//if (t == PT_ALCL)
+		//	return "Alcohol";
+		return "Kerosene";
+	}
+
+	/*if (isAlkane(c, h))ss << "an";
+	else if (isAlkene(c, h))ss << "en";
+	else ss << "yn";
+
+	if (t == PT_ALCL) {
+		if (c == 1 || a == 1) ss << "ol";
+		else ss << "-" << a << "-ol";
+	}
+	else ss << "e";
+
+	ss << " [C";
+	if (c > 1) ss << c;
+	ss << "H" << h - (t == PT_ALCL);
+	if (t == PT_ALCL)ss << "OH]";
+	else ss << "]";*/
+
+	return ss.Build();
+}
+
+//cyens toy
+String GameController::ElementFullName(int type)
+{
+	if (gameModel && gameModel->GetSimulation())
+	{
+		return gameModel->GetSimulation()->ElementFullName(type);
+	}
+	return "";
+}
+
 
 void GameController::NotifyUpdateAvailable(Client * sender)
 {

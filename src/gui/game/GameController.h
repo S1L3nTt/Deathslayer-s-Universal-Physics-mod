@@ -106,6 +106,8 @@ public:
 	bool GetHudEnable();
 	void SetDebugHUD(bool hudState);
 	bool GetDebugHUD();
+	void SetBrushEnable(bool brushState);
+	bool GetBrushEnable();
 	void SetDebugFlags(unsigned int flags) { debugFlags = flags; }
 	void SetActiveMenu(int menuID);
 	std::vector<Menu*> GetMenuList();
@@ -152,6 +154,8 @@ public:
 	ui::Point NormaliseBlockCoord(ui::Point point);
 	String ElementResolve(int type, int ctype);
 	String BasicParticleInfo(Particle const &sample_part);
+	String hydrocarbonName(int t, int c, int h, int b, int a); // Cyens toy
+	String ElementFullName(int t); // Cyens toy
 	bool IsValidElement(int type);
 	String WallName(int type);
 	int Record(bool record);

@@ -219,6 +219,7 @@ public:
 	static int remainder_p(int x, int y);
 	static float remainder_p(float x, float y);
 
+	String ElementFullName(int type);//cyens toy
 	String ElementResolve(int type, int ctype);
 	String BasicParticleInfo(Particle const &sample_part);
 

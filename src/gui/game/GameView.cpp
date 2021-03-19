@@ -37,6 +37,7 @@
 #include "simulation/SimulationData.h"
 #include "simulation/ElementDefs.h"
 #include "simulation/ElementClasses.h"
+#include "simulation/NuclearProperties.cpp"
 
 #include <cstring>
 
@@ -178,6 +179,7 @@ GameView::GameView():
 	toolBrush(false),
 	decoBrush(false),
 	windTool(false),
+	showBrush(true),
 	toolIndex(0),
 	currentSaveType(0),
 	lastMenu(-1),
@@ -460,6 +462,15 @@ bool GameView::GetHudEnable()
 	return showHud;
 }
 
+void GameView::SetBrushEnable(bool brushState)
+{
+	showBrush = brushState;
+}
+
+bool GameView::GetBrushEnable()
+{
+	return showBrush;
+}
 void GameView::SetDebugHUD(bool mode)
 {
 	showDebug = mode;
@@ -1940,7 +1951,7 @@ void GameView::OnDraw()
 		ren->clearScreen(1.0f);
 		ren->RenderBegin();
 		ren->SetSample(c->PointTranslate(currentMouse).X, c->PointTranslate(currentMouse).Y);
-		if (selectMode == SelectNone && (!zoomEnabled || zoomCursorFixed) && activeBrush && (isMouseDown || (currentMouse.X >= 0 && currentMouse.X < XRES && currentMouse.Y >= 0 && currentMouse.Y < YRES)))
+		if (showBrush && selectMode == SelectNone && (!zoomEnabled || zoomCursorFixed) && activeBrush && (isMouseDown || (currentMouse.X >= 0 && currentMouse.X < XRES && currentMouse.Y >= 0 && currentMouse.Y < YRES)))
 		{
 			ui::Point finalCurrentMouse = c->PointTranslate(currentMouse);
 			ui::Point initialDrawPoint = drawPoint1;
@@ -2128,7 +2139,24 @@ void GameView::OnDraw()
 
 			if (type == PT_PHOT || type == PT_BIZR || type == PT_BIZRG || type == PT_BIZRS || type == PT_FILT || type == PT_BRAY || type == PT_C5)
 				wavelengthGfx = (ctype&0x3FFFFFFF);
-
+			else if (type == PT_ATOM)
+			{
+				StringBuilder atomInfo;
+				atomInfo << Format::Precision(2);
+				int life = sample.particle.life;
+				int tmp = sample.particle.tmp;
+				float pavg0 = sample.particle.pavg[0];
+				atomInfo << PeriodicProperties(life) << "-" << tmp;
+				atomInfo << ", Energy: " << ctype;
+				atomInfo << ", Binding energy: " << pavg0;
+				atomInfo << ", per nucleon: " << pavg0 / tmp;
+				int textWidth = Graphics::textwidth(atomInfo.Build());
+				g->fillrect(140, 41, textWidth + 8, 15, 0, 0, 0, int(alpha * 0.5f));
+				g->drawtext(140, 45, atomInfo.Build(), 255, 255, 255, int(alpha * 0.75f));
+			}
+			//else if (type == PT_GAS || type == PT_OIL || type == PT_WAX || type == PT_MWAX || type == PT_DESL) {
+			//	sampleInfo << c->hydrocarbonName(type, sample.particle.carbons, sample.particle.hydrogens, sample.particle.tmp3, sample.particle.ctype);// cyens toy
+			//}
 			if (showDebug)
 			{
 				if (type == PT_LAVA && c->IsValidElement(ctype))
@@ -2159,6 +2187,13 @@ void GameView::OnDraw()
 					else
 						sampleInfo << " (unknown mode)";
 				}
+				//else if (sample.particle.fullname != "")
+			//	{
+			//		sampleInfo << c->ElementFullName(type);
+			//	}
+				else if (type == PT_GAS || type == PT_OIL || type == PT_WAX || type == PT_MWAX || type == PT_DESL) {
+					sampleInfo << c->hydrocarbonName(type, sample.particle.carbons, sample.particle.hydrogens, sample.particle.tmp3, sample.particle.ctype);
+				}
 				else
 				{
 					sampleInfo << c->ElementResolve(type, ctype);
@@ -2176,7 +2211,7 @@ void GameView::OnDraw()
 				}
 				sampleInfo << ", Temp: " << (sample.particle.temp - 273.15f) << " C";
 				sampleInfo << ", Life: " << sample.particle.life;
-				if (sample.particle.type != PT_RFRG && sample.particle.type != PT_RFGL)
+				if (sample.particle.type != PT_RFRG)
 				{
 					if (sample.particle.type == PT_CONV)
 					{
@@ -2331,7 +2366,7 @@ void GameView::OnDraw()
 	}
 
 	//Introduction text
-	if(introText)
+	if(introText && showHud)
 	{
 		g->fillrect(0, 0, WINDOWW, WINDOWH, 0, 0, 0, introText>51?102:introText*2);
 		g->drawtext(16, 20, introTextMessage, 255, 255, 255, introText>51?255:introText*5);
