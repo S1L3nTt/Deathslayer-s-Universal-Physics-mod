@@ -1694,8 +1694,58 @@ String GameController::hydrocarbonName(int t, int c, int h, int b, int a) {
 	case 20:
 		ss << "Icos";
 		break;
+	case 21:
+		ss << "henic";
+		break;
+	case 22:
+		ss << "doc";
+		break;
+	case 23:
+		ss << "tric";
+		break;
+	case 24:
+		ss << "tetrac";
+		break;
+	case 25:
+		ss << "pentac";
+		break;
+	case 26:
+		ss << "hexac";
+		break;
+	case 27:
+		ss << "heptac";
+	case 28:
+		ss << "octac";
+	case 29:
+		ss << "nonac";
 	case 30:
 		ss << "Triacont";
+		break;
+	case 31:
+		ss << "hentriacony";
+		break;
+	case 32:
+		ss << "dotriacont";
+	case 33:
+		ss << "titriacont";
+		break;
+	case 34:
+		ss << "tetrariacont";
+		break;
+	case 35:
+		ss << "pentatriacont";
+		break;
+	case 36:
+		ss << "hexatriacont";
+		break;
+	case 37:
+		ss << "heptatriacont";
+		break;
+	case 38:
+		ss << "octatriacont";
+		break;
+	case 39:
+		ss << "nonatriacont";
 		break;
 	case 40:
 		ss << "Tetracont";

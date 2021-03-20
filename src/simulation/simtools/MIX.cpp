@@ -20,10 +20,10 @@ static int perform(Simulation * sim, Particle * cpart, int x, int y, int brushX,
 	if(!thisPart)
 		return 0;
 
-	if(random_gen() % 100 != 0)
+	if(random_gen() % 10 != 0)
 		return 0;
 
-	int distance = (int)(std::pow(strength, .5f) * 10);
+	int distance = (int)(std::pow(strength, .5) * 10);
 
 	if(!(sim->elements[TYP(thisPart)].Properties & (TYPE_PART | TYPE_LIQUID | TYPE_GAS)))
 		return 0;
