@@ -48,23 +48,11 @@ void Element::Element_TTAN()
 
 static int update(UPDATE_FUNC_ARGS)
 {
-	int ttan = 0;
-	if (nt <= 2)
-		ttan = 2;
-	else if (parts[i].tmp)
-		ttan = 2;
-	else if (nt <= 6)
-	{
-		for (int rx = -1; rx <= 1; rx++)
-			for (int ry = -1; ry <= 1; ry++)
-				if ((!rx != !ry) && BOUNDS_CHECK)
-				{
-					if (TYP(pmap[y+ry][x+rx]) == PT_TTAN)
-						ttan++;
-				}
-	}
+	
 
-	if (ttan >= 2)
+
+
+	if (surround_space < 6)
 	{
 		sim->air->bmap_blockair[y/CELL][x/CELL] = 1;
 		sim->air->bmap_blockairh[y/CELL][x/CELL] = 0x8;

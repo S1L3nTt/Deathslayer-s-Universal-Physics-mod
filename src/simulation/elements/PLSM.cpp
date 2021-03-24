@@ -30,7 +30,7 @@ void Element::Element_PLSM()
 
 	Weight = 1;
 
-	DefaultProperties.temp = MAX_TEMP;
+	DefaultProperties.temp = NORMAL_MAX_TEMP;
 	HeatConduct = 5;
 	Description = "Plasma, extremely hot.";
 

@@ -76,11 +76,11 @@ static int update(UPDATE_FUNC_ARGS)
 	if (sim->aheat_enable)
 	{
 		sim->hv[y/CELL][x/CELL] += powderful/50;
-		if (sim->hv[y/CELL][x/CELL] > MAX_TEMP)
-			sim->hv[y/CELL][x/CELL] = MAX_TEMP;
+		if (sim->hv[y/CELL][x/CELL] > NORMAL_MAX_TEMP)
+			sim->hv[y/CELL][x/CELL] = NORMAL_MAX_TEMP;
 		// If the LIGH was so powerful that it overflowed hv, set to max temp
 		else if (sim->hv[y/CELL][x/CELL] < 0)
-			sim->hv[y/CELL][x/CELL] = MAX_TEMP;
+			sim->hv[y/CELL][x/CELL] = NORMAL_MAX_TEMP;
 	}
 
 	for (rx=-2; rx<3; rx++)
@@ -96,7 +96,7 @@ static int update(UPDATE_FUNC_ARGS)
 					sim->elements[rt].Flammable && RNG::Ref().chance(sim->elements[rt].Flammable + int(sim->pv[(y+ry)/CELL][(x+rx)/CELL] * 10.0f), 1000))
 				{
 					sim->part_change_type(ID(r),x+rx,y+ry,PT_FIRE);
-					parts[ID(r)].temp = restrict_flt(sim->elements[PT_FIRE].DefaultProperties.temp + (sim->elements[rt].Flammable/2), MIN_TEMP, MAX_TEMP);
+					parts[ID(r)].temp = restrict_flt(sim->elements[PT_FIRE].DefaultProperties.temp + (sim->elements[rt].Flammable/2), MIN_TEMP, NORMAL_MAX_TEMP);
 					parts[ID(r)].life = RNG::Ref().between(180, 259);
 					parts[ID(r)].tmp = parts[ID(r)].ctype = 0;
 					if (sim->elements[rt].Explosive)
@@ -111,11 +111,11 @@ static int update(UPDATE_FUNC_ARGS)
 				case PT_THDR:
 				case PT_DMND:
 				case PT_FIRE:
-					parts[ID(r)].temp = restrict_flt(parts[ID(r)].temp+powderful/10, MIN_TEMP, MAX_TEMP);
+					parts[ID(r)].temp = restrict_flt(parts[ID(r)].temp+powderful/10, MIN_TEMP, NORMAL_MAX_TEMP);
 					continue;
 				case PT_DEUT:
 				case PT_PLUT:
-					parts[ID(r)].temp = restrict_flt(parts[ID(r)].temp+powderful, MIN_TEMP, MAX_TEMP);
+					parts[ID(r)].temp = restrict_flt(parts[ID(r)].temp+powderful, MIN_TEMP, NORMAL_MAX_TEMP);
 					sim->pv[y/CELL][x/CELL] +=powderful/35;
 					if (RNG::Ref().chance(1, 3))
 					{
@@ -139,7 +139,7 @@ static int update(UPDATE_FUNC_ARGS)
 						parts[ID(r)].life-=powderful/100;
 					break;
 				case PT_HEAC:
-					parts[ID(r)].temp = restrict_flt(parts[ID(r)].temp+powderful/10, MIN_TEMP, MAX_TEMP);
+					parts[ID(r)].temp = restrict_flt(parts[ID(r)].temp+powderful/10, MIN_TEMP, NORMAL_MAX_TEMP);
 					if (parts[ID(r)].temp > sim->elements[PT_HEAC].HighTemperature)
 					{
 						sim->part_change_type(ID(r), x+rx, y+ry, PT_LAVA);
@@ -152,7 +152,7 @@ static int update(UPDATE_FUNC_ARGS)
 				if ((sim->elements[TYP(r)].Properties&PROP_CONDUCTS) && parts[ID(r)].life==0)
 					sim->create_part(ID(r),x+rx,y+ry,PT_SPRK);
 				sim->pv[y/CELL][x/CELL] += powderful/400;
-				if (sim->elements[TYP(r)].HeatConduct) parts[ID(r)].temp = restrict_flt(parts[ID(r)].temp+powderful/1.3, MIN_TEMP, MAX_TEMP);
+				if (sim->elements[TYP(r)].HeatConduct) parts[ID(r)].temp = restrict_flt(parts[ID(r)].temp+powderful/1.3, MIN_TEMP, NORMAL_MAX_TEMP);
 			}
 	if (parts[i].tmp2==3)
 	{

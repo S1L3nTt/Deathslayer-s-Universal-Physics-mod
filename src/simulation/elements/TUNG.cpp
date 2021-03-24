@@ -10,7 +10,7 @@ void Element::Element_TUNG()
 	Name = "TUNG";
 	Colour = PIXPACK(0x505050);
 	MenuVisible = 1;
-	MenuSection = SC_ELEC;
+	MenuSection = SC_SOLIDS;
 	Enabled = 1;
 
 	Advection = 0.0f;
@@ -50,8 +50,13 @@ void Element::Element_TUNG()
 
 static int update(UPDATE_FUNC_ARGS)
 {
+	if (surround_space > 6)
+	{
+		sim->air->bmap_blockair[y / CELL][x / CELL] = 1;
+		sim->air->bmap_blockairh[y / CELL][x / CELL] = 0x8;
+	}
 	bool splode = false;
-	const float MELTING_POINT = sim->elements[PT_TUNG].HighTemperature;
+	const float MELTING_POINT = sim->elements[PT_TUNG].HighTemperature - sim->pv[y / CELL][x / CELL] / 100;
 
 	if(parts[i].temp > 2400.0)
 	{
@@ -87,7 +92,7 @@ static int update(UPDATE_FUNC_ARGS)
 		}
 		if(splode)
 		{
-			parts[i].temp = restrict_flt(MELTING_POINT + RNG::Ref().between(200, 799), MIN_TEMP, MAX_TEMP);
+			parts[i].temp = restrict_flt(MELTING_POINT + RNG::Ref().between(200, 799), MIN_TEMP, NORMAL_MAX_TEMP);
 		}
 		parts[i].vx += RNG::Ref().between(-50, 50);
 		parts[i].vy += RNG::Ref().between(-50, 50);
@@ -96,7 +101,7 @@ static int update(UPDATE_FUNC_ARGS)
 	parts[i].pavg[0] = parts[i].pavg[1];
 	parts[i].pavg[1] = sim->pv[y/CELL][x/CELL];
 	float diff = parts[i].pavg[1] - parts[i].pavg[0];
-	if (diff > 0.50f || diff < -0.50f)
+	if (diff > 1 || diff < -1)
 	{
 		sim->part_change_type(i,x,y,PT_BRMT);
 		parts[i].ctype = PT_TUNG;

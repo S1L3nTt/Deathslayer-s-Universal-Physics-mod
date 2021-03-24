@@ -94,14 +94,14 @@ static int update(UPDATE_FUNC_ARGS)
 			sim->create_part(i,x,y,PT_O2);
 			j = sim->create_part(-3,x,y,PT_NEUT);
 			if (j != -1)
-				parts[j].temp = MAX_TEMP;
+				parts[j].temp = NORMAL_MAX_TEMP;
 			if (RNG::Ref().chance(1, 50))
 			{
 				j = sim->create_part(-3,x,y,PT_ELEC);
 				if (j != -1)
-					parts[j].temp = MAX_TEMP;
+					parts[j].temp = NORMAL_MAX_TEMP;
 			}
-			parts[i].temp = MAX_TEMP;
+			parts[i].temp = NORMAL_MAX_TEMP;
 			sim->pv[y/CELL][x/CELL] += 100;
 		}
 	}

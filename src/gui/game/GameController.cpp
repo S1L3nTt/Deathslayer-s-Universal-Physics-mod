@@ -74,6 +74,8 @@
 #include "simulation/Snapshot.h"
 #include "simulation/ElementClasses.h"
 
+#include "..//..//simulation/ModTools.h"
+
 #ifdef GetUserName
 # undef GetUserName // dammit windows
 #endif
@@ -1762,11 +1764,19 @@ String GameController::hydrocarbonName(int t, int c, int h, int b, int a) {
 		return "Kerosene";
 	}
 
-	/*if (isAlkane(c, h))ss << "an";
-	else if (isAlkene(c, h))ss << "en";
+	
+	if (h == c * 2 + 2)ss << "an";
+	else if (h == c * 2)ss << "en";
 	else ss << "yn";
 
-	if (t == PT_ALCL) {
+
+	ss << "e";
+
+	ss << " [C";
+	if (c > 1) ss << c;
+	ss << "H" << h;
+	ss << "]";
+	/*if (t == PT_ALCL) {
 		if (c == 1 || a == 1) ss << "ol";
 		else ss << "-" << a << "-ol";
 	}

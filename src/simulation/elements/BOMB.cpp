@@ -85,7 +85,7 @@ static int update(UPDATE_FUNC_ARGS)
 									{
 										parts[nb].tmp = 2;
 										parts[nb].life = 2;
-										parts[nb].temp = MAX_TEMP;
+										parts[nb].temp = NORMAL_MAX_TEMP;
 									}
 								}
 							}
@@ -98,7 +98,7 @@ static int update(UPDATE_FUNC_ARGS)
 								{
 									parts[nb].tmp = 0;
 									parts[nb].life = 50;
-									parts[nb].temp = MAX_TEMP;
+									parts[nb].temp = NORMAL_MAX_TEMP;
 									parts[nb].vx = float(RNG::Ref().between(-20, 20));
 									parts[nb].vy = float(RNG::Ref().between(-20, 20));
 								}

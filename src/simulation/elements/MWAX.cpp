@@ -70,7 +70,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 static void create(ELEMENT_CREATE_FUNC_ARGS) {
 	//Spawns with carbons (5-7)
-	sim->parts[i].life = RNG::Ref().between(5, 7);
+	sim->parts[i].carbons = RNG::Ref().between(5, 7);
 	sim->parts[i].hydrogens = makeAlk(sim->parts[i].carbons);
 	if (sim->parts[i].hydrogens < 2 * sim->parts[i].carbons + 2)sim->parts[i].tmp3 = getBondLoc(sim->parts[i].carbons);
 }

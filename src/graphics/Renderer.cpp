@@ -1371,7 +1371,7 @@ void Renderer::render_parts()
 				if(colour_mode & COLOUR_HEAT)
 				{
 					constexpr float min_temp = MIN_TEMP;
-					constexpr float max_temp = MAX_TEMP;
+					constexpr float max_temp = NORMAL_MAX_TEMP;
 					caddress = int(restrict_flt((sim->parts[i].temp - min_temp) / (max_temp - min_temp) * 1024, 0, 1023)) * 3;
 					firea = 255;
 					firer = colr = color_data[caddress];
@@ -2400,7 +2400,7 @@ void Renderer::draw_air()
 			else if (display_mode & DISPLAY_AIRH)
 			{
 				constexpr float min_temp = MIN_TEMP;
-				constexpr float max_temp = MAX_TEMP;
+				constexpr float max_temp = NORMAL_MAX_TEMP;
 				int caddress = int(restrict_flt((hv[y][x] - min_temp) / (max_temp - min_temp) * 1024, 0, 1023)) * 3;
 				c = PIXRGB((int)(color_data[caddress]*0.7f), (int)(color_data[caddress+1]*0.7f), (int)(color_data[caddress+2]*0.7f));
 				//c  = PIXRGB(clamp_flt(fabsf(vx[y][x]), 0.0f, 8.0f),//vx adds red

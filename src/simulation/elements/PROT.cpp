@@ -76,7 +76,7 @@ static int update(UPDATE_FUNC_ARGS)
 	case PT_DEUT:
 		if (RNG::Ref().chance(-((int)sim->pv[y / CELL][x / CELL] - 4) + (parts[uID].life / 100), 200))
 		{
-			DeutImplosion(sim, parts[uID].life, x, y, restrict_flt(parts[uID].temp + parts[uID].life * 500, MIN_TEMP, MAX_TEMP), PT_PROT);
+			DeutImplosion(sim, parts[uID].life, x, y, restrict_flt(parts[uID].temp + parts[uID].life * 500, MIN_TEMP, NORMAL_MAX_TEMP), PT_PROT);
 			sim->kill_part(uID);
 		}
 		break;
@@ -99,7 +99,7 @@ static int update(UPDATE_FUNC_ARGS)
 		else if (parts[i].temp > 473.15f) change = 1000.0f;
 		else if (parts[i].temp > 373.15f) change = 100.0f;
 		else change = 0.0f;
-		parts[uID].temp = restrict_flt(parts[uID].temp + change, MIN_TEMP, MAX_TEMP);
+		parts[uID].temp = restrict_flt(parts[uID].temp + change, MIN_TEMP, NORMAL_MAX_TEMP);
 		break;
 	case PT_NONE:
 		//slowly kill if it's not inside an element
@@ -114,7 +114,7 @@ static int update(UPDATE_FUNC_ARGS)
 		if (parts[i].temp > 273.15f + 500.0f && (sim->elements[utype].Flammable || sim->elements[utype].Explosive || utype == PT_BANG))
 		{
 			sim->create_part(uID, x, y, PT_FIRE);
-			parts[uID].temp += restrict_flt(float(sim->elements[utype].Flammable * 5), MIN_TEMP, MAX_TEMP);
+			parts[uID].temp += restrict_flt(float(sim->elements[utype].Flammable * 5), MIN_TEMP, NORMAL_MAX_TEMP);
 			sim->pv[y / CELL][x / CELL] += 1.00f;
 		}
 		//prevent inactive sparkable elements from being sparked
@@ -151,7 +151,7 @@ static int update(UPDATE_FUNC_ARGS)
 			element = PT_NBLE;
 		newID = sim->create_part(-1, x + RNG::Ref().between(-1, 1), y + RNG::Ref().between(-1, 1), element);
 		if (newID >= 0)
-			parts[newID].temp = restrict_flt(100.0f*parts[i].tmp, MIN_TEMP, MAX_TEMP);
+			parts[newID].temp = restrict_flt(100.0f*parts[i].tmp, MIN_TEMP, NORMAL_MAX_TEMP);
 		sim->kill_part(i);
 		return 1;
 	}

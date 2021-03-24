@@ -94,7 +94,7 @@ static int update(UPDATE_FUNC_ARGS)
 			}
 			if (nb!=-1) {
 				parts[nb].life = RNG::Ref().between(0, 299);
-				parts[nb].temp = MAX_TEMP/2;
+				parts[nb].temp = NORMAL_MAX_TEMP /2;
 				angle = RNG::Ref().uniform01()*2.0f*M_PI;
 				v = RNG::Ref().uniform01()*5.0f;
 				parts[nb].vx = v*cosf(angle);
@@ -136,7 +136,7 @@ static int update(UPDATE_FUNC_ARGS)
 						parts[i].life += 3;
 						parts[i].tmp++;
 					}
-					parts[i].temp = restrict_flt(parts[ID(r)].temp+parts[i].temp, MIN_TEMP, MAX_TEMP);
+					parts[i].temp = restrict_flt(parts[ID(r)].temp+parts[i].temp, MIN_TEMP, NORMAL_MAX_TEMP);
 					sim->kill_part(ID(r));
 				}
 			}

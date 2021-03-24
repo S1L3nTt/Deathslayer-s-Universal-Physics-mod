@@ -18,7 +18,7 @@ static int perform(Simulation * sim, Particle * cpart, int x, int y, int brushX,
 	if (cpart->type == PT_PUMP || cpart->type == PT_GPMP)
 		cpart->temp += strength*.1f;
 	else
-		cpart->temp += strength*2.0f;
+		cpart->temp += strength*3.0f;
 
 	if (cpart->temp > MAX_TEMP)
 		cpart->temp = MAX_TEMP;

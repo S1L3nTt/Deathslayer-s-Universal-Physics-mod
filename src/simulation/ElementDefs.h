@@ -6,6 +6,7 @@
 
 #define R_TEMP 22
 #define MAX_TEMP 999999
+#define NORMAL_MAX_TEMP 9999
 #define MIN_TEMP 0
 #define O_MAX_TEMP 3500
 #define O_MIN_TEMP -273
