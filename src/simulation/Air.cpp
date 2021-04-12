@@ -300,14 +300,25 @@ void Air::update_air(void)
 					dx += fvx[y][x];
 					dy += fvy[y][x];
 				}
-				// pressure/velocity caps
-				if (dp > 256.0f) dp = 256.0f;
-				if (dp < -256.0f) dp = -256.0f;
-				if (dx > 256.0f) dx = 256.0f;
-				if (dx < -256.0f) dx = -256.0f;
-				if (dy > 256.0f) dy = 256.0f;
-				if (dy < -256.0f) dy = -256.0f;
-
+				if (!sim.betterburning_enable)
+				{
+					// pressure/velocity caps
+					if (dp > 256.0f) dp = 256.0f;
+					if (dp < -256.0f) dp = -256.0f;
+					if (dx > 256.0f) dx = 256.0f;
+					if (dx < -256.0f) dx = -256.0f;
+					if (dy > 256.0f) dy = 256.0f;
+					if (dy < -256.0f) dy = -256.0f;
+				}
+				else
+				{
+					if (dp > 1024.0f) dp = 1024.0f;
+					if (dp < -1024.0f) dp = -1024.0f;
+					if (dx > 1024.0f) dx = 1024.0f;
+					if (dx < -1024.0f) dx = -1024.0f;
+					if (dy > 1024.0f) dy = 1024.0f;
+					if (dy < -1024.0f) dy = -1024.0f;
+				}
 
 				switch (airMode)
 				{
@@ -363,7 +374,7 @@ void Air::RecalculateBlockAirMaps()
 		// Real TTAN would only block if there was enough TTAN
 		// but it would be more expensive and complicated to actually check that
 		// so just block for a frame, if it wasn't supposed to block it will continue allowing air next frame
-		if (type == PT_TTAN)
+		if (type == PT_TTAN || type == PT_TUNG)
 		{
 			int x = ((int)(sim.parts[i].x+0.5f))/CELL, y = ((int)(sim.parts[i].y+0.5f))/CELL;
 			if (sim.InBounds(x, y))

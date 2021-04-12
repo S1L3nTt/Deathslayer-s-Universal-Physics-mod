@@ -19,7 +19,7 @@ void Element::Element_LO2()
 	HotAir = 0.000f	* CFDS;
 	Falldown = 2;
 
-	Flammable = 5000;
+	Flammable = 0;
 	Explosive = 0;
 	Meltable = 0;
 	Hardness = 0;

@@ -2311,12 +2311,19 @@ void GameView::OnDraw()
 
 			if (c->GetAHeatEnable())
 				sampleInfo << ", AHeat: " << sample.AirTemperature - 273.15f << " C";
-			if (type == PT_GAS || type == PT_OIL || type == PT_WAX || type == PT_MWAX || type == PT_DESL)
-			{
-				sampleInfo << ", Carbons: " << sample.particle.carbons;
-				sampleInfo << ", Hydrogens: " << sample.particle.hydrogens;
+
+			if (sample.particle.oxygens != 0)
+				sampleInfo << ", Oxygens: " << sample.particle.oxygens;
+			
+			if (sample.particle.tmp3 != 0)		
 				sampleInfo << ", Tmp3: " << sample.particle.tmp3;
-			}
+			
+			if (sample.particle.hydrogens != 0)		
+				sampleInfo << ", Hydrogens: " << sample.particle.hydrogens;
+			
+			if (sample.particle.carbons != 0)
+				sampleInfo << ", Carbons: " << sample.particle.carbons;
+			
 			textWidth = Graphics::textwidth(sampleInfo.Build());
 			g->fillrect(XRES-20-textWidth, 27, textWidth+8, 14, 0, 0, 0, int(alpha*0.5f));
 			g->drawtext(XRES-16-textWidth, 30, sampleInfo.Build(), 255, 255, 255, int(alpha*0.75f));

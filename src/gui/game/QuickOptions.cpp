@@ -67,7 +67,19 @@ void NGravityOption::perform()
 	m->SetNewtonianGravity(!m->GetNewtonianGrvity());
 }
 
+BurningOption::BurningOption(GameModel* m):
+QuickOption("B", "Better burning", m, Toggle)
+{
 
+}
+bool BurningOption::GetToggle()
+{
+	return m->GetBetterBurningEnable();
+}
+void BurningOption::perform()
+{
+	m->SetBetterBurningEnable(!m->GetBetterBurningEnable());
+}
 
 AHeatOption::AHeatOption(GameModel * m):
 QuickOption("A", "Ambient heat \bg(u)", m, Toggle)

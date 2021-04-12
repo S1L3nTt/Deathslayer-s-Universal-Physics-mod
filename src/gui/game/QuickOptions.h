@@ -33,6 +33,14 @@ public:
 	bool GetToggle() override;
 	void perform() override;
 };
+class BurningOption: public QuickOption
+{
+public:
+	BurningOption(GameModel * m);
+	bool GetToggle() override;
+	void perform() override;
+};
+
 
 class AHeatOption: public QuickOption
 {

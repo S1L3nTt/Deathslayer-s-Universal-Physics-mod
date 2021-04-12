@@ -107,6 +107,7 @@ public:
 	int gravityMode;
 	int legacy_enable;
 	int aheat_enable;
+	int betterburning_enable;
 	int water_equal_test;
 	int NoWeightSwitching;
 	int sys_pause;

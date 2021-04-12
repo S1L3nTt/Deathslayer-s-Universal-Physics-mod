@@ -94,6 +94,7 @@ public:
 	bool gravityEnable;
 	bool aheatEnable;
 	bool NoWeightSwitch;
+	bool BetterBurningEnable;
 	bool paused;
 	int gravityMode;
 	int airMode;

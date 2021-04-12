@@ -16,15 +16,21 @@ void SimTool::Tool_MIX()
 
 static int perform(Simulation * sim, Particle * cpart, int x, int y, int brushX, int brushY, float strength)
 {
+	int distance;
 	int thisPart = sim->pmap[y][x];
 	if(!thisPart)
 		return 0;
 
 	if(random_gen() % 10 != 0)
 		return 0;
-
-	int distance = (int)(std::pow(strength, .5) * 10);
-
+	if (sim->betterburning_enable)
+	{
+		 distance = (int)(std::pow(strength, .5) * 20);
+	}
+	else
+	{
+		 distance = (int)(std::pow(strength, .5) * 10);
+	}
 	if(!(sim->elements[TYP(thisPart)].Properties & (TYPE_PART | TYPE_LIQUID | TYPE_GAS)))
 		return 0;
 
@@ -38,7 +44,9 @@ static int perform(Simulation * sim, Particle * cpart, int x, int y, int brushX,
 	if(!thatPart)
 		return 0;
 
-	if ((sim->elements[TYP(thisPart)].Properties&STATE_FLAGS) != (sim->elements[TYP(thatPart)].Properties&STATE_FLAGS))
+	if ((sim->elements[TYP(thisPart)].Properties&STATE_FLAGS) != (sim->elements[TYP(thatPart)].Properties&STATE_FLAGS) && !sim->betterburning_enable)
+		return 0;
+	else if(sim->betterburning_enable &&( sim->elements[TYP(thisPart)].Properties & TYPE_SOLID || sim->elements[TYP(thatPart)].Properties & TYPE_SOLID))
 		return 0;
 
 	sim->pmap[y][x] = thatPart;

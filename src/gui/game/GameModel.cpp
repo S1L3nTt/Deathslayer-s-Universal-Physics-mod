@@ -221,6 +221,7 @@ void GameModel::BuildQuickOptionMenu(GameController * controller)
 	quickOptions.push_back(new DrawGravOption(this));
 	quickOptions.push_back(new DecorationsOption(this));
 	quickOptions.push_back(new NGravityOption(this));
+	quickOptions.push_back(new BurningOption(this));
 	quickOptions.push_back(new AHeatOption(this));
 	quickOptions.push_back(new ConsoleShowOption(this, controller));
 
@@ -747,6 +748,7 @@ void GameModel::SetSave(SaveInfo * newSave, bool invertIncludePressure)
 		sim->legacy_enable = saveData->legacyEnable;
 		sim->water_equal_test = saveData->waterEEnabled;
 		sim->NoWeightSwitching = saveData->NoWeightSwitch;
+		sim->betterburning_enable = saveData->BetterBurningEnable;
 		sim->aheat_enable = saveData->aheatEnable;
 		if(saveData->gravityEnable)
 			sim->grav->start_grav_async();
@@ -1054,6 +1056,21 @@ bool GameModel::GetDecoration()
 	return ren->decorations_enable?true:false;
 }
 
+void GameModel::SetBetterBurningEnable(bool betterburnin)
+{
+	sim->betterburning_enable = betterburnin;
+	UpdateQuickOptions();
+	if (betterburnin)
+		SetInfoTip("Better burning: On");
+	else
+		SetInfoTip("Better burning: Off :(");
+}
+
+bool GameModel::GetBetterBurningEnable()
+{
+	return sim->betterburning_enable;
+}
+
 void GameModel::SetAHeatEnable(bool aHeat)
 {
 	sim->aheat_enable = aHeat;
@@ -1121,6 +1138,7 @@ void GameModel::ClearSimulation()
 	sim->legacy_enable = false;
 	sim->water_equal_test = false;
 	sim->NoWeightSwitching = false;
+	sim->betterburning_enable = false;
 	sim->SetEdgeMode(edgeMode);
 
 	sim->clear_sim();

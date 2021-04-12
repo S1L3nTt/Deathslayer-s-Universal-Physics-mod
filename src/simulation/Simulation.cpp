@@ -514,8 +514,10 @@ void Simulation::SaveSimOptions(GameSave * gameSave)
 	gameSave->legacyEnable = legacy_enable;
 	gameSave->waterEEnabled = water_equal_test;
 	gameSave->NoWeightSwitch = NoWeightSwitching;
+	gameSave->BetterBurningEnable = betterburning_enable;
 	gameSave->gravityEnable = grav->IsEnabled();
 	gameSave->aheatEnable = aheat_enable;
+
 }
 
 Snapshot * Simulation::CreateSnapshot()
@@ -557,6 +559,7 @@ void Simulation::Restore(const Snapshot & snap)
 		parts[i].type = 0;
 	std::copy(snap.Particles.begin(), snap.Particles.end(), parts);
 	parts_lastActiveIndex = NPART-1;
+	air->RecalculateBlockAirMaps();
 	RecalcFreeParticles(false);
 	std::copy(snap.PortalParticles.begin(), snap.PortalParticles.end(), &portalp[0][0][0]);
 	std::copy(snap.WirelessData.begin(), snap.WirelessData.end(), &wireless[0][0]);
@@ -2349,8 +2352,14 @@ void Simulation::init_can_move()
 			}
 			else if (NoWeightSwitching)
 			{
-				if (destinationType != PT_NONE || elements[destinationType].Properties == TYPE_SOLID || elements[movingType].Properties == elements[destinationType].Properties || (elements[movingType].Properties == TYPE_LIQUID && elements[destinationType].Properties == TYPE_PART || elements[movingType].Properties == TYPE_PART && elements[destinationType].Properties == TYPE_GAS || elements[movingType].Properties == TYPE_LIQUID && elements[destinationType].Properties == TYPE_GAS))
+				if ((elements[movingType].Properties & TYPE_LIQUID && elements[destinationType].Properties & TYPE_GAS || elements[movingType].Properties & TYPE_PART && elements[destinationType].Properties & TYPE_GAS) && movingType != PT_FIRE && destinationType != PT_FIRE)
+				{
+					can_move[movingType][destinationType] = 1;
+				}
+				else if (destinationType != PT_NONE)
+						{
 					can_move[movingType][destinationType] = 0;
+						}
 			}
 
 
@@ -2393,9 +2402,8 @@ void Simulation::init_can_move()
 		can_move[movingType][PT_FIGH] = 0;
 		//INVS behaviour varies with pressure
 		can_move[movingType][PT_INVIS] = 3;
-		//stop CNCT and ROCK from being displaced by other particles
+		//stop CNCT from being displaced by other particles
 		can_move[movingType][PT_CNCT] = 0;
-		can_move[movingType][PT_ROCK] = 0;
 		//VOID and PVOD behaviour varies with powered state and ctype
 		can_move[movingType][PT_PVOD] = 3;
 		can_move[movingType][PT_VOID] = 3;
@@ -3988,7 +3996,7 @@ void Simulation::UpdateParticles(int start, int end)
 				parts[i].life = RNG::Ref().between(180, 259);
 				parts[i].temp = restrict_flt(elements[PT_FIRE].DefaultProperties.temp + (elements[t].Flammable/2), MIN_TEMP, MAX_TEMP);
 				t = PT_FIRE;
-				part_change_type(i,x,y,t);
+				part_change_type(i,x,y,t );
 				pv[y/CELL][x/CELL] += 0.25f * CFDS;
 			}
 
@@ -3997,7 +4005,10 @@ void Simulation::UpdateParticles(int start, int end)
 			gravtot = fabs(gravy[(y/CELL)*(XRES/CELL)+(x/CELL)])+fabs(gravx[(y/CELL)*(XRES/CELL)+(x/CELL)]);
 			if (elements[t].HighPressureTransition>-1 && pv[y/CELL][x/CELL]>elements[t].HighPressure) {
 				// particle type change due to high pressure
-				if (elements[t].HighPressureTransition!=PT_NUM)
+				if (parts[i].ctype)
+					t = parts[i].ctype;
+				
+				else if (elements[t].HighPressureTransition!=PT_NUM)
 					t = elements[t].HighPressureTransition;
 				else if (t==PT_BMTL) {
 					if (pv[y/CELL][x/CELL]>2.5f)
@@ -5246,7 +5257,8 @@ Simulation::Simulation():
 	legacy_enable(0),
 	aheat_enable(0),
 	water_equal_test(0),
-	NoWeightSwitching(0),
+	NoWeightSwitching(RNG::Ref().chance(1, 2)),
+	betterburning_enable(RNG::Ref().chance(1, 3)),
 	sys_pause(0),
 	framerender(0),
 	pretty_powder(0),

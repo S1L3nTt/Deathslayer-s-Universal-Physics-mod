@@ -178,6 +178,8 @@ public:
 	bool GetDecoration();
 	void SetAHeatEnable(bool aHeat);
 	bool GetAHeatEnable();
+	void SetBetterBurningEnable(bool Betterburnin);
+	bool GetBetterBurningEnable();
 	void ResetAHeat();
 	void SetNewtonianGravity(bool newtonainGravity);
 	bool GetNewtonianGrvity();

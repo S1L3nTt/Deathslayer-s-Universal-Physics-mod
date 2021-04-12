@@ -50,7 +50,7 @@ void Element::Element_TUNG()
 
 static int update(UPDATE_FUNC_ARGS)
 {
-	if (surround_space > 6)
+	if (surround_space < 2)
 	{
 		sim->air->bmap_blockair[y / CELL][x / CELL] = 1;
 		sim->air->bmap_blockairh[y / CELL][x / CELL] = 0x8;
@@ -101,7 +101,7 @@ static int update(UPDATE_FUNC_ARGS)
 	parts[i].pavg[0] = parts[i].pavg[1];
 	parts[i].pavg[1] = sim->pv[y/CELL][x/CELL];
 	float diff = parts[i].pavg[1] - parts[i].pavg[0];
-	if (diff > 1 || diff < -1)
+	if (diff > 3 || diff < -3)
 	{
 		sim->part_change_type(i,x,y,PT_BRMT);
 		parts[i].ctype = PT_TUNG;
