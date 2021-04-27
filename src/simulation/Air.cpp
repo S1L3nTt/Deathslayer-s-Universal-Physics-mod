@@ -305,7 +305,7 @@ void Air::update_air(void)
 
 				
 					if (dp > 2048.0f) dp = 2048.0f;
-					if (dp < -1024.0f) dp = -2048.0f;
+					if (dp < -1024.0f) dp = -1024.0f;
 					if (dx > 2048.0f) dx = 2048.0f;
 					if (dx < -2048.0f) dx = -2048.0f;
 					if (dy > 2048.0f) dy = 2048.0f;

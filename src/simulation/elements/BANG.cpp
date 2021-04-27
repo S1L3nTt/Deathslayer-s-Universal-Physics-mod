@@ -47,64 +47,13 @@ void Element::Element_BANG()
 
 static int update(UPDATE_FUNC_ARGS)
 {
-	int r, rx, ry;
+	
 	//if(parts[i].tmp==0)
 	//{
 	//	if(parts[i].temp>=673.0f)
 	//		parts[i].tmp = 1;
 	//	else
-			for (rx=-1; rx<2; rx++)
-				for (ry=-1; ry<2; ry++)
-					if (BOUNDS_CHECK && (rx || ry))
-					{
-						r = pmap[y+ry][x+rx];
-						if (!r)
-							continue;
-						// Spark detection
-						if (TYP(r) == PT_SPRK) {
-						 
-							
-								sim->pv[y / CELL][x / CELL] += 100;
-								
-								parts[i].life += 500;
-								parts[i].temp += 500;
-								sim->part_change_type(i, x, y, PT_EMBR);
-								return 1;
-							
-						}
-						else if (TYP(r) == PT_EMBR|| TYP(r) == PT_FIRE && parts[i].temp > 800 - sim->pv[y / CELL][x / CELL] && RNG::Ref().chance(1, 20)) {
-							
-							sim->pv[y / CELL][x / CELL] += 20;
-							parts[i].temp += 500;
-							parts[i].life += 100;
-							sim->part_change_type(i, x, y, RNG::Ref().chance(1, 5) ? PT_EMBR : PT_FIRE);
-						//	sim->part_change_type(i, x, y, PT_EMBR);
-							return 1;
-						}
-					}
-			if (parts[i].temp > 1000.0f - sim->pv[y / CELL][x / CELL]) {
-			
-				sim->pv[y / CELL][x / CELL] += 10;
-				parts[i].temp += 400;
-				parts[i].life += 100;
-				
-				sim->part_change_type(i, x, y, RNG::Ref().chance(1, 5) ? PT_EMBR : PT_FIRE);
-				return 1;
-			}
-			if (parts[i].temp > 320 - sim->pv[y / CELL][x / CELL])
-			{
-				parts[i].vx += 0.99f * sim->vx[y / CELL][x / CELL];
-				parts[i].vy += 0.99f * sim->vy[y / CELL][x / CELL];
-			}
-			if (sim->pv[y / CELL][x / CELL] > 150)
-			{
-				sim->pv[y / CELL][x / CELL] += 20;
-				parts[i].temp += 500;
-				parts[i].life += 100;
-				sim->part_change_type(i, x, y, RNG::Ref().chance(1, 5) ? PT_EMBR : PT_FIRE);
-				//	sim->part_change_type(i, x, y, PT_EMBR);
-				return 1;
-			}
+		
 
 
 

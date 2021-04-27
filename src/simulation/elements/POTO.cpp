@@ -88,7 +88,7 @@ static int update(UPDATE_FUNC_ARGS) {
 static void create(ELEMENT_CREATE_FUNC_ARGS) {
 
 	sim->parts[i].tmp4 = 100;
-	sim->parts[i].tmpcity[5] = RNG::Ref().between(0, 6);
+	sim->parts[i].tmpville[6] = RNG::Ref().between(0, 6);
 }
 
 
@@ -96,7 +96,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS) {
 
 
 static int graphics(GRAPHICS_FUNC_ARGS) {
-	int z = (cpart->tmpcity[5] - 5) * 8; // Speckles!
+	int z = (cpart->tmpville[6] - 5) * 8; // Speckles!
 	*colr += z;
 	*colg += z;
 	*colb += z;
