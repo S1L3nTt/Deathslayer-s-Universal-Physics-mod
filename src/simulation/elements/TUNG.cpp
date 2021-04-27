@@ -107,6 +107,11 @@ static int update(UPDATE_FUNC_ARGS)
 		parts[i].ctype = PT_TUNG;
 		return 1;
 	}
+	else if (diff > 1 || diff < -1)
+	{
+		parts[i].vx += 0.01f * sim->vx[y / CELL][x / CELL];
+		parts[i].vy += 0.01f * sim->vy[y / CELL][x / CELL];
+	}
 	return 0;
 }
 

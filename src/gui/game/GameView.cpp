@@ -40,6 +40,7 @@
 #include "simulation/NuclearProperties.cpp"
 
 #include <cstring>
+#include <bitset>
 
 #ifdef GetUserName
 # undef GetUserName // dammit windows
@@ -2159,20 +2160,25 @@ void GameView::OnDraw()
 			//}
 			if (showDebug)
 			{
-				if (type == PT_LAVA && c->IsValidElement(ctype))
-				{
+				if (type == PT_LAVA && c->IsValidElement(ctype)) {
 					sampleInfo << "Molten " << c->ElementResolve(ctype, -1);
+				}
+				else if (type == PT_BRKN && c->IsValidElement(ctype)) {
+					sampleInfo << "Broken " << c->ElementResolve(ctype, -1);
+				}
+				else if (type == PT_LQUD && c->IsValidElement(ctype)) {
+					sampleInfo << "Liquid " << c->ElementResolve(ctype, -1);
 				}
 				else if ((type == PT_PIPE || type == PT_PPIP) && c->IsValidElement(ctype))
 				{
 					if (ctype == PT_LAVA && c->IsValidElement((int)sample.particle.pavg[1]))
-					{
 						sampleInfo << c->ElementResolve(type, -1) << " with molten " << c->ElementResolve((int)sample.particle.pavg[1], -1);
-					}
+					else if (ctype == PT_BRKN && c->IsValidElement((int)sample.particle.pavg[1]))
+						sampleInfo << c->ElementResolve(type, -1) << " with broken " << c->ElementResolve((int)sample.particle.pavg[1], -1);
+					else if (ctype == PT_LQUD && c->IsValidElement((int)sample.particle.pavg[1]))
+						sampleInfo << c->ElementResolve(type, -1) << " with liquid " << c->ElementResolve((int)sample.particle.pavg[1], -1);
 					else
-					{
 						sampleInfo << c->ElementResolve(type, -1) << " with " << c->ElementResolve(ctype, (int)sample.particle.pavg[1]);
-					}
 				}
 				else if (type == PT_LIFE)
 				{
@@ -2186,6 +2192,17 @@ void GameView::OnDraw()
 						sampleInfo << " (" << filtModes[sample.particle.tmp] << ")";
 					else
 						sampleInfo << " (unknown mode)";
+				}
+				else if (type == PT_BCTR) {
+					if (sample.particle.tmp2)
+						sampleInfo << "Dead ";
+					sampleInfo << c->ElementResolve(type, ctype);
+					sampleInfo << " (" << ctype << ")";
+				}
+				else if (type == PT_FLSH || type == PT_UDDR || type == PT_STMH || type == PT_LUNG || type == PT_BVSL) {
+					if (sample.particle.pavg[0] == 2)
+						sampleInfo << "Dead ";
+					sampleInfo << c->ElementResolve(type, ctype);
 				}
 				//else if (sample.particle.fullname != "")
 			//	{
@@ -2201,9 +2218,9 @@ void GameView::OnDraw()
 					if (wavelengthGfx)
 						sampleInfo << " (" << ctype << ")";
 					// Some elements store extra LIFE info in upper bits of ctype, instead of tmp/tmp2
-					else if (type == PT_CRAY || type == PT_DRAY || type == PT_CONV)
+					else if (type == PT_CRAY || type == PT_DRAY || type == PT_CONV || type == PT_LDTC)
 						sampleInfo << " (" << c->ElementResolve(TYP(ctype), ID(ctype)) << ")";
-					else if (type == PT_CLNE || type == PT_BCLN || type == PT_PCLN || type == PT_PBCN)
+					else if (type == PT_CLNE || type == PT_BCLN || type == PT_PCLN || type == PT_PBCN || type == PT_DTEC)
 						sampleInfo << " (" << c->ElementResolve(ctype, sample.particle.tmp) << ")";
 					else if (c->IsValidElement(ctype))
 						sampleInfo << " (" << c->ElementResolve(ctype, -1) << ")";
@@ -2229,8 +2246,8 @@ void GameView::OnDraw()
 				}
 
 				// only elements that use .tmp2 show it in the debug HUD
-				if (type == PT_CRAY || type == PT_DRAY || type == PT_EXOT || type == PT_LIGH || type == PT_SOAP || type == PT_TRON || type == PT_VIBR || type == PT_VIRS || type == PT_WARP || type == PT_LCRY || type == PT_CBNW || type == PT_TSNS || type == PT_DTEC || type == PT_LSNS || type == PT_PSTN || type == PT_LDTC)
-					sampleInfo << ", Tmp2: " << sample.particle.tmp2;
+		//		if (type == PT_CRAY || type == PT_DRAY || type == PT_EXOT || type == PT_LIGH || type == PT_SOAP || type == PT_TRON || type == PT_VIBR || type == PT_VIRS || type == PT_WARP || type == PT_LCRY || type == PT_CBNW || type == PT_TSNS || type == PT_DTEC || type == PT_LSNS || type == PT_PSTN || type == PT_LDTC)
+			//		sampleInfo << ", Tmp2: " << sample.particle.tmp2;
 
 				sampleInfo << ", Pressure: " << sample.AirPressure;
 			}
@@ -2299,6 +2316,31 @@ void GameView::OnDraw()
 		if (showDebug)
 		{
 			StringBuilder sampleInfo;
+
+			// BCTR gene
+			if (type == PT_BCTR) {
+				// Blame String.h
+				std::bitset<32> t(sample.particle.ctype);
+				sampleInfo << "Gene: ";
+				std::vector<int> current;
+
+				for (unsigned int k = 0; k < 32; ++k) {
+					current.push_back(t[k] ? 1 : 0);
+
+					// Add a break and output reversed chunk, since we fucked
+					// up in expressing output correctly
+					if (k == 3 || k == 7 || k == 11 || k == 15 || k == 19 || k == 22 || k == 25 || k == 26) {
+						std::reverse(current.begin(), current.end());
+						for (auto i : current) sampleInfo << i;
+						sampleInfo << "-";
+						current.clear();
+					}
+				}
+				std::reverse(current.begin(), current.end());
+				for (auto i : current) sampleInfo << i;
+				sampleInfo << "  ";
+			}
+
 			sampleInfo << Format::Precision(2);
 
 			if (type)
@@ -2306,23 +2348,82 @@ void GameView::OnDraw()
 
 			sampleInfo << "X:" << sample.PositionX << " Y:" << sample.PositionY;
 
-			if (sample.Gravity)
-				sampleInfo << ", GX: " << sample.GravityVelocityX << " GY: " << sample.GravityVelocityY;
+		//	if (sample.Gravity)
+			//	sampleInfo << ", GX: " << sample.GravityVelocityX << " GY: " << sample.GravityVelocityY;
 
 			if (c->GetAHeatEnable())
 				sampleInfo << ", AHeat: " << sample.AirTemperature - 273.15f << " C";
 
-			if (sample.particle.oxygens != 0)
-				sampleInfo << ", Oxygens: " << sample.particle.oxygens;
 			
-			if (sample.particle.tmp3 != 0)		
-				sampleInfo << ", Tmp3: " << sample.particle.tmp3;
-			
-			if (sample.particle.hydrogens != 0)		
-				sampleInfo << ", Hydrogens: " << sample.particle.hydrogens;
-			
-			if (sample.particle.carbons != 0)
-				sampleInfo << ", Carbons: " << sample.particle.carbons;
+			if (sample.particle.tmp4 != 0)
+				sampleInfo << ", Tmp4: " << sample.particle.tmp4;
+			if (sample.particle.tmp2 != 0)
+				sampleInfo << ", Tmp2: " << sample.particle.tmp2;
+
+			if (type != PT_BLOD && type != PT_LUNG && type != PT_BVSL && type != PT_STMH && type != PT_UDDR && type != PT_FLSH && type != PT_POPS)
+			{
+
+		
+				if (sample.particle.tmp3 != 0)
+					sampleInfo << ", Tmp3: " << sample.particle.tmp3;
+				
+
+				if (sample.particle.oxygens != 0)
+					sampleInfo << ", Oxygens: " << sample.particle.oxygens;
+				if (sample.particle.carbons != 0)
+					sampleInfo << ", Carbons: " << sample.particle.carbons;
+				if (sample.particle.water != 0)
+					sampleInfo << ", Water: " << sample.particle.water;
+
+				if (sample.particle.hydrogens != 0)
+					sampleInfo << ", Hydrogens: " << sample.particle.hydrogens;
+
+
+
+
+			}
+			else
+			{
+				if (sample.particle.oxygens != 0)
+					sampleInfo << ", Oxygens: " << sample.particle.oxygens;
+				if (sample.particle.carbons != 0)
+					sampleInfo << ", Nutrients(carbons): " << sample.particle.carbons;
+				if (sample.particle.water != 0)
+					sampleInfo << ", Water: " << sample.particle.water;
+				if (sample.particle.hydrogens != 0)
+					sampleInfo << ", Waste(hydrogens): " << sample.particle.hydrogens;
+				if (sample.particle.tmp3 != 0)
+					sampleInfo << ", Health(tmp3): " << sample.particle.tmp3;
+				if (sample.particle.tmpcity[3] != 0)
+					sampleInfo << ", Energy(tmpcity[3]): " << sample.particle.tmpcity[3];
+		
+				StringBuilder TmpCityStrings;
+				if (sample.particle.tmpcity[0] != 0)
+					TmpCityStrings << "tmpcity[0]: " << sample.particle.tmpcity[0];
+				if (sample.particle.tmpcity[1] != 0)
+					TmpCityStrings << ", tmpcity[1]: " << sample.particle.tmpcity[1];
+				if (sample.particle.tmpcity[2] != 0)
+					TmpCityStrings << ", tmpcity[2]: " << sample.particle.tmpcity[2];
+				if (sample.particle.tmpcity[3] != 0)
+					TmpCityStrings << ", tmpcity[3]: " << sample.particle.tmpcity[3];
+				if (sample.particle.tmpcity[4] != 0)
+					TmpCityStrings << ", tmpcity[4]: " << sample.particle.tmpcity[4];
+				if (sample.particle.tmpcity[5] != 0)
+					TmpCityStrings << ", tmpcity[5]: " << sample.particle.tmpcity[5];
+				if (sample.particle.tmpcity[6] != 0)
+					TmpCityStrings << ", tmpcity[6]: " << sample.particle.tmpcity[6];
+				if (sample.particle.tmpcity[7] != 0)
+					TmpCityStrings << ", tmpcity[7]: " << sample.particle.tmpcity[7];
+				if (sample.particle.tmpcity[8] != 0)
+					TmpCityStrings << ", tmpcity[8]: " << sample.particle.tmpcity[8];
+				if (sample.particle.tmpcity[9] != 0)
+					TmpCityStrings << ", tmpcity[9]: " << sample.particle.tmpcity[9];
+				textWidth = Graphics::textwidth(TmpCityStrings.Build());
+				g->fillrect(XRES - 20 - textWidth, 39, textWidth + 8, 14, 0, 0, 0, int(alpha * 0.5f));
+				g->drawtext(XRES - 16 - textWidth, 44, TmpCityStrings.Build(), 255, 255, 255, int(alpha * 0.75f));
+				
+			}
+		
 			
 			textWidth = Graphics::textwidth(sampleInfo.Build());
 			g->fillrect(XRES-20-textWidth, 27, textWidth+8, 14, 0, 0, 0, int(alpha*0.5f));

@@ -51,6 +51,9 @@ public:
 	float HighTemperature;
 	int HighTemperatureTransition;
 
+	float MeltingPoint = -1.0f; // Used for LQUD state bowserinator <3
+	float BoilingPoint = -1.0f; // Used for LQUD state
+
 	int (*Update) (UPDATE_FUNC_ARGS);
 	int (*Graphics) (GRAPHICS_FUNC_ARGS);
 

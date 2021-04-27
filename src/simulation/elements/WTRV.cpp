@@ -29,7 +29,7 @@ void Element::Element_WTRV()
 	Weight = 1;
 
 	DefaultProperties.temp = R_TEMP + 100.0f + 273.15f;
-	HeatConduct = 48;
+	HeatConduct = 78;
 	Description = "Steam. Produced from hot water.";
 
 	Properties = TYPE_GAS;

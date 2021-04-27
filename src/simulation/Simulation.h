@@ -116,6 +116,8 @@ public:
 	int sandcolour;
 	int sandcolour_frame;
 	int deco_space;
+	// Timer
+	unsigned int timer = 0;
 
 	int Load(GameSave * save, bool includePressure);
 	int Load(GameSave * save, bool includePressure, int x, int y);
@@ -133,11 +135,15 @@ public:
 	void photoelectric_effect(int nx, int ny);
 	unsigned direction_to_map(float dx, float dy, int t);
 	int do_move(int i, int x, int y, float nxf, float nyf);
+	int better_do_swap(int i, int x, int y, int rid, int nxf, int nyf);
 	int try_move(int i, int x, int y, int nx, int ny);
 	int eval_move(int pt, int nx, int ny, unsigned *rr);
 	void init_can_move();
 	bool IsWallBlocking(int x, int y, int type);
-	bool IsValidElement(int type) {
+	bool IsElement(int type) {
+		return (type > 0 && type < PT_NUM&& elements[type].Enabled);
+	}
+	bool IsElementOrNone(int type) {
 		return (type >= 0 && type < PT_NUM && elements[type].Enabled);
 	}
 	void create_cherenkov_photon(int pp);

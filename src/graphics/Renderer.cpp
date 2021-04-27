@@ -2387,13 +2387,13 @@ void Renderer::draw_air()
 			if (display_mode & DISPLAY_AIRP)
 			{
 				if (pv[y][x] > 0.0f)
-					c  = PIXRGB(clamp_flt(pv[y][x], 0.0f, 8.0f), 0, 0);//positive pressure is red!
+					c  = PIXRGB(clamp_flt(pv[y][x], 0.0f, 32.0f), 0, 0);//positive pressure is red!
 				else
 					c  = PIXRGB(0, 0, clamp_flt(-pv[y][x], 0.0f, 8.0f));//negative pressure is blue!
 			}
 			else if (display_mode & DISPLAY_AIRV)
 			{
-				c  = PIXRGB(clamp_flt(fabsf(vx[y][x]), 0.0f, 8.0f),//vx adds red
+				c  = PIXRGB(clamp_flt(fabsf(vx[y][x]), 0.0f, 8.0f),//vx adds  
 					clamp_flt(pv[y][x], 0.0f, 8.0f),//pressure adds green
 					clamp_flt(fabsf(vy[y][x]), 0.0f, 8.0f));//vy adds blue
 			}
@@ -2418,7 +2418,7 @@ void Renderer::draw_air()
 				b = clamp_flt(fabsf(vx[y][x]), 0.0f, 24.0f) + clamp_flt(fabsf(vy[y][x]), 0.0f, 20.0f);
 				if (pv[y][x] > 0.0f)
 				{
-					r += clamp_flt(pv[y][x], 0.0f, 16.0f);//pressure adds red!
+					r += clamp_flt(pv[y][x] / 4, 0.0f, 32.0f);//pressure adds red!
 					if (r>255)
 						r=255;
 					if (g>255)

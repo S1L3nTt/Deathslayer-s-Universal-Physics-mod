@@ -300,25 +300,17 @@ void Air::update_air(void)
 					dx += fvx[y][x];
 					dy += fvy[y][x];
 				}
-				if (!sim.betterburning_enable)
-				{
+				
 					// pressure/velocity caps
-					if (dp > 256.0f) dp = 256.0f;
-					if (dp < -256.0f) dp = -256.0f;
-					if (dx > 256.0f) dx = 256.0f;
-					if (dx < -256.0f) dx = -256.0f;
-					if (dy > 256.0f) dy = 256.0f;
-					if (dy < -256.0f) dy = -256.0f;
-				}
-				else
-				{
-					if (dp > 1024.0f) dp = 1024.0f;
-					if (dp < -1024.0f) dp = -1024.0f;
-					if (dx > 1024.0f) dx = 1024.0f;
-					if (dx < -1024.0f) dx = -1024.0f;
-					if (dy > 1024.0f) dy = 1024.0f;
-					if (dy < -1024.0f) dy = -1024.0f;
-				}
+
+				
+					if (dp > 2048.0f) dp = 2048.0f;
+					if (dp < -1024.0f) dp = -2048.0f;
+					if (dx > 2048.0f) dx = 2048.0f;
+					if (dx < -2048.0f) dx = -2048.0f;
+					if (dy > 2048.0f) dy = 2048.0f;
+					if (dy < -2048.0f) dy = 2048.0f;
+				
 
 				switch (airMode)
 				{

@@ -29,7 +29,7 @@ void Element::Element_HEAC()
 
 	Weight = 100;
 
-	HeatConduct = 251;
+	HeatConduct = 300;
 	Description = "Rapid heat conductor.";
 
 	Properties = TYPE_SOLID;

@@ -109,7 +109,7 @@ static int update(UPDATE_FUNC_ARGS)
 		if (parts[i].oxygens == 0)
 		{
 			parts[i].oxygens = RNG::Ref().between(5, 10) * 2;
-			parts[i].tmp3 = parts[i].oxygens * 2;
+			parts[i].tmp3 = parts[i].oxygens * 10;
 		}
 
 
@@ -130,5 +130,5 @@ static void create(ELEMENT_CREATE_FUNC_ARGS)
 	sim->parts[i].oxygens = RNG::Ref().between(5, 10) * 2;
 
 
-	sim->parts[i].tmp3 = sim->parts[i].oxygens * 2;
+	sim->parts[i].tmp3 = sim->parts[i].oxygens * 10;
 }

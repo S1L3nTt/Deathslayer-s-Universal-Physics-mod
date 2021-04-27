@@ -541,13 +541,16 @@ Snapshot * Simulation::CreateSnapshot()
 	snap->stickmen.push_back(player2);
 	snap->stickmen.push_back(player);
 	snap->stickmen.insert(snap->stickmen.begin(), &fighters[0], &fighters[MAX_FIGHTERS]);
+	snap->timer = timer;
 	snap->signs = signs;
 	return snap;
 }
 
 void Simulation::Restore(const Snapshot & snap)
-{
+{ 
+	timer = snap.timer;
 	parts_lastActiveIndex = NPART-1;
+	std::fill(elementCount, elementCount + PT_NUM, 0);
 	elementRecount = true;
 	force_stacking_check = true;
 
@@ -713,6 +716,7 @@ int Simulation::flood_prop(int x, int y, size_t propoffset, PropertyValue propva
 SimulationSample Simulation::GetSample(int x, int y)
 {
 	SimulationSample sample;
+	sample.frames = timer;
 	sample.PositionX = x;
 	sample.PositionY = y;
 	if (x >= 0 && x < XRES && y >= 0 && y < YRES)
@@ -2901,6 +2905,45 @@ int Simulation::do_move(int i, int x, int y, float nxf, float nyf)
 	}
 	return result;
 }
+// try to move particle, and if successful update pmap and parts[i].x,y
+int Simulation::better_do_swap(int i, int x, int y, int rid, int nxf, int nyf)
+{
+	/*int nx = (int)(nxf + 0.5f), ny = (int)(nyf + 0.5f), result;
+	if (edgeMode == 2)
+	{
+		bool x_ok = (nx >= CELL && nx < XRES - CELL);
+		bool y_ok = (ny >= CELL && ny < YRES - CELL);
+		if (!x_ok)
+			nxf = remainder_p(nxf - CELL + .5f, XRES - CELL * 2.0f) + CELL - .5f;
+		if (!y_ok)
+			nyf = remainder_p(nyf - CELL + .5f, YRES - CELL * 2.0f) + CELL - .5f;
+		nx = (int)(nxf + 0.5f);
+		ny = (int)(nyf + 0.5f);*/
+
+		/*if (!x_ok || !y_ok)
+		{
+			//make sure there isn't something blocking it on the other side
+			//only needed if this if statement is moved after the try_move (like my mod)
+			//if (!eval_move(t, nx, ny, NULL) || (t == PT_PHOT && pmap[ny][nx]))
+			//	return -1;
+		}*/
+	//}
+//	if (parts[i].type == PT_NONE)
+	//	return 0;
+
+		parts[i].x = parts[rid].x;
+		parts[i].y = parts[rid].y;
+		parts[rid].x = x;
+		parts[rid].y = y;
+		pmap[y][x] = pmap[nyf][nxf];
+		pmap[nyf][nxf] = PMAP(i, parts[i].type);
+		
+		  
+		
+	
+	return 1;
+}
+
 
 void Simulation::photoelectric_effect(int nx, int ny)//create sparks from PHOT when hitting PSCN and NSCN
 {
@@ -3651,10 +3694,11 @@ void Simulation::UpdateParticles(int start, int end)
 						gel_scale = parts[i].tmp*2.55f;
 					else gel_scale = 1.0f;
 
-					if (t == PT_PHOT)
-						pt = (c_heat+parts[i].temp*96.645)/(c_Cm+96.645);
+					if (t != PT_PHOT)
+						pt = (c_heat + parts[i].temp * 96.645 / elements[t].HeatConduct * gel_scale * fabs(elements[t].Weight)) / (c_Cm + 96.645 / elements[t].HeatConduct * gel_scale * fabs(elements[t].Weight));
+						
 					else
-						pt = (c_heat+parts[i].temp*96.645/elements[t].HeatConduct*gel_scale*fabs(elements[t].Weight))/(c_Cm+96.645/elements[t].HeatConduct*gel_scale*fabs(elements[t].Weight));
+						pt = (c_heat + parts[i].temp * 96.645) / (c_Cm + 96.645);
 
 					c_heat += parts[i].temp*96.645/elements[t].HeatConduct*gel_scale*fabs(elements[t].Weight);
 					c_Cm += 96.645/elements[t].HeatConduct*gel_scale*fabs(elements[t].Weight);
@@ -3669,17 +3713,16 @@ void Simulation::UpdateParticles(int start, int end)
 #endif
 
 					ctemph = ctempl = pt;
-					// change boiling point with pressure
-					if (((elements[t].Properties&TYPE_LIQUID) && IsValidElement(elements[t].HighTemperatureTransition) && (elements[elements[t].HighTemperatureTransition].Properties&TYPE_GAS))
+					if (((elements[t].Properties & TYPE_LIQUID) && IsElementOrNone(elements[t].HighTemperatureTransition) && (elements[elements[t].HighTemperatureTransition].Properties & TYPE_GAS))
 					        || t==PT_LNTG || t==PT_SLTW)
 						ctemph -= 2.0f*pv[y/CELL][x/CELL];
-					else if (((elements[t].Properties&TYPE_GAS) && IsValidElement(elements[t].LowTemperatureTransition) && (elements[elements[t].LowTemperatureTransition].Properties&TYPE_LIQUID))
+					else if (((elements[t].Properties & TYPE_GAS) && IsElementOrNone(elements[t].LowTemperatureTransition) && (elements[elements[t].LowTemperatureTransition].Properties & TYPE_LIQUID))
 					         || t==PT_WTRV)
 						ctempl -= 2.0f*pv[y/CELL][x/CELL];
 					s = 1;
 
 					//A fix for ice with ctype = 0
-					if ((t==PT_ICEI || t==PT_SNOW) && (!parts[i].ctype || !IsValidElement(parts[i].ctype) || parts[i].ctype==PT_ICEI || parts[i].ctype==PT_SNOW))
+					if ((t == PT_ICEI || t == PT_SNOW) && (!IsElement(parts[i].ctype) || parts[i].ctype == PT_ICEI || parts[i].ctype == PT_SNOW))
 						parts[i].ctype = PT_WATR;
 
 					if (elements[t].HighTemperatureTransition>-1 && ctemph>=elements[t].HighTemperature)
@@ -4731,6 +4774,8 @@ void Simulation::RecalcFreeParticles(bool do_life_dec)
 			}
 			lastPartUsed = i;
 			NUM_PARTS ++;
+			if (elementRecount && t >= 0 && t < PT_NUM && elements[t].Enabled)
+				elementCount[t]++;
 
 			//decrease particle life
 			if (do_life_dec && (!sys_pause || framerender))
@@ -4741,8 +4786,6 @@ void Simulation::RecalcFreeParticles(bool do_life_dec)
 					continue;
 				}
 
-				if (elementRecount)
-					elementCount[t]++;
 
 				unsigned int elem_properties = elements[t].Properties;
 				if (parts[i].life>0 && (elem_properties&PROP_LIFE_DEC) && !(inBounds && bmap[y/CELL][x/CELL] == WL_STASIS && emap[y/CELL][x/CELL]<8))
@@ -4763,6 +4806,8 @@ void Simulation::RecalcFreeParticles(bool do_life_dec)
 					continue;
 				}
 			}
+
+
 		}
 		else
 		{
@@ -4786,7 +4831,7 @@ void Simulation::RecalcFreeParticles(bool do_life_dec)
 			parts[lastPartUnused].life = parts_lastActiveIndex+1;
 	}
 	parts_lastActiveIndex = lastPartUsed;
-	if (elementRecount && (!sys_pause || framerender))
+	if (elementRecount)
 		elementRecount = false;
 }
 
@@ -5230,6 +5275,7 @@ void Simulation::AfterSim()
 		Element_EMP_Trigger(this, emp_trigger_count);
 		emp_trigger_count = 0;
 	}
+	timer++; // Global timer
 }
 
 Simulation::~Simulation()
@@ -5257,8 +5303,8 @@ Simulation::Simulation():
 	legacy_enable(0),
 	aheat_enable(0),
 	water_equal_test(0),
-	NoWeightSwitching(RNG::Ref().chance(1, 2)),
-	betterburning_enable(RNG::Ref().chance(1, 3)),
+	NoWeightSwitching(1),
+	betterburning_enable(0),
 	sys_pause(0),
 	framerender(0),
 	pretty_powder(0),
@@ -5348,9 +5394,8 @@ String Simulation::ElementResolve(int type, int ctype)
 		return SerialiseGOLRule(ctype);
 	}
 	else if (type >= 0 && type < PT_NUM)
-	{
 		return elements[type].Name;
-	}
+	
 	return "Empty";
 }
 
@@ -5360,13 +5405,13 @@ String Simulation::BasicParticleInfo(Particle const &sample_part)
 	int type = sample_part.type;
 	int ctype = sample_part.ctype;
 	int pavg1int = (int)sample_part.pavg[1];
-	if (type == PT_LAVA && ctype && IsValidElement(ctype))
+	if (type == PT_LAVA && IsElement(ctype))
 	{
 		sampleInfo << "Molten " << ElementResolve(ctype, -1);
 	}
-	else if ((type == PT_PIPE || type == PT_PPIP) && ctype && IsValidElement(ctype))
+	else if ((type == PT_PIPE || type == PT_PPIP) && IsElement(ctype))
 	{
-		if (ctype == PT_LAVA && pavg1int && IsValidElement(pavg1int))
+		if (ctype == PT_LAVA && IsElement(pavg1int))
 		{
 			sampleInfo << ElementResolve(type, -1) << " with molten " << ElementResolve(pavg1int, -1);
 		}

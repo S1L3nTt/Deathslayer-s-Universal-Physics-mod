@@ -65,10 +65,10 @@ static int update(UPDATE_FUNC_ARGS)
 
 	int t = parts[i].temp - sim->pv[y / CELL][x / CELL];	//Pressure affects state transitions
 	//Freezing into WAX
-	if (t <= (14.3f * sqrt((parts[i].carbons - 12))) + 273.15)
+	if (t <= (14.3f * sqrt((parts[i].carbons - 12))) + 273.15 &&  RNG::Ref().chance(1, 20))
 		sim->part_change_type(i, x, y, PT_WAX);
 	//Boiling into GAS
-	if (t > (4 * sqrt(500 * (parts[i].carbons - 4))) + 273.15)
+	if (t > (4 * sqrt(500 * (parts[i].carbons - 4))) + 273.15 && RNG::Ref().chance(1, 20))
 		sim->part_change_type(i, x, y, PT_GAS);
 	return 0;
 }
@@ -79,7 +79,7 @@ static void create(ELEMENT_CREATE_FUNC_ARGS)
 
 	//Cyens toy
 	//Spawns with carbons (8-14)
-	sim->parts[i].carbons = RNG::Ref().between(7, 15);
+	sim->parts[i].carbons = RNG::Ref().between(8, 14);
 	sim->parts[i].hydrogens = makeAlk(sim->parts[i].carbons);
 	if (sim->parts[i].hydrogens < 2 * sim->parts[i].carbons + 2)sim->parts[i].tmp3 = getBondLoc(sim->parts[i].carbons);
 

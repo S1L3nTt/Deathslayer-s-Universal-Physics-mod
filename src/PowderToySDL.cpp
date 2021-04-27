@@ -68,6 +68,7 @@ bool altFullscreen = false;
 bool forceIntegerScaling = true;
 bool resizable = false;
 bool momentumScroll = true;
+bool showAvatars = true;
 
 
 void ClipboardPush(ByteString text)
@@ -183,6 +184,7 @@ void SDLOpen()
 		}
 		if (Client::Ref().GetPrefBool("AutoDrawLimit", false))
 		{
+			ui::Engine::Ref().AutoDrawingFrequencyLimit = true;
 			SDL_DisplayMode displayMode;
 			if (!SDL_GetCurrentDisplayMode(displayIndex, &displayMode) && displayMode.refresh_rate >= 60)
 			{
@@ -756,6 +758,7 @@ int main(int argc, char * argv[])
 	altFullscreen = Client::Ref().GetPrefBool("AltFullscreen", false);
 	forceIntegerScaling = Client::Ref().GetPrefBool("ForceIntegerScaling", true);
 	momentumScroll = Client::Ref().GetPrefBool("MomentumScroll", true);
+	showAvatars = Client::Ref().GetPrefBool("ShowAvatars", true);
 
 
 	if(arguments["kiosk"] == "true")
@@ -794,9 +797,13 @@ int main(int argc, char * argv[])
 			Client::Ref().SetPref("Proxy", arguments["proxy"]);
 		}
 	}
-	else if(Client::Ref().GetPrefString("Proxy", "").length())
+	else
 	{
-		proxyString = (Client::Ref().GetPrefByteString("Proxy", ""));
+		auto proxyPref = Client::Ref().GetPrefByteString("Proxy", "");
+		if (proxyPref.length())
+		{
+			proxyString = proxyPref;
+		}
 	}
 
 	bool disableNetwork = false;
@@ -840,7 +847,8 @@ int main(int argc, char * argv[])
 	ui::Engine::Ref().Fullscreen = fullscreen;
 	ui::Engine::Ref().SetAltFullscreen(altFullscreen);
 	ui::Engine::Ref().SetForceIntegerScaling(forceIntegerScaling);
-	ui::Engine::Ref().SetMomentumScroll(momentumScroll);
+	ui::Engine::Ref().MomentumScroll = momentumScroll;
+	ui::Engine::Ref().ShowAvatars = showAvatars;
 
 	engine = &ui::Engine::Ref();
 	engine->SetMaxSize(desktopWidth, desktopHeight);
@@ -965,7 +973,6 @@ int main(int argc, char * argv[])
 	}
 #endif
 
-	Client::Ref().SetPref("Scale", ui::Engine::Ref().GetScale());
 	ui::Engine::Ref().CloseWindow();
 	delete gameController;
 	delete ui::Engine::Ref().g;

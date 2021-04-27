@@ -51,6 +51,18 @@ void Element::Element_ICEI()
 static int update(UPDATE_FUNC_ARGS)
 {
 	int r, rx, ry;
+
+			if (parts[i].ctype != 0 && sim->elements[parts[i].ctype].LowTemperature != ITH && sim->elements[parts[i].ctype].LowTemperature != ST && parts[i].temp - sim->pv[y / CELL][x / CELL] > sim->elements[parts[i].ctype].LowTemperature)
+			{
+				
+				sim->part_change_type(i, x, y, parts[i].ctype);
+				if (parts[i].tmpcity[6] != 0)
+					parts[i].ctype = parts[i].tmpcity[6];
+				return 1;
+			}
+
+	
+	
 	if (parts[i].ctype==PT_FRZW)//get colder if it is from FRZW
 	{
 		parts[i].temp = restrict_flt(parts[i].temp-1.0f, MIN_TEMP, MAX_TEMP);

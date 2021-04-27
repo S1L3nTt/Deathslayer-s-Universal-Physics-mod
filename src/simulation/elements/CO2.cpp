@@ -17,7 +17,7 @@ void Element::Element_CO2()
 	Loss = 0.30f;
 	Collision = -0.1f;
 	Gravity = 0.1f;
-	Diffusion = 1.0f;
+	Diffusion = 5.0f;
 	HotAir = 0.000f	* CFDS;
 	Falldown = 1;
 

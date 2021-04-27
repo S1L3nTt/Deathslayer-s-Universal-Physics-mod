@@ -82,24 +82,26 @@ static int update(UPDATE_FUNC_ARGS)
 										sim->vx[(y+nxj)/CELL][(x+nxi)/CELL] += fx;
 										sim->vy[(y+nxj)/CELL][(x+nxi)/CELL] += fy;
 										sim->pv[(y+nxj)/CELL][(x+nxi)/CELL] += 1.0f;
-										t = TYP(rr);
-										if (t && sim->elements[t].HighPressureTransition>-1 && sim->elements[t].HighPressureTransition<PT_NUM)
-											sim->part_change_type(ID(rr), x+nxi, y+nxj, sim->elements[t].HighPressureTransition);
-										else if (t == PT_BMTL)
-											sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_BRMT);
-										else if (t == PT_GLAS)
-											sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_BGLA);
-										else if (t == PT_COAL)
-											sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_BCOL);
-										else if (t == PT_QRTZ)
-											sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_PQRT);
-										else if (t == PT_TUNG)
-										{
-											sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_BRMT);
-											parts[ID(rr)].ctype = PT_TUNG;
-										}
-										else if (t == PT_WOOD)
-											sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_SAWD);
+										//t = TYP(rr);
+										//if (t && sim->elements[t].HighPressureTransition>-1 && sim->elements[t].HighPressureTransition<PT_NUM)
+										//	sim->part_change_type(ID(rr), x+nxi, y+nxj, sim->elements[t].HighPressureTransition);
+										//else if (t == PT_BMTL)
+										//	sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_BRMT);
+										//else if (t == PT_GLAS)
+										//	sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_BGLA);
+										//else if (t == PT_COAL)
+										//	sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_BCOL);
+										//else if (t == PT_QRTZ)
+										//	sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_PQRT);
+										//else if (t == PT_TUNG)
+										//{
+										//	sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_BRMT);
+										//	parts[ID(rr)].ctype = PT_TUNG;
+										//}
+										//else if (t == PT_WOOD)
+										//	sim->part_change_type(ID(rr), x+nxi, y+nxj, PT_SAWD);
+
+										//just why? ikr lmao; yep weird
 									}
 								}
 							}

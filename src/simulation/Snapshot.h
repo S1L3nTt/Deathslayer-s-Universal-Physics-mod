@@ -22,6 +22,7 @@ public:
 
 	std::vector<unsigned char> BlockMap;
 	std::vector<unsigned char> ElecMap;
+	unsigned int timer;
 
 	std::vector<float> FanVelocityX;
 	std::vector<float> FanVelocityY;

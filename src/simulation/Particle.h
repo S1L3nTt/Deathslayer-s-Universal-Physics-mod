@@ -9,8 +9,6 @@ struct Particle
 {
 	int type;
 	int life, ctype;
-	int carbons;
-    int hydrogens;
 	float x, y, vx, vy;
 	float temp;
 	float pavg[2];
@@ -18,7 +16,13 @@ struct Particle
 	int tmp;
 	int tmp2;
 	int tmp3;
+	int tmp4;
+	float tmpcity[10];
+	float tmpville[20];
 	int oxygens;
+	int carbons;
+	int hydrogens;
+	int water;
 	unsigned int dcolour;
 //	String fullname;
 	/** Returns a list of properties, their type and offset within the structure that can be changed

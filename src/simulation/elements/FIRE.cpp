@@ -146,16 +146,32 @@ void Element::Element_FIRE()
 				}
 				if (t == PT_LAVA)
 				{
-					// LAVA(CLST) + LAVA(PQRT) + high enough temp = LAVA(CRMC) + LAVA(CRMC)
+									// LAVA(CLST) + LAVA(PQRT) + high enough temp = LAVA(CRMC) + LAVA(CRMC)
 					if (parts[i].ctype == PT_QRTZ && rt == PT_LAVA && parts[ID(r)].ctype == PT_CLST)
 					{
-						float pres = std::max(sim->pv[y / CELL][x / CELL] * 10.0f, 0.0f);
-						if (parts[i].temp >= pres + sim->elements[PT_CRMC].HighTemperature + 50.0f)
+						float pres = std::max(sim->pv[y/CELL][x/CELL]*10.0f, 0.0f);
+						if (parts[i].temp >= pres+sim->elements[PT_CRMC].HighTemperature+50.0f)
 						{
 							parts[i].ctype = PT_CRMC;
 							parts[ID(r)].ctype = PT_CRMC;
 						}
 					}
+					// LAVA(ZINC) + LAVA(COPR) = LAVA(BRAS)
+				//	else if (parts[i].ctype == PT_ZINC && rt == PT_LAVA && parts[ID(r)].ctype == PT_COPR) {
+				//		parts[i].ctype = PT_BRAS;
+				//		parts[ID(r)].ctype = PT_BRAS;
+					//}
+					// LAVA(TIN) + LAVA(COPR) = LAVA(BRNZ)
+				//	else if (parts[i].ctype == PT_TIN && rt == PT_LAVA && parts[ID(r)].ctype == PT_COPR) {
+				//		parts[i].ctype = PT_BRNZ;
+				//		parts[ID(r)].ctype = PT_BRNZ;
+			//		}
+					// LAVA(BSMH) resets tmp and tmp2 and pavg0
+				//	else if (parts[i].ctype == PT_BSMH) {
+		//				parts[i].tmp = 0;
+		//				parts[i].tmp2 = 0;
+		//				parts[i].pavg[0] = 0;
+		//			}
 					else if (rt == PT_O2 && parts[i].ctype == PT_SLCN)
 					{
 						switch (RNG::Ref().between(0, 2))
@@ -181,6 +197,48 @@ void Element::Element_FIRE()
 						sim->kill_part(ID(r));
 						continue;
 					}
+					else if (rt == PT_LAVA && (parts[ID(r)].ctype == PT_METL || parts[ID(r)].ctype == PT_BMTL) && parts[i].ctype == PT_SLCN)
+					{
+						parts[i].tmp = 0;
+						parts[i].ctype = PT_NSCN;
+						parts[ID(r)].ctype = PT_PSCN;
+					}
+					else if (rt == PT_HEAC && parts[i].ctype == PT_HEAC)
+					{
+						if (parts[ID(r)].temp > sim->elements[PT_HEAC].HighTemperature)
+						{
+							sim->part_change_type(ID(r), x+rx, y+ry, PT_LAVA);
+							parts[ID(r)].ctype = PT_HEAC;
+						}
+					}
+				//	else if (rt == PT_TMRM && parts[i].ctype == PT_TMRM) {
+				//		if (parts[ID(r)].temp > sim->elements[PT_TMRM].HighTemperature) {
+				//			sim->part_change_type(ID(r), x+rx, y+ry, PT_LAVA);
+				//			parts[ID(r)].ctype = PT_TMRM;
+					//	}
+					//}
+					// Molten THOR still is radioactive
+				//	else if (parts[i].ctype == PT_THOR) {
+					//	Element_THOR_update(sim, i, x, y, surround_space, nt, parts, pmap);
+				//	}
+
+					// Molten LEAD destroys nearby electronics
+					//else if (parts[i].ctype == PT_LEAD &&
+					//	(rt == PT_WIFI || rt == PT_SWCH || rt == PT_INST || rt == PT_ARAY || rt == PT_CRAY ||
+					//	 rt == PT_DRAY || rt == PT_TESC || rt == PT_EMP  || rt == PT_ETRD ||
+					//	 rt == PT_DTEC || rt == PT_TSNS || rt == PT_LDTC || rt == PT_PSNS ||
+					//	 rt == PT_PDTC || rt == PT_TRBN || rt == PT_PSTN || rt == PT_FRAY ||
+					//	 rt == PT_FILT || rt == PT_HEAC || rt == PT_LSNS ||
+					//	 sim->elements[rt].MenuSection == SC_POWERED))
+					//	sim->part_change_type(ID(r), x, y, PT_BREC);
+					else if (parts[i].ctype == PT_ROCK && rt == PT_LAVA && parts[ID(r)].ctype == PT_GOLD && parts[ID(r)].tmp == 0 &&
+						sim->pv[y / CELL][x / CELL] >= 50 && RNG::Ref().chance(1, 10000)) // Produce GOLD veins/clusters
+					{
+						parts[i].ctype = PT_GOLD;
+						if (rx > 1 || rx < -1) // Trend veins vertical
+							parts[i].tmp = 1;
+					}
+					//}
 					else if (rt == PT_LAVA && (parts[ID(r)].ctype == PT_METL || parts[ID(r)].ctype == PT_BMTL) && parts[i].ctype == PT_SLCN)
 					{
 						parts[i].tmp = 0;
@@ -266,7 +324,7 @@ void Element::Element_FIRE()
 	{
 		if (parts[i].tmp3 > 0)
 			parts[i].tmp3--;
-		parts[i].life--;
+		parts[i].life -= surround_space / 3 + 1;
 
 		if (parts[i].life <= 0 || (sim->betterburning_enable && parts[i].temp < 250 + 273.15))
 		{
@@ -404,6 +462,17 @@ void Element::Element_FIRE()
 
 				}
 			}
+			else
+			{
+				if (RNG::Ref().between(0, 2))
+				{
+					sim->part_change_type(i, x, y, PT_SMKE);
+					parts[i].life += RNG::Ref().between(50, 150);
+				}
+			else
+			sim->kill_part(i);
+			}
+
 		}
 
 

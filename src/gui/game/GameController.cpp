@@ -939,7 +939,7 @@ void GameController::Update()
 		if (activeTool->GetIdentifier().BeginsWith("DEFAULT_PT_"))
 		{
 			int sr = activeTool->GetToolID();
-			if (sr && sim->IsValidElement(sr))
+			if (sr && sim->IsElementOrNone(sr))
 				rightSelected = sr;
 		}
 
@@ -1382,7 +1382,7 @@ void GameController::OpenOptions()
 {
 	options = new OptionsController(gameModel, [this] {
 		gameModel->UpdateQuickOptions();
-		Client::Ref().WritePrefs();
+		Client::Ref().WritePrefs(); // * I don't think there's a reason for this but I'm too lazy to check. -- LBPHacker
 	});
 	ui::Engine::Ref().ShowWindow(options->GetView());
 
@@ -1558,9 +1558,9 @@ void GameController::ReloadSim()
 
 bool GameController::IsValidElement(int type)
 {
-	if(gameModel && gameModel->GetSimulation())
+	if (gameModel && gameModel->GetSimulation())
 	{
-		return (type && gameModel->GetSimulation()->IsValidElement(type));
+		return (type && gameModel->GetSimulation()->IsElement(type));
 	}
 	else
 		return false;

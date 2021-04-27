@@ -51,11 +51,20 @@ void Element::Element_SPRK()
 
 static int update(UPDATE_FUNC_ARGS)
 {
+
 	int r, rx, ry, nearp, pavg, ct = parts[i].ctype, sender, receiver;
 	Element_FIRE_update(UPDATE_FUNC_SUBCALL_ARGS);
-
+	
 	if (parts[i].life<=0)
 	{
+		if (ct == PT_BRKN) // Broken change back into broken form
+		{
+			
+			sim->part_change_type(i, x, y, ct);
+			if(parts[i].tmp != 0)
+				parts[i].ctype = parts[i].tmp;
+				return 1;
+		}
 		if (ct==PT_WATR||ct==PT_SLTW||ct==PT_PSCN||ct==PT_NSCN||ct==PT_ETRD||ct==PT_INWR)
 			parts[i].temp = R_TEMP + 273.15f;
 		if (ct<=0 || ct>=PT_NUM || !sim->elements[parts[i].ctype].Enabled)
@@ -75,6 +84,7 @@ static int update(UPDATE_FUNC_ARGS)
 	//Some functions of SPRK based on ctype (what it is on)
 	switch(ct)
 	{
+
 	case PT_SPRK:
 		sim->kill_part(i);
 		return 1;
@@ -185,6 +195,7 @@ static int update(UPDATE_FUNC_ARGS)
 				//First, some checks usually for (de)activation of elements
 				switch (receiver)
 				{
+				
 				case PT_SWCH:
 					if (pavg!=PT_INSL && parts[i].life<4)
 					{
@@ -259,6 +270,9 @@ static int update(UPDATE_FUNC_ARGS)
 					continue;
 				}
 
+				if (receiver == PT_BRKN && !(sim->elements[parts[ID(r)].ctype].Properties & PROP_CONDUCTS))
+					continue;
+
 				if (pavg == PT_INSL) continue; //Insulation blocks everything past here
 				if (!((sim->elements[receiver].Properties&PROP_CONDUCTS)||receiver==PT_INST||receiver==PT_QRTZ)) continue; //Stop non-conducting receivers, allow INST and QRTZ as special cases
 				if (abs(rx)+abs(ry)>=4 &&sender!=PT_SWCH&&receiver!=PT_SWCH) continue; //Only switch conducts really far
@@ -296,7 +310,8 @@ static int update(UPDATE_FUNC_ARGS)
 				}
 				//Receiving cases, where elements can have specific inputs
 				switch (receiver)
-				{
+				{	
+					
 				case PT_QRTZ:
 					if ((sender==PT_NSCN||sender==PT_METL||sender==PT_PSCN||sender==PT_QRTZ) && (parts[ID(r)].temp<173.15||sim->pv[(y+ry)/CELL][(x+rx)/CELL]>8))
 						goto conduct;
@@ -330,6 +345,7 @@ static int update(UPDATE_FUNC_ARGS)
 				}
 			conduct:
 				//Yay, passed normal conduction rules, check a few last things and change receiver to spark
+			
 				if (receiver==PT_WATR||receiver==PT_SLTW) {
 					if (parts[ID(r)].life==0 && parts[i].life<3)
 					{
