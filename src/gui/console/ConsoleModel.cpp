@@ -72,4 +72,3 @@ void ConsoleModel::notifyCurrentCommandChanged()
 		observers[i]->NotifyCurrentCommandChanged(this);
 	}
 }
-
