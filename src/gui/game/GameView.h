@@ -143,10 +143,10 @@ public:
 	void SetSample(SimulationSample sample);
 	void SetHudEnable(bool hudState);
 	bool GetHudEnable();
-	void SetDebugHUD(bool mode);
-	bool GetDebugHUD();
 	void SetBrushEnable(bool hudState);
 	bool GetBrushEnable();
+	void SetDebugHUD(bool mode);
+	bool GetDebugHUD();
 	bool GetPlacingSave();
 	bool GetPlacingZoom();
 	void SetActiveMenuDelayed(int activeMenu) { delayedActiveMenu = activeMenu; }
@@ -213,6 +213,7 @@ public:
 	void DoMouseUp(int x, int y, unsigned button) override;
 	void DoMouseWheel(int x, int y, int d) override;
 	void DoTextInput(String text) override;
+	void DoTextEditing(String text) override;
 	void DoKeyPress(int key, int scan, bool repeat, bool shift, bool ctrl, bool alt) override;
 	void DoKeyRelease(int key, int scan, bool repeat, bool shift, bool ctrl, bool alt) override;
 

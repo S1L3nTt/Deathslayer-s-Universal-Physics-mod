@@ -141,7 +141,7 @@ public:
 	void init_can_move();
 	bool IsWallBlocking(int x, int y, int type);
 	bool IsElement(int type) {
-		return (type > 0 && type < PT_NUM&& elements[type].Enabled);
+		return (type > 0 && type < PT_NUM && elements[type].Enabled);
 	}
 	bool IsElementOrNone(int type) {
 		return (type >= 0 && type < PT_NUM && elements[type].Enabled);

@@ -4777,6 +4777,9 @@ void Simulation::RecalcFreeParticles(bool do_life_dec)
 			if (elementRecount && t >= 0 && t < PT_NUM && elements[t].Enabled)
 				elementCount[t]++;
 
+			if (elementRecount && t >= 0 && t < PT_NUM && elements[t].Enabled)
+				elementCount[t]++;
+
 			//decrease particle life
 			if (do_life_dec && (!sys_pause || framerender))
 			{
@@ -4785,7 +4788,6 @@ void Simulation::RecalcFreeParticles(bool do_life_dec)
 					kill_part(i);
 					continue;
 				}
-
 
 				unsigned int elem_properties = elements[t].Properties;
 				if (parts[i].life>0 && (elem_properties&PROP_LIFE_DEC) && !(inBounds && bmap[y/CELL][x/CELL] == WL_STASIS && emap[y/CELL][x/CELL]<8))

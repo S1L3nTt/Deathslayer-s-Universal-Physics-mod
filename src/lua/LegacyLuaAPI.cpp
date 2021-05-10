@@ -497,7 +497,7 @@ int luatpt_create(lua_State* l)
 	y = abs(luaL_optint(l, 2, 0));
 	if(x < XRES && y < YRES)
 	{
-		if(lua_isnumber(l, 3))
+		if (lua_isnumber(l, 3))
 		{
 			t = luaL_optint(l, 3, 0);
 			if (!luacon_sim->IsElement(t))

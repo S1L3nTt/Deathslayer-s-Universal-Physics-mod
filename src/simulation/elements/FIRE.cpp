@@ -85,6 +85,56 @@ void Element::Element_FIRE()
 				}
 			}
 			break;
+		case PT_LAVA:
+			if (parts[i].ctype == PT_ROCK)
+			{
+				float pres = sim->pv[y / CELL][x / CELL];
+				if (pres <= -9)
+				{
+					parts[i].ctype = PT_STNE;
+					break;
+				}
+
+				if (pres >= 25 && RNG::Ref().chance(1, 12500))
+				{
+					if (pres <= 50)
+					{
+						if (RNG::Ref().chance(1, 2))
+							parts[i].ctype = PT_BRMT;
+						else
+							parts[i].ctype = PT_CNCT;
+					}
+					else if (pres <= 75)
+					{
+						if (pres >= 73 || RNG::Ref().chance(1, 8))
+							parts[i].ctype = PT_GOLD;
+						else
+							parts[i].ctype = PT_QRTZ;
+					}
+					else if (pres <= 100 && parts[i].temp >= 5000)
+					{
+						if (RNG::Ref().chance(1, 5)) // 1 in 5 chance IRON to TTAN
+							parts[i].ctype = PT_TTAN;
+						else
+							parts[i].ctype = PT_IRON;
+					}
+					else if (pres <= 255 && parts[i].temp >= 5000 && RNG::Ref().chance(1, 5))
+					{
+						if (RNG::Ref().chance(1, 5))
+							parts[i].ctype = PT_URAN;
+						else if (RNG::Ref().chance(1, 5))
+							parts[i].ctype = PT_PLUT;
+						else
+							parts[i].ctype = PT_TUNG;
+					}
+				}
+			}
+			else if (parts[i].ctype == PT_STNE && sim->pv[y / CELL][x / CELL] >= 2.0f) // Form ROCK with pressure
+			{
+				parts[i].tmp2 = RNG::Ref().between(0, 10); // Provide tmp2 for color noise
+				parts[i].ctype = PT_ROCK;
+			}
+			break;
 		default:
 			break;
 		}

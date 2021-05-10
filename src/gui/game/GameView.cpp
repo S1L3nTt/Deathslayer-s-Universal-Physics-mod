@@ -174,13 +174,13 @@ GameView::GameView():
 	ctrlBehaviour(false),
 	altBehaviour(false),
 	showHud(true),
+	showBrush(true),
 	showDebug(false),
 	delayedActiveMenu(-1),
 	wallBrush(false),
 	toolBrush(false),
 	decoBrush(false),
 	windTool(false),
-	showBrush(true),
 	toolIndex(0),
 	currentSaveType(0),
 	lastMenu(-1),
@@ -472,6 +472,7 @@ bool GameView::GetBrushEnable()
 {
 	return showBrush;
 }
+
 void GameView::SetDebugHUD(bool mode)
 {
 	showDebug = mode;
@@ -1283,8 +1284,6 @@ void GameView::OnKeyPress(int key, int scan, bool repeat, bool shift, bool ctrl,
 	switch(scan)
 	{
 	case SDL_SCANCODE_GRAVE:
-		SDL_StopTextInput();
-		SDL_StartTextInput();
 		c->ShowConsole();
 		break;
 	case SDL_SCANCODE_SPACE: //Space
@@ -1704,6 +1703,12 @@ void GameView::DoTextInput(String text)
 {
 	if (c->TextInput(text))
 		Window::DoTextInput(text);
+}
+
+void GameView::DoTextEditing(String text)
+{
+	if (c->TextEditing(text))
+		Window::DoTextEditing(text);
 }
 
 void GameView::DoKeyPress(int key, int scan, bool repeat, bool shift, bool ctrl, bool alt)
