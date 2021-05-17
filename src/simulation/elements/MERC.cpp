@@ -68,16 +68,28 @@ static int update(UPDATE_FUNC_ARGS)
 		parts[i].tmp = absorbScale;
 	}
 
-	if (parts[i].tmp < maxtmp)
-	{
+
 		for (rx=-1; rx<2; rx++)
 			for (ry=-1; ry<2; ry++)
 				if (BOUNDS_CHECK && (rx || ry))
 				{
 					r = pmap[y+ry][x+rx];
-					if (!r || (parts[i].tmp >=maxtmp))
+					if (!r)
+					{
+						if (parts[i].tmp > maxtmp && parts[i].tmp >= 1)
+						{
+							np = sim->create_part(-1, x + rx, y + ry, PT_MERC);
+							if (np < 0) continue;
+							parts[i].tmp--;
+							parts[np].temp = parts[i].temp;
+							parts[np].tmp = 0;
+							parts[np].dcolour = parts[i].dcolour;
+
+						}
 						continue;
-					if (TYP(r)==PT_MERC&& RNG::Ref().chance(1, 3))
+					}
+					int rt = TYP(r);
+					if (rt==PT_MERC && parts[i].tmp < maxtmp && RNG::Ref().chance(1, 3))
 					{
 						if ((parts[i].tmp + parts[ID(r)].tmp + 1) <= maxtmp)
 						{
@@ -86,25 +98,7 @@ static int update(UPDATE_FUNC_ARGS)
 						}
 					}
 				}
-	}
-	else
-		for (rx=-1; rx<2; rx++)
-			for (ry=-1; ry<2; ry++)
-				if (BOUNDS_CHECK && (rx || ry))
-				{
-					r = pmap[y+ry][x+rx];
-					if (parts[i].tmp<=maxtmp)
-						continue;
-					if ((!r)&&parts[i].tmp>=1)//if nothing then create MERC
-					{
-						np = sim->create_part(-1,x+rx,y+ry,PT_MERC);
-						if (np<0) continue;
-						parts[i].tmp--;
-						parts[np].temp = parts[i].temp;
-						parts[np].tmp = 0;
-						parts[np].dcolour = parts[i].dcolour;
-					}
-				}
+	
 	for ( trade = 0; trade<4; trade ++)
 	{
 		rx = RNG::Ref().between(-2, 2);
@@ -114,7 +108,8 @@ static int update(UPDATE_FUNC_ARGS)
 			r = pmap[y+ry][x+rx];
 			if (!r)
 				continue;
-			if (TYP(r)==PT_MERC&&(parts[i].tmp>parts[ID(r)].tmp)&&parts[i].tmp>0)//diffusion
+			int rt = TYP(r);
+			if (rt==PT_MERC&&(parts[i].tmp>parts[ID(r)].tmp)&&parts[i].tmp>0)//diffusion
 			{
 				int temp = parts[i].tmp - parts[ID(r)].tmp;
 				if (temp ==1)
