@@ -30,7 +30,7 @@ void Element::Element_WOOD()
 
 	Weight = 100;
 
-	HeatConduct = 164;
+	HeatConduct = 26;
 	Description = "Wood, flammable.";
 
 	Properties = TYPE_SOLID | PROP_NEUTPENETRATE;

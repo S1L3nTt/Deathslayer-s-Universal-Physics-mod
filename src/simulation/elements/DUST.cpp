@@ -19,7 +19,7 @@ void Element::Element_DUST()
 	HotAir = 0.000f	* CFDS;
 	Falldown = 1;
 
-	Flammable = 10;
+	Flammable = 3;
 	Explosive = 0;
 	Meltable = 0;
 	Hardness = 30;
@@ -28,9 +28,9 @@ void Element::Element_DUST()
 	Weight = 85;
 
 	HeatConduct = 70;
-	Description = "Very light dust. Flammable.";
+	Description = "Very light dust. Flammable, edible for some reason.";
 
-	Properties = TYPE_PART;
+	Properties = TYPE_PART | PROP_EDIBLE;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;

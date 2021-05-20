@@ -1,6 +1,7 @@
 #include "simulation/ElementCommon.h"
 
 static int update(UPDATE_FUNC_ARGS);
+int Element_WATR_update(UPDATE_FUNC_ARGS);
 
 void Element::Element_DSTW()
 {
@@ -32,7 +33,11 @@ void Element::Element_DSTW()
 	HeatConduct = 23;
 	Description = "Distilled water, does not conduct electricity.";
 
-	Properties = TYPE_LIQUID|PROP_NEUTPASS;
+	Properties = TYPE_LIQUID|PROP_NEUTPASS | PROP_WATER;
+
+
+	DefaultProperties.water = 100;
+	DefaultProperties.tmpcity[7] = 400;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
@@ -48,54 +53,67 @@ void Element::Element_DSTW()
 
 static int update(UPDATE_FUNC_ARGS)
 {
-	int r, rx, ry;
-	for (rx=-1; rx<2; rx++)
-		for (ry=-1; ry<2; ry++)
-			if (BOUNDS_CHECK && (rx || ry))
-			{
-				r = pmap[y+ry][x+rx];
-				switch (TYP(r))
-				{
-				case PT_SALT:
-					if (RNG::Ref().chance(1, 50))
-					{
-						sim->part_change_type(i,x,y,PT_SLTW);
-						// on average, convert 3 DSTW to SLTW before SALT turns into SLTW
-						if (RNG::Ref().chance(1, 3))
-							sim->part_change_type(ID(r),x+rx,y+ry,PT_SLTW);
-					}
-					break;
-				case PT_SLTW:
-					if (RNG::Ref().chance(1, 2000))
-					{
-						sim->part_change_type(i,x,y,PT_SLTW);
-						break;
-					}
-				case PT_WATR:
-					if (RNG::Ref().chance(1, 100))
-					{
-						sim->part_change_type(i,x,y,PT_WATR);
-					}
-					break;
-				case PT_RBDM:
-				case PT_LRBD:
-					if ((sim->legacy_enable||parts[i].temp>12.0f) && RNG::Ref().chance(1, 100))
-					{
-						sim->part_change_type(i,x,y,PT_FIRE);
-						parts[i].life = 4;
-					}
-					break;
-				case PT_FIRE:
-					sim->kill_part(ID(r));
-					if (RNG::Ref().chance(1, 30))
-					{
-						sim->kill_part(i);
-						return 1;
-					}
-					break;
-				default:
-					continue;
-				}
-			}
+
+
+
+	Element_WATR_update(sim, i, x, y, surround_space, nt, parts, pmap);
+	if(parts[i].ctype != 0 || parts[i].hydrogens > 5 || parts[i].oxygens > 5 || parts[i].carbons > 5 || parts[i].tmp4 > 5 || parts[i].nitrogens > 5 || parts[i].water > 5)
+		sim->part_change_type(i, x, y, PT_WATR);
+
+	
+	//int r, rx, ry;
+	//for (rx=-1; rx<2; rx++)
+	//	for (ry=-1; ry<2; ry++)
+	//		if (BOUNDS_CHECK && (rx || ry))
+	//		{
+	//			r = pmap[y+ry][x+rx];
+	//			switch (TYP(r))
+	//			{
+	//			case PT_SALT:
+	//				if (RNG::Ref().chance(1, 50))
+	//				{
+	//					sim->part_change_type(i,x,y,PT_SLTW);
+	//					// on average, convert 3 DSTW to SLTW before SALT turns into SLTW
+	//					if (RNG::Ref().chance(1, 3))
+	//						sim->part_change_type(ID(r),x+rx,y+ry,PT_SLTW);
+	//				}
+	//				break;
+	//			case PT_SLTW:
+	//				if (RNG::Ref().chance(1, 2000))
+	//				{
+	//					sim->part_change_type(i,x,y,PT_SLTW);
+	//					break;
+	//				}
+	//		//	case PT_WATR:
+	//			//	if (RNG::Ref().chance(1, 100))
+	//		//		{
+	//				//	sim->part_change_type(i,x,y,PT_WATR);
+	//			//	}
+	//				break;
+	//			case PT_RBDM:
+	//			case PT_LRBD:
+	//				if ((sim->legacy_enable||parts[i].temp>12.0f) && RNG::Ref().chance(1, 100))
+	//				{
+	//					sim->part_change_type(i,x,y,PT_FIRE);
+	//					parts[i].life = 4;
+	//				}
+	//				break;
+	//			case PT_FIRE:
+	//				sim->kill_part(ID(r));
+	//				if (RNG::Ref().chance(1, 30))
+	//				{
+	//					sim->kill_part(i);
+	//					return 1;
+	//				}
+	//				break;
+	//			default:
+	//				continue;
+	//			}
+	//		}
+
+
+
+
+
 	return 0;
 }

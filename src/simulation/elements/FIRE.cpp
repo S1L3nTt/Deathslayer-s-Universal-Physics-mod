@@ -33,7 +33,7 @@ void Element::Element_FIRE()
 	Weight = 2;
 
 	DefaultProperties.temp = R_TEMP + 800.0f + 273.15f;
-	HeatConduct = 44;
+	HeatConduct = 24;
 	Description = "Ignites flammable materials. Heats air.";
 
 	Properties = TYPE_GAS;
@@ -289,34 +289,14 @@ void Element::Element_FIRE()
 							parts[i].tmp = 1;
 					}
 					//}
-					else if (rt == PT_LAVA && (parts[ID(r)].ctype == PT_METL || parts[ID(r)].ctype == PT_BMTL) && parts[i].ctype == PT_SLCN)
-					{
-						parts[i].tmp = 0;
-						parts[i].ctype = PT_NSCN;
-						parts[ID(r)].ctype = PT_PSCN;
-					}
-					else if (rt == PT_HEAC && parts[i].ctype == PT_HEAC)
-					{
-						if (parts[ID(r)].temp > sim->elements[PT_HEAC].HighTemperature)
-						{
-							sim->part_change_type(ID(r), x + rx, y + ry, PT_LAVA);
-							parts[ID(r)].ctype = PT_HEAC;
-						}
-					}
-					else if (parts[i].ctype == PT_ROCK && rt == PT_LAVA && parts[ID(r)].ctype == PT_GOLD && parts[ID(r)].tmp == 0 &&
-						sim->pv[y / CELL][x / CELL] >= 50 && RNG::Ref().chance(1, 10000)) // Produce GOLD veins/clusters
-					{
-						parts[i].ctype = PT_GOLD;
-						if (rx > 1 || rx < -1) // Trend veins vertical
-							parts[i].tmp = 1;
-					}
+					
 				}
 
 
 
 
 
-				if (!sim->betterburning_enable)
+				if (!sim->betterburning_enable && parts[i].type != PT_LAVA)
 				{
 				if ((surround_space || sim->elements[rt].Explosive) &&
 					sim->elements[rt].Flammable && RNG::Ref().chance(int(sim->elements[rt].Flammable + (sim->pv[(y + ry) / CELL][(x + rx) / CELL] * 10.0f)), 1000) &&
@@ -336,12 +316,11 @@ void Element::Element_FIRE()
 				else
 				{
 				
-					if (parts[ID(r)].oxygens > 0 && parts[ID(r)].tmp3 > 0)
+					if (parts[ID(r)].oxygens > 0 && !((sim->elements[rt].Properties & PROP_ANIMAL || sim->elements[rt].Properties & PROP_ORGANISM) || (sim->elements[rt].Properties & PROP_WATER && rt != PT_H2O2)))
 					{
 						parts[i].temp += parts[ID(r)].oxygens;
-							parts[i].life--;
-							parts[ID(r)].tmp3--;
-							parts[i].tmp3 += 10;
+							parts[ID(r)].oxygens--;
+							//parts[i].oxygens += 10;
 
 						
 
@@ -372,8 +351,8 @@ void Element::Element_FIRE()
 
 	if (parts[i].type == PT_FIRE)
 	{
-		if (parts[i].tmp3 > 0)
-			parts[i].tmp3--;
+		if (parts[i].oxygens > 0)
+			parts[i].oxygens--;
 		parts[i].life -= surround_space / 3 + 1;
 
 		if (parts[i].life <= 0 || (sim->betterburning_enable && parts[i].temp < 250 + 273.15))
@@ -395,9 +374,8 @@ void Element::Element_FIRE()
 						parts[i].life += RNG::Ref().between(5 * surround_space, 150);
 					}
 					else
-					{
 						sim->kill_part(i);
-					}
+					
 
 
 
@@ -615,8 +593,8 @@ static int graphics(GRAPHICS_FUNC_ARGS)
 	*colg += (int)restrict_flt((cpart->temp - 400) / 4, 0, 100);
 	*colb += (int)restrict_flt((cpart->temp - 600) / 10, 0, 255);
 
-		if (cpart->tmp3 > 0)
-			*firea = (int)restrict_flt(*firea + cpart->tmp3, 0, 255);
+		if (cpart->oxygens > 0)
+			*firea = (int)restrict_flt(*firea + cpart->oxygens, 0, 255);
 		else
 		*firea =  50 + (int)restrict_flt((cpart->temp - 600), 0, 205);;
 	//(cpart->temp / 10) + 10;

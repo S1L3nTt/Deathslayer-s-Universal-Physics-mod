@@ -1,7 +1,7 @@
 #include "simulation/ElementCommon.h"
 
-int Element_WSTE_update(UPDATE_FUNC_ARGS);
-int Element_WSTE_graphics(GRAPHICS_FUNC_ARGS);
+//int Element_WSTE_update(UPDATE_FUNC_ARGS);
+//int Element_WSTE_graphics(GRAPHICS_FUNC_ARGS);
 
 void Element::Element_BACL() {
 	Identifier = "DEFAULT_PT_BACL";
@@ -45,6 +45,6 @@ void Element::Element_BACL() {
 
 	DefaultProperties.life = 110;
 
-	Update = &Element_WSTE_update;
-	Graphics = &Element_WSTE_graphics;
+	//Update = &Element_WSTE_update;
+	//Graphics = &Element_WSTE_graphics;
 }

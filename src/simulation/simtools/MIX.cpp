@@ -25,7 +25,7 @@ static int perform(Simulation * sim, Particle * cpart, int x, int y, int brushX,
 		return 0;
 	if (sim->betterburning_enable)
 	{
-		 distance = (int)(std::pow(strength, .5) * 20);
+		 distance = (int)(std::pow(strength, 1) * 10);
 	}
 	else
 	{

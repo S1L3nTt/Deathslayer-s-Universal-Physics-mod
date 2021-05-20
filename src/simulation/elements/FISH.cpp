@@ -81,7 +81,7 @@ static int update(UPDATE_FUNC_ARGS) {
 				rt = TYP(r);
 
 				// Redirect velocity towards SEED and ANT
-				if (rt == PT_SEED || rt == PT_ANT) {
+				if (rt == PT_SEED || rt == PT_ANT || rt == PT_POTO) {
 					parts[i].pavg[0] = isign(rx);
 					parts[i].pavg[1] = isign(ry);
 				}
@@ -92,13 +92,13 @@ static int update(UPDATE_FUNC_ARGS) {
 						touching_water = true;
 
 					// Eat SEED and ANT
-					else if ((rt == PT_ANT || rt == PT_SEED) && RNG::Ref().chance(1, 40))
+					else if ((rt == PT_ANT || rt == PT_SEED || rt == PT_POTO) && RNG::Ref().chance(1, 40))
 						sim->kill_part(ID(r));
 				}
 			}
 
 	// Chance to die if not touching water
-	if (!touching_water && RNG::Ref().chance(1, 600)) {
+	if (!touching_water && RNG::Ref().chance(1, 1000)) {
 		sim->part_change_type(i, parts[i].x, parts[i].y, PT_DUST);
 		return 0;
 	}

@@ -33,7 +33,12 @@ void Element::Element_CBNW()
 	HeatConduct = 29;
 	Description = "Carbonated water. Slowly releases CO2.";
 
-	Properties = TYPE_LIQUID|PROP_CONDUCTS|PROP_LIFE_DEC|PROP_NEUTPENETRATE;
+	Properties = TYPE_LIQUID|PROP_CONDUCTS|PROP_LIFE_DEC|PROP_NEUTPENETRATE | PROP_WATER;
+
+	DefaultProperties.water = 40;
+	DefaultProperties.tmpcity[5] = 60;
+	DefaultProperties.tmpcity[7] = 400;
+
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
@@ -41,7 +46,7 @@ void Element::Element_CBNW()
 	HighPressureTransition = NT;
 	LowTemperature = 273.15f;
 	LowTemperatureTransition = PT_ICEI;
-	HighTemperature = 373.0f;
+	HighTemperature = 373.15f;
 	HighTemperatureTransition = PT_WTRV;
 
 	Update = &update;
@@ -50,16 +55,18 @@ void Element::Element_CBNW()
 
 static int update(UPDATE_FUNC_ARGS)
 {
-	int r, rx, ry;
-	if (sim->pv[y/CELL][x/CELL]<=3)
+
+
+	if (parts[i].tmpcity[7] == 0)
 	{
-		if (sim->pv[y/CELL][x/CELL] <= -0.5 || RNG::Ref().chance(1, 4000))
-		{
-			sim->part_change_type(i,x,y,PT_CO2);
-			parts[i].ctype = 5;
-			sim->pv[y/CELL][x/CELL] += 0.5f;
-		}
+		parts[i].water = 100;
+		parts[i].tmpcity[7] = 400;
 	}
+
+
+
+	int r, rx, ry;
+	
 	if (parts[i].tmp2!=20) {
 		parts[i].tmp2 -= (parts[i].tmp2>20)?1:-1;
 	}
@@ -85,7 +92,23 @@ static int update(UPDATE_FUNC_ARGS)
 			{
 				r = pmap[y+ry][x+rx];
 				if (!r)
+				{
+
+
+						if (sim->pv[y / CELL][x / CELL] + parts[i].temp > -273.15f || RNG::Ref().chance(1, 4000))
+						{
+							sim->part_change_type(i, x, y, PT_CO2);
+							parts[i].ctype = 5;
+							sim->pv[y / CELL][x / CELL] += 0.5f;
+						}
+					
+
+
+
+
+
 					continue;
+				}
 				if ((sim->elements[TYP(r)].Properties&TYPE_PART) && parts[i].tmp == 0 && RNG::Ref().chance(1, 83))
 				{
 					//Start explode
@@ -93,7 +116,8 @@ static int update(UPDATE_FUNC_ARGS)
 				}
 				else if((sim->elements[TYP(r)].Properties&TYPE_SOLID) && TYP(r)!=PT_DMND && TYP(r)!=PT_GLAS && parts[i].tmp == 0 && RNG::Ref().chance(int(2 - sim->pv[y/CELL][x/CELL]), 6667))
 				{
-					sim->part_change_type(i,x,y,PT_CO2);
+					sim->create_part(-1, x + rx, y + ry, PT_CO2);
+					sim->part_change_type(i, x, y, PT_WATR);
 					parts[i].ctype = 5;
 					sim->pv[y/CELL][x/CELL] += 0.2f;
 				}

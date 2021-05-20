@@ -88,6 +88,7 @@ static int update(UPDATE_FUNC_ARGS) {
 static void create(ELEMENT_CREATE_FUNC_ARGS) {
 
 	sim->parts[i].tmp4 = 100;
+	sim->parts[i].carbons = 100;
 	sim->parts[i].tmpville[6] = RNG::Ref().between(0, 6);
 }
 

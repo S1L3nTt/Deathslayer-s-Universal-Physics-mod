@@ -8,7 +8,7 @@ void Element::Element_ALGE() {
 	Identifier = "DEFAULT_PT_ALGE";
 	Name = "ALGE";
 	Colour = PIXPACK(0x70E680);
-	MenuVisible = 0;
+	MenuVisible = 1;
 	MenuSection = SC_ORGANIC;
 	Enabled = 1;
 
@@ -57,8 +57,8 @@ static int update(UPDATE_FUNC_ARGS) {
 			int r = pmap[y + ry][x + rx];
 			// Look for nearby water
 			int rt = TYP(r);
-			if (RNG::Ref().chance(1, 100)) {
-				if (rt == PT_WATR || rt == PT_DSTW || rt == PT_SLTW || rt == PT_CBNW || rt == PT_SWTR || rt == PT_WTRV) {
+			if (RNG::Ref().chance(1, 1000)) {
+				if (sim->elements[rt].Properties & PROP_WATER) {
 					// Look for empty spot near the water
 					for (int rx2 = -1; rx2 <= 1; ++rx2)
 					for (int ry2 = -1; ry2 <= 1; ++ry2) {

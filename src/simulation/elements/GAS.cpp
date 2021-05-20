@@ -58,6 +58,7 @@ static int update(UPDATE_FUNC_ARGS) {
 	// 
 	//Cyens toy
 	//Condensation
+	
 	if (parts[i].carbons == 0)
 	{
 		//Cyens toy
@@ -74,14 +75,21 @@ static int update(UPDATE_FUNC_ARGS) {
 		sim->parts[i].life = sim->parts[i].carbons + sim->parts[i].hydrogens * 5;
 	}
 	int t = parts[i].temp - sim->pv[y / CELL][x / CELL];	//Pressure affects state transitions
-	if ((parts[i].carbons == 1 && t <= (-180 + 273.15)) || (parts[i].carbons == 2 && t <= (-100 + 273.15)) || (parts[i].carbons == 3 && t <= -50 + 273.15) && RNG::Ref().chance(0, (int)restrict_flt(1000 - (sim->pv[y / CELL][x / CELL] + parts[i].temp) * surround_space / 10, 1, MAX_TEMP)) || (parts[i].carbons >= 4 && t <= (4 * sqrt(500 * (parts[i].carbons - 4))) + 273.15) && RNG::Ref().chance(0, (int)restrict_flt(1000 - (sim->pv[y / CELL][x / CELL] + parts[i].temp * surround_space) / 10 , 1, MAX_TEMP) ))
+
+	if (((parts[i].carbons <= 4 && t < -230 + parts[i].carbons * 50 + 273.15f) || (parts[i].carbons > 4 && t < (4 * sqrt(500 * (parts[i].carbons - 4))) + 273.15)) && RNG::Ref().chance(1, (int)restrict_flt(100 - (sim->pv[y / CELL][x / CELL] + parts[i].temp) * surround_space / 10, 1, MAX_TEMP)) && parts[i].tmpcity[3] <= 0)
 	{
+		//&& RNG::Ref().chance(1, (int)restrict_flt(1000 - (sim->pv[y / CELL][x / CELL] + parts[i].temp) * surround_space / 10, 1, MAX_TEMP)) 
+		//|| (parts[i].carbons == 2 && t <= -100 + 273.15) || (parts[i].carbons == 3 && t <= -50 + 273.15
+
+
 		if (parts[i].carbons < 8)//Low carbon condensation
 			sim->part_change_type(i, x, y, PT_MWAX);
 		else if (parts[i].carbons >= 8 && parts[i].carbons < 20) //Medium carbon condensation
 			sim->part_change_type(i, x, y, PT_DESL);
 		else //High carbon condensation
 			sim->part_change_type(i, x, y, PT_OIL);
+
+		parts[i].tmpcity[3] = RNG::Ref().between(100, 1000);
 	}
 	
 	//Update
@@ -95,25 +103,23 @@ static int update(UPDATE_FUNC_ARGS) {
 				if (BOUNDS_CHECK)
 				{
 					r = pmap[y + ry][x + rx];
-					if (!r || TYP(r) == PT_GAS)
-						r = sim->photons[y + ry][x + rx];
 					if (!r)
 						continue;
 
 
-					if (parts[i].temp >= -100 * log(parts[i].carbons) + 673.15f || TYP(r) == PT_FIRE || TYP(r) == PT_PLSM || TYP(r) == PT_LAVA) {
-						for (int yy = -3; yy <= 3; yy++)
-							for (int xx = -3; xx <= 3; xx++)
-								if (xx * xx + yy * yy <= 9) {
-									sim->create_part(-1, x + xx, y + yy, PT_FIRE);
+					if ((parts[i].temp >= -10 * parts[i].carbons / 2 + 673.15f || TYP(r) == PT_FIRE || TYP(r) == PT_PLSM || TYP(r) == PT_LAVA) && RNG::Ref().chance(1, 36)) {
+
+									
+									sim->create_part(-3, x, y, PT_FIRE);
 									sim->pv[y / CELL][x / CELL] = parts[i].carbons > 45 ? 5 : 50.0f - parts[i].carbons;
+
 									sim->part_change_type(i, x, y, PT_CO2);
 								}
-						if (RNG::Ref().between(1, parts[i].carbons))sim->part_change_type(i, x, y, RNG::Ref().between(10, 3) ? PT_CO2 : PT_SMKE);
+				//		if (RNG::Ref().between(1, parts[i].carbons))sim->part_change_type(i, x, y, RNG::Ref().between(10, 3) ? PT_CO2 : PT_SMKE);
 					}
 
 
-				}
+				
 			}
 		}
 
@@ -161,7 +167,7 @@ static int update(UPDATE_FUNC_ARGS) {
 						}
 						
 
-							if (RNG::Ref().chance(1, (int)restrict_flt(200 - surround_space * 20, 2, MAX_TEMP)))
+							if (RNG::Ref().chance(1, (int)restrict_flt(200 - surround_space * 20, 1, MAX_TEMP)))
 							{
 
 								
@@ -198,7 +204,7 @@ static int update(UPDATE_FUNC_ARGS) {
 								
 							
 									}
-									else if (RNG::Ref().chance(1, (int)restrict_flt(20 - surround_space * 2, 1, MAX_TEMP)))
+									else if (RNG::Ref().chance(1, restrict_flt(20 - surround_space * 2, 1, MAX_TEMP)))
 									{
 										if (sim->pv[y / CELL][x / CELL] >= 0)
 										{
@@ -230,7 +236,8 @@ static int update(UPDATE_FUNC_ARGS) {
 	}
 
 
-
+	if (parts[i].tmpcity[3] > 0)
+		parts[i].tmpcity[3]--;
 
 	return 0;
 }

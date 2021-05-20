@@ -28,9 +28,11 @@ void Element::Element_SUGR() {
 
 	Properties = TYPE_PART | PROP_NEUTPASS | PROP_EDIBLE;
 
-
-	DefaultProperties.tmp4 = 100;
-	DefaultProperties.hydrogens = 25;
+	DefaultProperties.tmpcity[7] = 400;
+	DefaultProperties.tmp4 = 150;
+	DefaultProperties.carbons = 100;
+	DefaultProperties.hydrogens = 15;
+	DefaultProperties.nitrogens = 5;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
@@ -53,7 +55,20 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 	if (parts[i].tmp4 <= 0)
-		sim->kill_part(i);
+	{
+		if (parts[i].oxygens > 0 || parts[i].carbons > 0 || parts[i].hydrogens > 0 || parts[i].water > 0 || parts[i].nitrogens > 0)
+		{
+			if (parts[i].water > 0)
+				sim->part_change_type(i, x, y, PT_WATR);
+			else
+				sim->part_change_type(i, x, y, PT_DUST);
+		}
+		else
+			sim->kill_part(i);
+
+	}
+	if(parts[i].water > 20)
+		sim->part_change_type(i, x, y, PT_SWTR);
 	
 
 

@@ -7,7 +7,6 @@ static  int graphics(GRAPHICS_FUNC_ARGS);
 void Element::Element_OIL()
 {
 	Identifier = "DEFAULT_PT_OIL";
-	FullName = "";
 	Name = "OIL";
 	Colour = PIXPACK(0x404010);
 	MenuVisible = 1;
@@ -52,27 +51,33 @@ void Element::Element_OIL()
 }
 static int update(UPDATE_FUNC_ARGS)
 {
+	
+	
+	if (parts[i].carbons == 0)
+	{
+		//Cyens toy
+		//Spawns with carbons (20-60), temp must be min 42 ?C 
+		sim->parts[i].carbons = RNG::Ref().between(20, 60);
+		sim->parts[i].hydrogens = makeAlk(sim->parts[i].carbons);
+		//sim->parts[i].carbons = rand() % 41 + 20;
+		if (sim->parts[i].hydrogens < 2 * sim->parts[i].carbons + 2)sim->parts[i].tmp3 = getBondLoc(sim->parts[i].carbons);
+		sim->parts[i].life = sim->parts[i].carbons + sim->parts[i].hydrogens;
+	}
+
+
+	
 	//OIL is a high carbon liquid, it should not have any less than 20 carbons.
-	if (parts[i].carbons < 20)sim->part_change_type(i, x, y, PT_DESL);
+	if (parts[i].carbons < 20 && RNG::Ref().chance(1, 1000))sim->part_change_type(i, x, y, PT_DESL);
 
 	int t = parts[i].temp - sim->pv[y / CELL][x / CELL];	//Pressure affects state transitions
 	//Freezing into PRFN
 	//if (t <= (14.3f * sqrt((parts[i].life - 12))) + 273.15)
 	//	sim->part_change_type(i, x, y, PT_PRFN);
 	//Boiling into GAS
-	if (t > (4 * sqrt(500 * (parts[i].carbons - 4))) + 273.15 && RNG::Ref().chance(0, (int)restrict_flt(1000 - (sim->pv[y / CELL][x / CELL] + parts[i].temp) * surround_space / 10, 1, MAX_TEMP)) || RNG::Ref().chance(1, 200000 - surround_space * 1000))
+	if (t > (4 * sqrt(500 * (parts[i].carbons - 4))) + 273.15 && RNG::Ref().chance(1, restrict_flt(100 - (sim->pv[y / CELL][x / CELL] + parts[i].temp) * surround_space / 10, 1, MAX_TEMP)) || RNG::Ref().chance(1, restrict_flt(2000 - surround_space * 10, 1, MAX_TEMP)))
 		sim->part_change_type(i, x, y, PT_GAS);
 
-	if (parts[i].carbons == 0)
-	{
-		//Cyens toy
-		//Spawns with carbons (20-60), temp must be min 42 ?C 
-		sim->parts[i].carbons = RNG::Ref().between(20, 61);
-		sim->parts[i].hydrogens = makeAlk(sim->parts[i].carbons);
-		//sim->parts[i].carbons = rand() % 41 + 20;
-		if (sim->parts[i].hydrogens < 2 * sim->parts[i].carbons + 2)sim->parts[i].tmp3 = getBondLoc(sim->parts[i].carbons);
-		sim->parts[i].life = sim->parts[i].carbons + sim->parts[i].hydrogens;
-	}
+	
 
 
 
@@ -96,7 +101,7 @@ static int update(UPDATE_FUNC_ARGS)
 						{
 
 							
-								if (RNG::Ref().chance(1, 100 - surround_space * 4))
+								if (RNG::Ref().chance(1, restrict_flt(100 - surround_space * 4, 1, MAX_TEMP)))
 								{
 						
 
@@ -126,13 +131,16 @@ static int update(UPDATE_FUNC_ARGS)
 										{
 											parts[np].temp += parts[i].temp + RNG::Ref().between(0, (int)restrict_flt(5 * surround_space + sim->pv[y / CELL][x / CELL], 1, MAX_TEMP));
 											parts[i].life -= 1 * surround_space;
+						
+										
+										
 										}
 										sim->pv[y / CELL][x / CELL] += RNG::Ref().between(0, (int)restrict_flt(parts[i].temp * surround_space / 2000, 0, MAX_TEMP));;
 									}
 									//	}
 									
 								}
-								else if (RNG::Ref().chance(1, 20 - surround_space * 2))
+								else if (RNG::Ref().chance(1, restrict_flt(20 - surround_space * 2, 1, MAX_TEMP)))
 								{
 							
 									if (sim->pv[y / CELL][x / CELL] >= 0)
@@ -177,7 +185,7 @@ static  void create(ELEMENT_CREATE_FUNC_ARGS)
 
 	//Cyens toy
 	//Spawns with carbons (20-60), temp must be min 42 ?C
-	sim->parts[i].carbons = RNG::Ref().between(20, 61);
+	sim->parts[i].carbons = RNG::Ref().between(20, 60);
 	sim->parts[i].hydrogens = makeAlk(sim->parts[i].carbons);
 	//sim->parts[i].carbons = rand() % 41 + 20;
 	if (sim->parts[i].hydrogens < 2 * sim->parts[i].carbons + 2)sim->parts[i].tmp3 = getBondLoc(sim->parts[i].carbons);

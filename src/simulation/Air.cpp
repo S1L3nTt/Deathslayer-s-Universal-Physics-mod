@@ -190,6 +190,7 @@ void Air::update_air(void)
 				dp = 0.0f;
 				dp += vx[y][x-1] - vx[y][x];
 				dp += vy[y-1][x] - vy[y][x];
+				if(!sim.betterburning_enable)
 				pv[y][x] *= AIR_PLOSS;
 				pv[y][x] += dp*AIR_TSTEPP;
 			}

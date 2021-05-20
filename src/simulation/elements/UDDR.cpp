@@ -7,7 +7,7 @@ void Element::Element_UDDR() {
 	Identifier = "DEFAULT_PT_UDDR";
 	Name = "UDDR";
 	Colour = PIXPACK(0xFFADAD);
-	MenuVisible = 0;
+	MenuVisible = 1;
 	MenuSection = SC_ORGANIC;
 	Enabled = 1;
 
@@ -31,12 +31,16 @@ void Element::Element_UDDR() {
 	HeatConduct = 104;
 	Description = "Udder. Makes milk when squeezed (pressure). Requires nutrients to make more milk.";
 
-	Properties = TYPE_SOLID | PROP_NEUTPENETRATE;
+	Properties = TYPE_SOLID | PROP_NEUTPENETRATE | PROP_EDIBLE | PROP_ORGANISM | PROP_ANIMAL;
 
 	DefaultProperties.oxygens = 100;
 	DefaultProperties.carbons = 100;
+	DefaultProperties.hydrogens = 20;
+	DefaultProperties.water = 50;
 	DefaultProperties.tmp3 = 100;
-	DefaultProperties.tmp4 = 10;
+	DefaultProperties.tmp4 = 100;
+	DefaultProperties.tmpcity[7] = 800;
+	DefaultProperties.tmpcity[3] = 100;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
@@ -60,20 +64,25 @@ static int update(UPDATE_FUNC_ARGS) {
 	 * tmp3: Type 0 = inside, 1 = skin, 2 = dead
 	 */
 	Element_FLSH_update(sim, i, x, y, surround_space, nt, parts, pmap);
-	if (parts[i].pavg[0] == 1) // Override skin formation
-		parts[i].pavg[0] = 0;
+	//if (parts[i].pavg[0] == 1) // Override skin formation
+		//parts[i].pavg[0] = 0;
 
-	if (sim->pv[y / CELL][x / CELL] > 1.0f && parts[i].pavg[0] != 2) {
+	if (parts[i].pavg[0] != 2) {
 		int rx, ry, r;
 		for (rx = -1; rx < 2; ++rx)
 		for (ry = -1; ry < 2; ++ry)
 			if (BOUNDS_CHECK && (rx || ry)) {
 				r = pmap[y + ry][x + rx];
-				if (!r && parts[i].carbons > 0 && RNG::Ref().chance(1, 50)) {
-					sim->create_part(-1, x + rx, y + ry, PT_MILK);
-					parts[i].carbons -= 50;
-					if (parts[i].carbons < 0)
-						parts[i].carbons = 0;
+				if (!r)
+				{
+					if (parts[i].carbons > 10 + 50 && parts[i].water > 10 + 50 && RNG::Ref().chance(1, 500)) {
+						int melk = sim->create_part(-1, x + rx, y + ry, PT_MILK);
+							parts[melk].carbons += 50;
+							parts[melk].water += 50;
+							parts[i].carbons -= 50;
+							parts[i].water -= 50;
+					}
+					continue;
 				}
 			}
 	}

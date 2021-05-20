@@ -28,7 +28,7 @@ void Element::Element_BRKN() {
 
 	Weight = 90;
 
-	HeatConduct = 211;
+	HeatConduct = 111;
 	Description = "A generic broken solid.";
 
 	Properties = TYPE_PART | PROP_CONDUCTS | PROP_LIFE_DEC;
@@ -48,15 +48,17 @@ void Element::Element_BRKN() {
 
 static int update(UPDATE_FUNC_ARGS) {
 
-	if(parts[i].tmp != parts[i].ctype && parts[i].tmp != 0)
+	if(parts[i].tmp != parts[i].ctype && parts[i].tmp > 0 && parts[i].tmp < PT_NUM)
 		parts[i].ctype = parts[i].tmp;
-	if (parts[i].ctype == PT_FLSH)
+	if (sim->elements[parts[i].ctype].Properties & PROP_ANIMAL)
 	{	
 		if(parts[i].tmpcity[8] == 0)
-			sim->part_change_type(i, x, y, PT_FLSH);
+			sim->part_change_type(i, x, y, parts[i].ctype);
 		//parts[i].life = 4;
-		parts[i].tmp = parts[i].ctype;
-		return sim->elements[parts[i].ctype].Update(sim, i, x, y, surround_space, nt, parts, pmap);
+		//parts[i].tmp = parts[i].ctype;
+		if (sim->elements[parts[i].ctype].Update)
+		 sim->elements[parts[i].ctype].Update(sim, i, x, y, surround_space, nt, parts, pmap);
+	//	 return 1;
 	
 	}
 	else
@@ -74,7 +76,7 @@ static int update(UPDATE_FUNC_ARGS) {
 			if (sim->elements[parts[i].ctype].HighTemperatureTransition &&
 				parts[i].temp > sim->elements[parts[i].ctype].HighTemperature) {
 				sim->part_change_type(i, x, y, sim->elements[parts[i].ctype].HighTemperatureTransition);
-				return 1;
+					return 1;
 			}
 			flammable = sim->elements[parts[i].ctype].Flammable > 0;
 		}
@@ -85,14 +87,14 @@ static int update(UPDATE_FUNC_ARGS) {
 					int r = pmap[y + ry][x + rx];
 					if (!r) continue;
 					int rt = TYP(r);
-					bool is_water = rt == PT_WATR || rt == PT_DSTW || rt == PT_SLTW || rt == PT_CBNW || rt == PT_SWTR || rt == PT_WTRV;
+					
 
 					if (flammable && (rt == PT_FIRE || rt == PT_PLSM)) {
 						sim->part_change_type(i, x, y, PT_FIRE);
 						parts[i].temp += 200.0f;
 						return 1;
 					}
-					else if (parts[i].ctype == PT_SAWD && is_water) {
+					else if (parts[i].ctype == PT_SAWD && sim->elements[rt].Properties & PROP_WATER) {
 						sim->part_change_type(i, x, y, PT_PULP);
 						parts[i].life += 10;
 						return 1;

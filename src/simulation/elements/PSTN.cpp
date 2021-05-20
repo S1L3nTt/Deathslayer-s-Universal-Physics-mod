@@ -40,6 +40,10 @@ void Element::Element_PSTN()
 
 	Properties = TYPE_SOLID;
 
+	DefaultProperties.tmpcity[0] = 0x1F;
+	DefaultProperties.tmpcity[1] = 0xFF;
+
+
 	LowPressure = IPL;
 	LowPressureTransition = NT;
 	HighPressure = IPH;
@@ -79,8 +83,8 @@ static int update(UPDATE_FUNC_ARGS)
 {
  	if(parts[i].life)
  		return 0;
- 	int maxSize = parts[i].tmp ? parts[i].tmp : DEFAULT_LIMIT;
- 	int armLimit = parts[i].tmp2 ? parts[i].tmp2 : DEFAULT_ARM_LIMIT;
+	int maxSize = parts[i].tmp ? parts[i].tmp : parts[i].tmpcity[0];//DEFAULT_LIMIT;
+	int armLimit = parts[i].tmp2 ? parts[i].tmp2 : parts[i].tmpcity[1];//DEFAULT_ARM_LIMIT;
  	int state = 0;
 	int r, nxx, nyy, nxi, nyi, rx, ry;
 	int directionX = 0, directionY = 0;

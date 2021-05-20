@@ -60,12 +60,12 @@ static int update(UPDATE_FUNC_ARGS)
 
 	//cyens toy
 	//DESL is a medium carbon liquid, it should not have any more than 19 carbons or any less than 8.
-	if (parts[i].carbons < 8)sim->part_change_type(i, x, y, PT_MWAX);
+	if (parts[i].carbons < 7)sim->part_change_type(i, x, y, PT_MWAX);
 	else if (parts[i].carbons > 19)sim->part_change_type(i, x, y, PT_OIL);
 
 	int t = parts[i].temp - sim->pv[y / CELL][x / CELL];	//Pressure affects state transitions
 	//Freezing into WAX
-	if (t <= (14.3f * sqrt((parts[i].carbons - 12))) + 273.15 &&  RNG::Ref().chance(1, 20))
+	if (t < (14.3f * sqrt((parts[i].carbons - 12))) + 273.15 &&  RNG::Ref().chance(1, 20))
 		sim->part_change_type(i, x, y, PT_WAX);
 	//Boiling into GAS
 	if (t > (4 * sqrt(500 * (parts[i].carbons - 4))) + 273.15 && RNG::Ref().chance(1, 20))

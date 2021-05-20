@@ -42,6 +42,7 @@ RenderView::RenderView():
 	addPresetButton( 9, IconGradient  , ui::Point(-193,  6), "Heat gradient display mode preset");
 	addPresetButton( 0, IconAltAir    , ui::Point(-193, 24), "Alternative Velocity display mode preset");
 	addPresetButton(10, IconLife      , ui::Point(-232,  6), "Life display mode preset");
+	addPresetButton(11, IconWarp	  , ui::Point(-232, 24), "Tmp3/health display mode preset");
 
 	auto addRenderModeCheckbox = [this](unsigned int mode, Icon icon, ui::Point offset, String tooltip) {
 		auto *renderModeCheckbox = new ModeCheckbox(ui::Point(0, YRES) + offset, ui::Point(30, 16), "", tooltip);
@@ -109,6 +110,7 @@ RenderView::RenderView():
 	};
 	addColourModeCheckbox(COLOUR_HEAT, IconHeat    , ui::Point(275,  4), "Displays temperatures of the elements, dark blue is coldest, pink is hottest");
 	addColourModeCheckbox(COLOUR_LIFE, IconLife    , ui::Point(275, 22), "Displays the life value of elements in greyscale gradients");
+	addColourModeCheckbox(COLOUR_HEAL, IconWarp, ui::Point(339, 22), "Displays the tmp3 value of elements in greyscale gradients, mainly for checking health of living organisms");
 	addColourModeCheckbox(COLOUR_GRAD, IconGradient, ui::Point(307, 22), "Changes colors of elements slightly to show heat diffusing through them");
 	addColourModeCheckbox(COLOUR_BASC, IconBasic   , ui::Point(307,  4), "No special effects at all for anything, overrides all other options and deco");
 	line4 = 340;
@@ -204,8 +206,8 @@ void RenderView::OnKeyPress(int key, int scan, bool repeat, bool shift, bool ctr
 {
 	if (repeat)
 		return;
-	if (shift && key == '1')
-		c->LoadRenderPreset(10);
+	if (shift && (key == '1' || key == '2'))
+		c->LoadRenderPreset(key+10);
 	else if(key >= '0' && key <= '9')
 	{
 		c->LoadRenderPreset(key-'0');

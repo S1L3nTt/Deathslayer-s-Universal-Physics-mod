@@ -55,8 +55,9 @@ void Element::Element_WAX()
 
 		int t = parts[i].temp - sim->pv[y / CELL][x / CELL];	//Pressure affects state transitions
 		//Melting
-		if ((parts[i].carbons < 5 && t >= (-200 + 273.15)) || (parts[i].carbons >= 5 && parts[i].carbons < 12 && t >= (16.5f * parts[i].carbons - 200 + 273.15)) || (parts[i].carbons >= 12 && t > (14.3f * sqrt(parts[i].carbons - 12)) + 273.15))
+		if ((parts[i].carbons <= 4 && t < -230 + parts[i].carbons * 50 + 273.15f) || (parts[i].carbons > 4 && parts[i].carbons < 12 && t >= (16.5f * parts[i].carbons - 200 + 273.15)) || (parts[i].carbons >= 12 && t > (14.3f * sqrt(parts[i].carbons - 12)) + 273.15))
 		{
+			
 			if (parts[i].carbons < 8)//Low carbon melting
 				sim->part_change_type(i, x, y, PT_MWAX);
 			else //Medium carbon melting

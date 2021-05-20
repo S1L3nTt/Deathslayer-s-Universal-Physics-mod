@@ -5066,13 +5066,6 @@ void Simulation::CheckStacking()
 		}
 	}
 }
-String Simulation::ElementFullName(int type)//cyens toy
-{
-	if (type >= 0 && type < PT_NUM)
-		return elements[type].FullName;
-
-	return "Empty";
-}
 
 //updates pmap, gol, and some other simulation stuff (but not particles)
 void Simulation::BeforeSim()

@@ -97,6 +97,14 @@ static int update(UPDATE_FUNC_ARGS)
 							sim->kill_part(ID(r));
 						}
 					}
+					if (sim->elements[rt].Properties & PROP_ANIMAL && RNG::Ref().chance(1, 5000)) {
+
+						//sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
+						parts[i].x = parts[ID(r)].x;
+						parts[i].y = parts[ID(r)].y;
+						pmap[y + ry][x + rx] = PMAP(i, parts[i].type);
+						return 1;
+					}
 				}
 	
 	for ( trade = 0; trade<4; trade ++)
@@ -109,7 +117,7 @@ static int update(UPDATE_FUNC_ARGS)
 			if (!r)
 				continue;
 			int rt = TYP(r);
-			if (rt==PT_MERC&&(parts[i].tmp>parts[ID(r)].tmp)&&parts[i].tmp>0)//diffusion
+			if (rt==PT_MERC && parts[i].tmp > parts[ID(r)].tmp && parts[i].tmp > 0)//diffusion
 			{
 				int temp = parts[i].tmp - parts[ID(r)].tmp;
 				if (temp ==1)

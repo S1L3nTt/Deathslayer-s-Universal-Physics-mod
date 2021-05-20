@@ -47,7 +47,14 @@ void Element::Element_LQUD() {
 }
 
 static int update(UPDATE_FUNC_ARGS) {
-	if (parts[i].ctype < 0 || parts[i].ctype >= PT_NUM || parts[i].ctype == PT_LQUD)
+	if(parts[i].tmpcity[8] == 0)
+		sim->part_change_type(i, x, y, parts[i].ctype);
+	if (parts[i].ctype == PT_WSTE && parts[i].water < 10)
+	{
+		parts[i].tmpcity[8] = 0;
+			sim->part_change_type(i, x, y, parts[i].ctype);
+	}
+	if (parts[i].ctype < 0 || parts[i].ctype > PT_NUM || parts[i].ctype == PT_LQUD)
 		parts[i].ctype = 0;
 
 	if (parts[i].ctype) {
@@ -71,7 +78,7 @@ static int update(UPDATE_FUNC_ARGS) {
 		}
 
 		if (sim->elements[parts[i].ctype].Update)
-			return sim->elements[parts[i].ctype].Update(sim, i, x, y, surround_space, nt, parts, pmap);
+			sim->elements[parts[i].ctype].Update(sim, i, x, y, surround_space, nt, parts, pmap);
 	}
 	return 0;
 }
@@ -84,9 +91,9 @@ static int graphics(GRAPHICS_FUNC_ARGS) {
 		*colg = PIXG(ren->sim->elements[cpart->ctype].Colour);
 		*colb = PIXB(ren->sim->elements[cpart->ctype].Colour);
 
-	//	if (ren->sim->elements[cpart->ctype].LiquidGraphics)
-	//		return ren->sim->elements[cpart->ctype].LiquidGraphics(ren, cpart, nx, ny, pixel_mode,
-			//	cola, colr, colg, colb, firea, firer, fireg, fireb);
+		if (ren->sim->elements[cpart->ctype].Graphics)
+			 ren->sim->elements[cpart->ctype].Graphics(ren, cpart, nx, ny, pixel_mode,
+				cola, colr, colg, colb, firea, firer, fireg, fireb);
 	}
 	return 0;
 }

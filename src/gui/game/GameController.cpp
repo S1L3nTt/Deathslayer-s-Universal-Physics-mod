@@ -1575,6 +1575,16 @@ bool GameController::IsValidElement(int type)
 		return false;
 }
 
+bool GameController::HasElementProperty(int type, int property)
+{
+	Simulation* sim = gameModel->GetSimulation();
+		if(sim->elements[type].Properties & property)
+		return true;
+		else
+		return false;
+}
+
+
 String GameController::WallName(int type)
 {
 	if(gameModel && gameModel->GetSimulation() && type >= 0 && type < UI_WALLCOUNT)
@@ -1800,15 +1810,6 @@ String GameController::hydrocarbonName(int t, int c, int h, int b, int a) {
 	return ss.Build();
 }
 
-//cyens toy
-String GameController::ElementFullName(int type)
-{
-	if (gameModel && gameModel->GetSimulation())
-	{
-		return gameModel->GetSimulation()->ElementFullName(type);
-	}
-	return "";
-}
 
 
 void GameController::NotifyUpdateAvailable(Client * sender)

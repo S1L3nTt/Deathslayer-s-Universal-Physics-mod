@@ -20,6 +20,7 @@ struct Particle
 	float tmpcity[10];
 	float tmpville[20];
 	int oxygens;
+	int nitrogens;
 	int carbons;
 	int hydrogens;
 	int water;

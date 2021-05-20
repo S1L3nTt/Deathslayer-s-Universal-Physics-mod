@@ -1,6 +1,7 @@
 #include "simulation/ElementCommon.h"
 
 static int update(UPDATE_FUNC_ARGS);
+int Element_WATR_update(UPDATE_FUNC_ARGS);
 
 void Element::Element_SWTR() {
 	Identifier = "DEFAULT_PT_SWTR";
@@ -30,10 +31,14 @@ void Element::Element_SWTR() {
 	HeatConduct = 75;
 	Description = "Sugar water.";
 
+	DefaultProperties.tmpcity[7] = 400;
 	DefaultProperties.tmp4 = 100;
-	DefaultProperties.hydrogens = 25;
+	DefaultProperties.water = 100;
+	DefaultProperties.carbons = 100;
+	DefaultProperties.hydrogens = 15;
+	DefaultProperties.nitrogens = 5;
 
-	Properties = TYPE_LIQUID | PROP_CONDUCTS | PROP_LIFE_DEC | PROP_NEUTPENETRATE | PROP_EDIBLE;
+	Properties = TYPE_LIQUID | PROP_CONDUCTS | PROP_NEUTPENETRATE | PROP_EDIBLE | PROP_WATER;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
@@ -49,10 +54,15 @@ void Element::Element_SWTR() {
 
 static int update(UPDATE_FUNC_ARGS) {
 
-	if (parts[i].tmp4 <= 0)
-		sim->kill_part(i);
-	if (parts[i].ctype == parts[i].type)
-		parts[i].ctype = 0;
+
+
+
+
+
+
+
+	Element_WATR_update(sim, i, x, y, surround_space, nt, parts, pmap);
+
 
 	if (parts[i].temp + sim->pv[y / CELL][x / CELL] > 383.15f)
 	{
@@ -79,7 +89,7 @@ static int update(UPDATE_FUNC_ARGS) {
 				r = pmap[y+ry][x+rx];
 				switch TYP(r) {
 				case PT_SUGR: // Grow sugar crystals
-					if (RNG::Ref().chance(1, 2000))
+					if (RNG::Ref().chance(1, 200 + pow(parts[i].water, 2)))
 						sim->part_change_type(i, parts[i].x, parts[i].y, PT_SUGR);
 					break;
 				case PT_PLNT:
@@ -104,7 +114,7 @@ static int update(UPDATE_FUNC_ARGS) {
 					}
 					break;
 				case PT_YEST:
-					if (RNG::Ref().chance(1, 300)) {
+					if (RNG::Ref().chance(1, 3000)) {
 						sim->part_change_type(i, parts[i].x, parts[i].y, PT_YEST);
 						return 0;
 					}

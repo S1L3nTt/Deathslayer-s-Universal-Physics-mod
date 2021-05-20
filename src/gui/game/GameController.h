@@ -158,6 +158,7 @@ public:
 	String hydrocarbonName(int t, int c, int h, int b, int a); // Cyens toy
 	String ElementFullName(int t); // Cyens toy
 	bool IsValidElement(int type);
+	bool HasElementProperty(int type, int property);
 	String WallName(int type);
 	int Record(bool record);
 

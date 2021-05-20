@@ -32,7 +32,7 @@ void Element::Element_WTRV()
 	HeatConduct = 78;
 	Description = "Steam. Produced from hot water.";
 
-	Properties = TYPE_GAS;
+	Properties = TYPE_GAS | PROP_WATER;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
@@ -48,14 +48,37 @@ void Element::Element_WTRV()
 
 static int update(UPDATE_FUNC_ARGS)
 {
-	int r, rx, ry;
-	for (rx=-1; rx<2; rx++)
+
+
+	// the best transition to ctype that you've ever seen (made while drunkj)
+
+	if (parts[i].ctype != 0 && sim->elements[parts[i].ctype].HighTemperature != ITH && sim->elements[parts[i].ctype].HighTemperature != ST && parts[i].temp - sim->pv[y / CELL][x / CELL] < sim->elements[parts[i].ctype].HighTemperature && RNG::Ref().chance(sim->elements[parts[i].ctype].HighTemperature - 100, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], sim->elements[parts[i].ctype].HighTemperature, MAX_TEMP)))
+	{
+
+
+
+		sim->part_change_type(i, x, y, parts[i].ctype);
+		if (parts[i].tmpcity[6] != 0)
+			parts[i].ctype = parts[i].tmpcity[6];
+		else
+			parts[i].ctype = 0;
+		return 1;
+	}
+
+
+int r, rx, ry;
+	
 		for (ry=-1; ry<2; ry++)
+			for (rx = -1; rx < 2; rx++)
 			if (BOUNDS_CHECK && (rx || ry))
 			{
-				r = pmap[y+ry][x+rx];
+				r = pmap[y + ry][x + rx];
 				if (!r)
-					continue;
+				{
+				if(parts[i].water > 50)
+
+				continue;
+				}
 				if ((TYP(r)==PT_RBDM||TYP(r)==PT_LRBD) && !sim->legacy_enable && parts[i].temp>(273.15f+12.0f) && RNG::Ref().chance(1, 100))
 				{
 					sim->part_change_type(i,x,y,PT_FIRE);

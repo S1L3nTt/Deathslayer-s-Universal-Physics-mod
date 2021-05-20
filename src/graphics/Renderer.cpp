@@ -1401,6 +1401,24 @@ void Renderer::render_parts()
 					else if (!pixel_mode)
 						pixel_mode |= PMODE_FLAT;
 				}
+				else if (colour_mode & COLOUR_HEAL)
+				{
+					gradv = 0.4f;
+					if (!(sim->parts[i].tmp3 < 5))
+						q = int(sqrt((float)sim->parts[i].tmp3));
+					else
+						q = sim->parts[i].tmp3;
+					colr = colg = colb = int(sin(gradv * q) * 100 + 128);
+					cola = 255;
+					if(sim->parts[i].pavg[0] == 2)
+						cola = 0;
+					if (pixel_mode & (FIREMODE | PMODE_GLOW))
+						pixel_mode = (pixel_mode & ~(FIREMODE | PMODE_GLOW)) | PMODE_BLUR;
+					else if ((pixel_mode & (PMODE_BLEND | PMODE_ADD)) == (PMODE_BLEND | PMODE_ADD))
+						pixel_mode = (pixel_mode & ~(PMODE_BLEND | PMODE_ADD)) | PMODE_FLAT;
+					else if (!pixel_mode)
+						pixel_mode |= PMODE_FLAT;
+				}
 				else if(colour_mode & COLOUR_BASC)
 				{
 					colr = PIXR(elements[t].Colour);
@@ -2387,7 +2405,7 @@ void Renderer::draw_air()
 			if (display_mode & DISPLAY_AIRP)
 			{
 				if (pv[y][x] > 0.0f)
-					c  = PIXRGB(clamp_flt(pv[y][x], 0.0f, 32.0f), 0, 0);//positive pressure is red!
+					c  = PIXRGB(clamp_flt(pv[y][x], 0.0f, 16.0f), 0, 0);//positive pressure is red!
 				else
 					c  = PIXRGB(0, 0, clamp_flt(-pv[y][x], 0.0f, 8.0f));//negative pressure is blue!
 			}
@@ -2418,7 +2436,7 @@ void Renderer::draw_air()
 				b = clamp_flt(fabsf(vx[y][x]), 0.0f, 24.0f) + clamp_flt(fabsf(vy[y][x]), 0.0f, 20.0f);
 				if (pv[y][x] > 0.0f)
 				{
-					r += clamp_flt(pv[y][x] / 4, 0.0f, 32.0f);//pressure adds red!
+					r += clamp_flt(pv[y][x] / 4, 0.0f, 16.0f);//pressure adds red!
 					if (r>255)
 						r=255;
 					if (g>255)
@@ -2662,7 +2680,12 @@ Renderer::Renderer(Graphics * g, Simulation * sim):
 		{ },
 		COLOUR_LIFE
 	});
-
+	renderModePresets.push_back({
+		"Organism health display",
+		{ RENDER_BASC },
+		{ },
+		COLOUR_HEAL
+	});
 	//Prepare the graphics cache
 	graphicscache = new gcache_item[PT_NUM];
 	std::fill(&graphicscache[0], &graphicscache[PT_NUM], gcache_item());
