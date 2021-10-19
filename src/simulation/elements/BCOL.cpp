@@ -22,7 +22,7 @@ void Element::Element_BCOL()
 	HotAir = 0.000f	* CFDS;
 	Falldown = 1;
 
-	Flammable = 0;
+	Flammable = 1;
 	Explosive = 0;
 	Meltable = 0;
 	Hardness = 2;

@@ -22,7 +22,7 @@ void Element::Element_COAL()
 	HotAir = 0.0f	* CFDS;
 	Falldown = 0;
 
-	Flammable = 0;
+	Flammable = 1;
 	Explosive = 0;
 	Meltable = 0;
 	Hardness = 20;
@@ -53,8 +53,8 @@ void Element::Element_COAL()
 
 int Element_COAL_update(UPDATE_FUNC_ARGS)
 {
-	if (!sim->betterburning_enable)
-	{
+	//if (!sim->betterburning_enable)
+//	{
 		if (parts[i].life <= 0) {
 			sim->create_part(i, x, y, PT_FIRE);
 			return 1;
@@ -74,7 +74,7 @@ int Element_COAL_update(UPDATE_FUNC_ARGS)
 				return 1;
 			}
 		}
-	}
+//	}
 	if(parts[i].temp > parts[i].tmp2)
 		parts[i].tmp2 = int(parts[i].temp);
 	return 0;

@@ -1,6 +1,6 @@
 #include "simulation/ElementCommon.h"
 
-static int update(UPDATE_FUNC_ARGS);
+int Element_O2_update(UPDATE_FUNC_ARGS);
 static void create(ELEMENT_CREATE_FUNC_ARGS);
 
 void Element::Element_O2()
@@ -17,8 +17,8 @@ void Element::Element_O2()
 	AirLoss = 0.99f;
 	Loss = 0.30f;
 	Collision = -0.1f;
-	Gravity = 0.0f;
-	Diffusion = 3.0f;
+	Gravity = 0.1f;
+	Diffusion = 10.0f;
 	HotAir = 0.000f	* CFDS;
 	Falldown = 0;
 
@@ -43,12 +43,32 @@ void Element::Element_O2()
 	HighTemperature = ITH;
 	HighTemperatureTransition = NT;
 
-	Update = &update;
+	Update = &Element_O2_update;
 	Create = &create;
 }
 
-static int update(UPDATE_FUNC_ARGS)
+int Element_O2_update(UPDATE_FUNC_ARGS)
 {
+
+
+		if (parts[i].tmpcity[7] == 0)
+		{
+		
+
+			if(parts[i].oxygens == 0)
+				parts[i].oxygens = RNG::Ref().between(50, 100) * 2;
+			parts[i].tmpcity[7] = 400;
+		}
+
+
+		if (parts[i].oxygens <= 0)
+		{
+
+
+			sim->kill_part(i);
+
+
+		}
 
 	if (!sim->betterburning_enable)
 	{
@@ -102,30 +122,7 @@ static int update(UPDATE_FUNC_ARGS)
 			}
 		}
 	}
-	else
-	{
 
-
-		if (parts[i].tmpcity[7] == 0)
-		{
-		
-
-			if(parts[i].oxygens == 0)
-				parts[i].oxygens = RNG::Ref().between(50, 100) * 2;
-			parts[i].tmpcity[7] = 400;
-		}
-
-
-		if (parts[i].oxygens <= 0)
-		{
-
-
-			sim->kill_part(i);
-
-
-		}
-
-	}
 	return 0;
 }
 static void create(ELEMENT_CREATE_FUNC_ARGS)

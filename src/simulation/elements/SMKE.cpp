@@ -203,21 +203,15 @@ static int update(UPDATE_FUNC_ARGS)
 
 
 		case PT_H2:
-			switch (RNG::Ref().between(2, 40))
+			if(RNG::Ref().chance(1, 2))
 			{
-			case 7:
 
 				sim->part_change_type(i, x, y, PT_WTRV);
 				parts[i].ctype = PT_NONE;
 				parts[i].temp += RNG::Ref().between(0, 2);
 				parts[i].life += RNG::Ref().between(5, 10);
 
-				break;
 
-
-			default:
-				sim->kill_part(i);
-				break;
 			}
 
 

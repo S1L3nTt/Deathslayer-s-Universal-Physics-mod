@@ -21,8 +21,8 @@ void Element::Element_H2()
 	HotAir = 0.000f	* CFDS;
 	Falldown = 0;
 
-	Flammable = 0;
-	Explosive = 0;
+	Flammable = 5;
+	Explosive = 5;
 	Meltable = 0;
 	Hardness = 0;
 
@@ -47,27 +47,27 @@ void Element::Element_H2()
 
 static int update(UPDATE_FUNC_ARGS)
 {
-	int r,rx,ry,rt;
-	for (rx=-2; rx<3; rx++)
-		for (ry=-2; ry<3; ry++)
-			if (BOUNDS_CHECK && (rx || ry))
-			{
-				r = pmap[y+ry][x+rx];
-				if (!r)
-					continue;
-				rt = TYP(r);
-				if (sim->pv[y/CELL][x/CELL] > 8.0f && rt == PT_DESL) // This will not work. DESL turns to fire above 5.0 pressure
-				{
-					sim->part_change_type(ID(r),x+rx,y+ry,PT_WATR);
-					sim->part_change_type(i,x,y,PT_OIL);
-					return 1;
-				}
-				if (sim->pv[y/CELL][x/CELL] > 45.0f)
-				{
-					if (parts[ID(r)].temp > 2273.15)
-						continue;
-				}
-			}
+	int rx,ry,rt;
+	// for (rx=-2; rx<3; rx++)
+	// 	for (ry=-2; ry<3; ry++)
+	// 		if (BOUNDS_CHECK && (rx || ry))
+	// 		{
+	// 			r = pmap[y+ry][x+rx];
+	// 			if (!r)
+	// 				continue;
+	// 			rt = TYP(r);
+	// 			if (sim->pv[y/CELL][x/CELL] > 8.0f && rt == PT_DESL) // This will not work. DESL turns to fire above 5.0 pressure
+	// 			{
+	// 				sim->part_change_type(ID(r),x+rx,y+ry,PT_WATR);
+	// 				sim->part_change_type(i,x,y,PT_OIL);
+	// 				return 1;
+	// 			}
+	// 			if (sim->pv[y/CELL][x/CELL] > 45.0f)
+	// 			{
+	// 				if (parts[ID(r)].temp > 2273.15)
+	// 					continue;
+	// 			}
+	// 		}
 	if (parts[i].temp > 2273.15 && sim->pv[y/CELL][x/CELL] > 50.0f)
 	{
 		if (RNG::Ref().chance(1, 5))

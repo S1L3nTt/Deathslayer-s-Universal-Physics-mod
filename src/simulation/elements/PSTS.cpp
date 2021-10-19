@@ -38,6 +38,6 @@ void Element::Element_PSTS()
 	HighPressureTransition = NT;
 	LowTemperature = ITL;
 	LowTemperatureTransition = NT;
-	HighTemperature = ITH;
-	HighTemperatureTransition = NT;
+	HighTemperature = 747.0f;
+	HighTemperatureTransition = PT_BRCK;
 }
