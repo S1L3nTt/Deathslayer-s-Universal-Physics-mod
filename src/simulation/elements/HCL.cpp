@@ -408,11 +408,8 @@ static int update(UPDATE_FUNC_ARGS) {
 					}
 				}
 				}
-								if (sim->NoWeightSwitching && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(100 - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID))
-							{
-								sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
-								return 1;
-							}
+								 if (sim->NoWeightSwitching && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER || TYP(r) == PT_BLOD || TYP(r) == PT_HCL))
+				 	sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
 			}
 
 	//if (RNG::Ref().chance(1, 30))
