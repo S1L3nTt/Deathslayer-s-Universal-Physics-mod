@@ -212,6 +212,11 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 							parts[i].nitrogens += std::min(partnum, parts[ID(r)].nitrogens);
 							parts[ID(r)].nitrogens -= std::min(partnum, parts[ID(r)].nitrogens);
 						}
+						if (parts[i].water < parts[i].tmpcity[7] / 2 && parts[ID(r)].water > 0 && parts[i].water < parts[ID(r)].water && RNG::Ref().chance(1, 6))
+						{
+							parts[i].water += std::min(partnum, parts[ID(r)].water);
+							parts[ID(r)].water -= std::min(partnum, parts[ID(r)].water);
+						}
 					}
 					//give
 					capacity = parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].hydrogens + parts[ID(r)].water + parts[ID(r)].nitrogens;
@@ -361,7 +366,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 					
 					}
 
-									 if (sim->NoWeightSwitching && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER || TYP(r) == PT_BLOD || TYP(r) == PT_HCL))
+					 if (sim->NoWeightSwitching && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER || TYP(r) == PT_BLOD || TYP(r) == PT_HCL))
 					 	sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
 					// 	return 1;
 				 
@@ -409,24 +414,3 @@ static int graphics(GRAPHICS_FUNC_ARGS) {
 
 
 
-
-//ddiffusion at a rate diff, when diff>0 the density will spread across the grid cells. 
-//dt length of step
-// void diffuse (int N, int xx,int yy,  int xw, int x0w, float diff, float dt )
-// {
-// int i, j, k, e, a, g = 0;
-// int [5] befored = { parts[ID(pmap[y+1][x])].water, parts[ID(pmap[y][x-1]).water, pmap[y][x].water, parts[ID(pmap[y][x+1]).water, parts[ID(pmap[y-1][x]).water};// array to get touching elements
-
-// int [N*N] afterd;
-// float a=dt*diff*N*N;
-// for ( k=0 ; k<20 ; k++ ) {
-// for ( j=0 ; j<N-1 ; j++ ) { 
-// for ( i=1 ; i<N ; i++ ) {
-
-
-// befored[i+j*N] = x0w + a*(x[pmap(i-1+xx,j+yy)]+x[pmap(i+1+xx,j+yy)]+
-//  x[pmap(i+xx,j-1+yy)]+x[pmap(i+xx,j+1+yy)]))/(1+4*a);
-// }
-// }
-// }
-//}
