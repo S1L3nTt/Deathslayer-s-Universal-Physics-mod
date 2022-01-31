@@ -3635,15 +3635,15 @@ void Simulation::UpdateParticles(int start, int end)
 #ifdef REALISTIC
 				if (t&&(t!=PT_HSWC||parts[i].life==10)&&(elements[t].HeatConduct*gel_scale))
 #else
-				if (t && (t!=PT_HSWC||parts[i].life==10) && RNG::Ref().chance(int(elements[t].HeatConduct*gel_scale), 250))
+				if (t && (t!=PT_HSWC||parts[i].life==10) && RNG::Ref().chance(int(sqrt(elements[t].HeatConduct/2)*gel_scale), 250))
 #endif
 				{
 					if (aheat_enable && !(elements[t].Properties&PROP_NOAMBHEAT))
 					{
 #ifdef REALISTIC
-						c_heat = parts[i].temp*96.645/elements[t].HeatConduct*gel_scale*fabs(elements[t].Weight) + hv[y/CELL][x/CELL]*100*(pv[y/CELL][x/CELL]+273.15f)/256;
-						float c_Cm = 96.645/elements[t].HeatConduct*gel_scale*fabs(elements[t].Weight)  + 100*(pv[y/CELL][x/CELL]+273.15f)/256;
-						pt = c_heat/c_Cm;
+						c_heat = parts[i].temp*96.645/sqrt(elements[t].HeatConduct)*gel_scale*fabs(pow(elements[t].Weight,2)) + hv[y/CELL][x/CELL]*100*(pv[y/CELL][x/CELL]+273.15f)/256;
+						float c_Cm = 96.645/sqrt(elements[t].HeatConduct)*gel_scale*fabs(pow(elements[t].Weight,2))  + 100*(pv[y/CELL][x/CELL]+273.15f)/256;
+						pt = c_heat/c_Cm;z
 						pt = restrict_flt(pt, -MAX_TEMP+MIN_TEMP, MAX_TEMP-MIN_TEMP);
 						parts[i].temp = pt;
 						//Pressure increase from heat (temporary)
