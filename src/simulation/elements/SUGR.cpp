@@ -95,11 +95,11 @@ static int update(UPDATE_FUNC_ARGS) {
 				if (!r) continue;
 
 				// Dissolve
-				if (TYP(r) == PT_WATR || TYP(r) == PT_DSTW) {
-					sim->part_change_type(i, x, y, PT_SWTR);
-						sim->kill_part(ID(r));
-					return 0;
-				}
+				// if (sim->elements[rt].Properties & PROP_WATER) {
+				// 	//sim->part_change_type(i, x, y, PT_SWTR);
+				// 	//	sim->kill_part(ID(r));
+				// 	return 0;
+				// }
 
 				// Grow YEST
 				else if (TYP(r) == PT_YEST && RNG::Ref().chance(1, 300)) {
