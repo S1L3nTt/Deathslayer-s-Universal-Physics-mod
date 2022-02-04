@@ -17,8 +17,11 @@ struct Particle
 	int tmp2;
 	int tmp3;
 	int tmp4;
+	int freespace;
+	int surround[8];
 	float tmpcity[10];
 	float tmpville[20];
+	int metabolism;
 	int oxygens;
 	int nitrogens;
 	int carbons;

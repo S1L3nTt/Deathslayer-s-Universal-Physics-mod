@@ -16,7 +16,7 @@ void Element::Element_WATR()
 	AirDrag = 0.01f * CFDS;
 	AirLoss = 0.98f;
 	Loss = 0.95f;
-	Collision = 0.0f;
+	Collision = 0.1f;
 	Gravity = 0.1f;
 	Diffusion = 0.00f;
 	HotAir = 0.000f	* CFDS;
@@ -69,8 +69,14 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 				break;
 
 			case PT_CBNW:
+				parts[i].water = 10;
+				parts[i].tmp4 = 100;
+				parts[i].ctype = PT_CO2;
+				parts[i].tmpcity[7] = 400;
+
+			break;
 			case PT_SLTW:
-				parts[i].water = 80;
+				parts[i].water = 100;
 				parts[i].tmp4 = 50;
 				parts[i].tmpcity[7] = 400;
 				break;
@@ -78,7 +84,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 			case PT_SWTR:
 				parts[i].water = 100;
 				parts[i].tmp4 = 200;
-				parts[i].carbons = 200;
+				parts[i].carbons = 100;
 				parts[i].hydrogens = 15;
 				parts[i].nitrogens = 5;
 				parts[i].tmpcity[7] = 400;
@@ -113,7 +119,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 	//	sim->kill_part(i);
 	if (parts[i].ctype != 0 && parts[i].tmp4 <= 0)
 		parts[i].ctype = 0;
-	if (parts[i].ctype == 0 && parts[i].tmp4 > 0)
+	if (parts[i].ctype == 0 && parts[i].tmp4 > 0 && parts[i].type == PT_WATR)
 		parts[i].tmp4 = 0;
 
 
@@ -127,6 +133,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 	//tmpville[7]:b  for color
 	int capacity = 0;
 	int r, rx, ry;
+	//int freeabove;
 	for (ry=-1; ry<2; ry++)
 	for (rx=-1; rx<2; rx++)
 		
@@ -144,7 +151,12 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 						parts[sim->create_part(-1, x + rx, y + ry, PT_WATR)].water = parts[i].water - 100;
 						parts[i].water = 100;
 					}
+				//	if(ry == -1)
+				//	{
+						//if (RNG::Ref().chance(1, 3))
+					//	freeabove = 1;
 
+				//	}
 					continue;
 				}
 
@@ -316,8 +328,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 					else
 						sim->part_change_type(ID(r),x+rx,y+ry,PT_STNE);
 				}
-				if ((sim->elements[TYP(r)].Properties & TYPE_PART ||
-					sim->elements[TYP(r)].Properties & TYPE_SOLID) && RNG::Ref().chance(1, 2))
+				if ((sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_SOLID) && abs(parts[i].vy + parts[i].vx) < 2 && RNG::Ref().chance(1, 2))
 					parts[i].vx = parts[i].vy = 0;
 			
 
@@ -366,9 +377,24 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 					
 					}
 
-					 if (sim->NoWeightSwitching && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER || TYP(r) == PT_BLOD || TYP(r) == PT_HCL))
-					 	sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
-					// 	return 1;
+					 if (sim->NoWeightSwitching && sim->pmap_count[y][x]<2 && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER))
+					 	{
+					//	  if(freeabove != 0 && parts[ID(r)].y > y)
+					//	 {
+						// parts[i].vx += freeabove;
+					//	if(parts[ID(r)].vy > 0)
+					//	 parts[i].vy += -2 - parts[ID(r)].vy;
+					//	 else
+						// parts[i].vy += -1;
+						
+						 
+					    
+					//	 }
+						 sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
+						
+
+						 
+						 }
 				 
 				
 			

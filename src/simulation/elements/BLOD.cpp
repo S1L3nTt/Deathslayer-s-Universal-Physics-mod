@@ -40,6 +40,7 @@ void Element::Element_BLOD() {
 	DefaultProperties.tmp4 = 100;
 	DefaultProperties.tmpcity[7] = 800;
 	DefaultProperties.tmpcity[3] = 100;
+	DefaultProperties.metabolism = 50;
 
 	HeatConduct = 69;
 	Description = "Blood. Stains particles, clots when exposed to air or when it's dry.";
@@ -134,7 +135,7 @@ static int update(UPDATE_FUNC_ARGS) {
 	}
 
 
-	if (parts[i].pavg[0] != 2 && sim->timer % 20 == 0)
+	if (parts[i].pavg[0] != 2 && sim->timer % parts[i].metabolism == 0)
 	{
 
 		if (parts[i].oxygens > 0 && parts[i].carbons > 0 && parts[i].tmpcity[3] < 100 - 1)
@@ -565,7 +566,7 @@ static int update(UPDATE_FUNC_ARGS) {
 				 if ((sim->elements[TYP(r)].Properties & TYPE_PART ||
 					 sim->elements[TYP(r)].Properties & TYPE_SOLID) && RNG::Ref().chance(parts[i].tmp2, 5 + parts[i].water / 10))
 					 parts[i].vx = parts[i].vy = 0;
-					 if (sim->NoWeightSwitching && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER || TYP(r) == PT_BLOD || TYP(r) == PT_HCL))
+						 if (sim->NoWeightSwitching && sim->pmap_count[y][x]<2 && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER))
 					 	sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
 			//if (rt == PT_BLOD && parts[i].tmpville[3] > 2 && parts[ID(r)].tmpville[3] > 2 && parts[i].tmpville[3] > parts[ID(r)].tmpville[3] && RNG::Ref().chance(1, 80))
 			//{

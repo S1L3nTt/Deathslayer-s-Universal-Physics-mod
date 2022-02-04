@@ -37,6 +37,7 @@ void Element::Element_FLSH() {
 	DefaultProperties.tmpcity[3] = 100;
 	DefaultProperties.tmpcity[7] = 600;
 	DefaultProperties.tmpcity[9] = 0;
+	DefaultProperties.metabolism = 50;
 
 	HeatConduct = 54;
 	Description = "Flesh. Can be cooked.";
@@ -108,7 +109,7 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 	return 1;
 	}
 
-	if (parts[i].pavg[0] != 2 && sim->timer % 30 == 0)
+	if (parts[i].pavg[0] != 2 && sim->timer % parts[i].metabolism == 0)
 	{
 
 			if (parts[i].oxygens > 0 && parts[i].carbons > 0 && parts[i].nitrogens < parts[i].tmpcity[7] / 5 && parts[i].tmpcity[3] < 100-1)
