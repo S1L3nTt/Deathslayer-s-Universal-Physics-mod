@@ -29,9 +29,9 @@ void Element::Element_FLSH() {
 
 	Weight = 100;
 
-	DefaultProperties.oxygens = 50;
-	DefaultProperties.carbons = 50;
-	DefaultProperties.water = 100;
+	DefaultProperties.oxygens = 100;
+	DefaultProperties.carbons = 100;
+	DefaultProperties.water = 50;
 	DefaultProperties.tmp3 = 100;
 	DefaultProperties.tmp4 = 100;
 	DefaultProperties.tmpcity[3] = 100;

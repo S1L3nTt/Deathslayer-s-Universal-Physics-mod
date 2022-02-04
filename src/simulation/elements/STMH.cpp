@@ -43,6 +43,7 @@ void Element::Element_STMH() {
 	DefaultProperties.tmpcity[7] = 800;
 	DefaultProperties.tmpcity[9] = 0;
 	DefaultProperties.tmpcity[3] = 100;
+	DefaultProperties.metabolism = 50;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;

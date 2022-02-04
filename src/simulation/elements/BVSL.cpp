@@ -37,8 +37,9 @@ void Element::Element_BVSL() {
 
 	Properties = TYPE_SOLID | PROP_NEUTPENETRATE | PROP_ORGANISM | PROP_ANIMAL;
 
-	DefaultProperties.oxygens = 50;
-	DefaultProperties.carbons = 50;
+	DefaultProperties.oxygens = 100;
+	DefaultProperties.carbons = 100;
+	DefaultProperties.hydrogens = 20;
 	DefaultProperties.water = 50;
 	DefaultProperties.tmp2 = 2;
 	DefaultProperties.tmp3 = 100;
@@ -48,6 +49,7 @@ void Element::Element_BVSL() {
 	DefaultProperties.tmpcity[3] = 100;
 	DefaultProperties.tmpville[3] = 0;
 	DefaultProperties.tmpville[4] = 0;
+	DefaultProperties.metabolism = 50;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;

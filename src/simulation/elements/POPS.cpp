@@ -42,6 +42,7 @@ DefaultProperties.tmp3 = 100;
 DefaultProperties.tmp4 = 100;
 DefaultProperties.tmpcity[7] = 800;
 DefaultProperties.tmpcity[3] = 100;
+DefaultProperties.metabolism = 50;
 
 LowPressure = IPL;
 LowPressureTransition = NT;
