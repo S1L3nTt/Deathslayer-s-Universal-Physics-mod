@@ -3602,7 +3602,7 @@ void Simulation::UpdateParticles(int start, int end)
 
 			j = surround_space = parts[ID(r)].freespace = nt = 0;//if nt is greater than 1 after this, then there is a particle around the current particle, that is NOT the current particle's type, for water movement.
 		   
-		   std::fill_n(parts[ID(r)].surround, 8, 0);
+	//	   std::fill_n(parts[ID(r)].surround, 8, 0);
 		
 			for (nx=-1; nx<2; nx++)
 				for (ny=-1; ny<2; ny++) {
@@ -3613,7 +3613,7 @@ void Simulation::UpdateParticles(int start, int end)
 						{
 							surround_space++;//there is empty space
 							parts[ID(r)].freespace++;
-							parts[ID(r)].surround[surround_space-1] = pmap[y+ny][x+nx];
+						//	parts[ID(r)].surround[surround_space-1] = pmap[y+ny][x+nx];
 						}
 						if (TYP(r)!=t)
 							nt++;//there is nothing or a different particle
@@ -5040,10 +5040,10 @@ void Simulation::CheckStacking()
 					excessive_stacking_found = true;
 				}
 			}
-			else if(pmap_count[y][x]>2)
-			{
-				excessive_stacking_found = true;
-			}
+	//		else if(pmap_count[y][x]>2)
+		//	{
+			//	excessive_stacking_found = true;
+		//	}
 		}
 	}
 	if (excessive_stacking_found)
@@ -5072,15 +5072,15 @@ void Simulation::CheckStacking()
 							kill_part(i);
 						}
 					}
-					else if (pmap_count[y][x]>2 && parts[ID(pmap[y][x])].freespace > 0)
-					{
-						int newspot = ID(parts[ID(pmap[y][x])].surround[RNG::Ref().between(0, parts[ID(pmap[y][x])].freespace)]);
-						try_move(ID(pmap[y][x]), x, y, parts[newspot].x, parts[newspot].y);
+				//	else if (pmap_count[y][x]>2 && parts[ID(pmap[y][x])].freespace > 0)
+				//	{
+					//	int newspot = ID(parts[ID(pmap[y][x])].surround[RNG::Ref().between(0, parts[ID(pmap[y][x])].freespace)]);
+					//	try_move(ID(pmap[y][x]), x, y, parts[newspot].x, parts[newspot].y);
 
 						//if(!(elements[ID(pmap[y--][x])].Properties & TYPE_SOLID ))
 						//if(!(parts[ID(pmap[y--][x])].type))
 					//	parts[ID(pmap[y][x])].y--;
-					}
+				//	}
 				}
 			}
 							
