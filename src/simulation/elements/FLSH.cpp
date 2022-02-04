@@ -283,7 +283,7 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 			if (parts[i].pavg[0] != 2)
 			{
 
-				if (sqrtf(parts[ID(r)].vx * parts[ID(r)].vx + parts[ID(r)].vy * parts[ID(r)].vy) > 8.0f)
+				if (sqrtf(parts[ID(r)].vx * parts[ID(r)].vx + parts[ID(r)].vy * parts[ID(r)].vy) > 16.0f)
 				{
 					if (sqrtf(parts[ID(r)].vx * parts[ID(r)].vx + parts[ID(r)].vy * parts[ID(r)].vy) > parts[i].tmp3 && RNG::Ref().chance(1, restrict_flt(20 - sqrtf(parts[ID(r)].vx * parts[ID(r)].vx + parts[ID(r)].vy * parts[ID(r)].vy), 1, MAX_TEMP)))
 						parts[i].tmpcity[8] = 1;
@@ -392,7 +392,7 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 					parts[ID(r)].hydrogens += (diff + 1) / 2;*/
 
 
-					// Die if touching toxic chemicals
+					// Take damage if touching toxic chemicals
 					if ((rt == PT_H2O2 || rt == PT_ACID || rt == PT_CAUS || rt == PT_PLUT || rt == PT_URAN ||
 						rt == PT_ISOZ || rt == PT_ISZS || rt == PT_POLO || rt == PT_MERC || sim->elements[rt].Properties & PROP_DEADLY || (rt == PT_HCL && parts[i].type != PT_STMH)) && parts[i].pavg[0] != 2 && RNG::Ref().chance(1, 20)) {
 						parts[i].tmp3--;
