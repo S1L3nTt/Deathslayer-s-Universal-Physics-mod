@@ -221,116 +221,7 @@ static int update(UPDATE_FUNC_ARGS) {
 				
 			
 				}
-				//}
-
-				// give
-
-			//	if (RNG::Ref().chance(1, 8))
-			//	{
-			//		if (parts[i].tmp4 > parts[ID(r)].tmp4 && parts[i].tmp4 < parts[i].tmpcity[7]  && RNG::Ref().chance(1, 6))
-			//		{
-			//			parts[ID(r)].tmp4 += std::min(10, parts[i].tmp4);
-			//			parts[i].tmp4 -= std::min(10, parts[i].tmp4);
-			//			parts[ID(r)].ctype = parts[i].ctype;
-			//		}
-			//		if (parts[i].carbons > parts[ID(r)].carbons && RNG::Ref().chance(1, 6))
-			//		{
-
-			//			parts[ID(r)].carbons += std::min(10, parts[i].carbons);
-			//			parts[i].carbons -= std::min(10, parts[i].carbons);
-
-
-			//		}
-			//		if (parts[i].oxygens > parts[ID(r)].oxygens && RNG::Ref().chance(1, 6))
-			//		{
-
-
-			//			parts[ID(r)].oxygens += std::min(10, parts[i].oxygens);
-			//			parts[i].oxygens -= std::min(10, parts[i].oxygens);
-
-
-			//		}
-			//		if (parts[i].hydrogens > parts[ID(r)].hydrogens && RNG::Ref().chance(1, 6))
-			//		{
-
-
-			//			parts[ID(r)].hydrogens += std::min(10, parts[i].hydrogens);
-			//			parts[i].hydrogens -= std::min(10, parts[i].hydrogens);
-
-			//		}
-			//		if (parts[i].nitrogens > parts[ID(r)].nitrogens && RNG::Ref().chance(1, 6))
-			//		{
-
-
-			//			parts[ID(r)].nitrogens += std::min(10, parts[i].nitrogens);
-			//			parts[i].nitrogens -= std::min(10, parts[i].nitrogens);
-
-			//		}
-			//		if (parts[i].water > parts[ID(r)].water && RNG::Ref().chance(1, 6))
-			//		{
-
-
-			//			parts[ID(r)].water += std::min(10, parts[i].water);
-			//			parts[i].water -= std::min(10, parts[i].water);
-
-			//		}
-			//	}
-			//	// take
-
-			//	capacity = parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].hydrogens + parts[ID(r)].water + parts[ID(r)].nitrogens;
-			//	if (RNG::Ref().chance(1, 8))
-			//	{
-
-			//	if (parts[ID(r)].tmp4 > parts[i].tmp4 && RNG::Ref().chance(1, 6))
-			//	{
-			//			parts[i].tmp4 += std::min(10, parts[ID(r)].tmp4);
-			//			parts[ID(r)].tmp4 -= std::min(10, parts[ID(r)].tmp4);
-			//			parts[i].ctype = parts[ID(r)].ctype;
-
-			//	}
-
-			//	if (parts[ID(r)].carbons > parts[i].carbons && RNG::Ref().chance(1, 6))
-			//	{
-
-			//		parts[i].carbons += std::min(10, parts[ID(r)].carbons);
-			//		parts[ID(r)].carbons -= std::min(10, parts[ID(r)].carbons);
-
-			//	}
-			//	if (parts[ID(r)].oxygens > parts[i].oxygens && RNG::Ref().chance(1, 6))
-			//	{
-
-
-			//		parts[i].oxygens += std::min(10, parts[ID(r)].oxygens);
-			//		parts[ID(r)].oxygens -= std::min(10, parts[ID(r)].oxygens);
-
-			//	}
-			//	if (parts[ID(r)].hydrogens > parts[i].hydrogens && RNG::Ref().chance(1, 6))
-			//	{
-
-
-			//		parts[i].hydrogens += std::min(10, parts[ID(r)].hydrogens);
-			//		parts[ID(r)].hydrogens -= std::min(10, parts[ID(r)].hydrogens);
-
-			//	}
-			//	if (parts[ID(r)].nitrogens > parts[i].nitrogens && RNG::Ref().chance(1, 6))
-			//	{
-
-			//		parts[i].nitrogens += std::min(10, parts[ID(r)].nitrogens);
-			//		parts[ID(r)].nitrogens -= std::min(10, parts[ID(r)].nitrogens);
-
-			//	}
-			//	if (parts[ID(r)].water > parts[i].water && RNG::Ref().chance(1, 6))
-			//	{
-
-			//		parts[i].water += std::min(10, parts[ID(r)].water);
-			//		parts[ID(r)].water -= std::min(10, parts[ID(r)].water);
-
-			//	}
-			//}
-
-
 				
-
 			//	else if (parts[i].ctype && !parts[ID(r)].ctype)
 				//	std::swap(parts[i].ctype, parts[ID(r)].ctype);
 			//}
@@ -356,7 +247,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 						if (((sim->elements[rt].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_ORGANISM || sim->elements[rt].Properties & PROP_ANIMAL) && rt != PT_STMH) && RNG::Ref().chance(1, 8))
 						{
-							if ((parts[ID(r)].hydrogens > 0 || parts[ID(r)].oxygens > 0 || parts[ID(r)].carbons > 0 || parts[ID(r)].nitrogens > 0 || parts[ID(r)].water > 0) && RNG::Ref().chance(1, 8))// (rt == PT_FLSH || (rt == PT_BRKN && parts[ID(r)].ctype == PT_FLSH) )
+							if ((parts[ID(r)].hydrogens > 0 || parts[ID(r)].oxygens > 0 || parts[ID(r)].carbons > 0 || parts[ID(r)].nitrogens > 0 || parts[ID(r)].water > 0))// (rt == PT_FLSH || (rt == PT_BRKN && parts[ID(r)].ctype == PT_FLSH) )
 							{
 								parts[i].carbons += std::min(10, parts[ID(r)].carbons);
 								parts[i].oxygens += std::min(10, parts[ID(r)].oxygens);
@@ -409,7 +300,6 @@ static int update(UPDATE_FUNC_ARGS) {
 				}
 				}
 						if (sim->NoWeightSwitching && sim->pmap_count[y][x]<2 && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER))
-
 				 	sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
 			}
 

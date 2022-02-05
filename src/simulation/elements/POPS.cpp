@@ -112,7 +112,7 @@ static int update(UPDATE_FUNC_ARGS) {
 						int wste = 0;
 						int dawaste = 0;
 
-						if (parts[i].hydrogens > 20 && parts[i].hydrogens > parts[i].tmpcity[7] / 4 && RNG::Ref().chance(1, 5))
+						if (parts[i].hydrogens > 20 && parts[i].hydrogens > parts[i].tmpcity[7] / 6 && RNG::Ref().chance(1, 2))
 						{
 						/*	if (wste == 0 && )
 							 wste = sim->create_part(-1, x + rx, y + ry, RNG::Ref().chance(1, 3) ? PT_WSTE : PT_WATR);*/
@@ -121,7 +121,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 						}
-						if (parts[i].carbons > 20 && parts[i].carbons > parts[i].tmpcity[7] / 4 && RNG::Ref().chance(1, 5))
+						if (parts[i].carbons > 20 && parts[i].carbons > parts[i].tmpcity[7] / 4 && RNG::Ref().chance(1, 2))
 						{
 						/*	if (wste == 0)
 								wste = sim->create_part(-1, x + rx, y + ry, RNG::Ref().chance(1, 3) ? PT_WSTE : PT_WATR);
@@ -130,13 +130,13 @@ static int update(UPDATE_FUNC_ARGS) {
 							
 						}
 
-						 if (parts[i].oxygens > 20 && parts[i].oxygens > parts[i].tmpcity[7] / 5 && RNG::Ref().chance(1, 5))
+						 if (parts[i].oxygens > 20 && parts[i].oxygens > parts[i].tmpcity[7] / 4 && RNG::Ref().chance(1, 2))
 						{
 							// if (wste == 0)
 							//	 wste = sim->create_part(-1, x + rx, y + ry, RNG::Ref().chance(1, 3) ? PT_WSTE : PT_WATR);
 							 dawaste += 4;
 						}
-						 if (parts[i].nitrogens > 20 && RNG::Ref().chance(1, 5))
+						 if (parts[i].nitrogens > 10 && RNG::Ref().chance(1, 5))
 						{
 
 
@@ -147,7 +147,7 @@ static int update(UPDATE_FUNC_ARGS) {
 							 parts[wste].nitrogens += 10;
 							 parts[i].nitrogens -= 10;*/
 						}
-						if (parts[i].water > 20 && parts[i].water > parts[i].tmpcity[7] / 5 && RNG::Ref().chance(1, 5))
+						if (parts[i].water > 20 && parts[i].water > parts[i].tmpcity[7] / 6 && RNG::Ref().chance(1, 2))
 						{
 							dawaste += 16;
 						/*	if (wste == 0)

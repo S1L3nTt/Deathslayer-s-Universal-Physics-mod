@@ -35,10 +35,6 @@ void Element::Element_CBNW()
 
 	Properties = TYPE_LIQUID|PROP_CONDUCTS|PROP_LIFE_DEC|PROP_NEUTPENETRATE | PROP_WATER;
 
-	DefaultProperties.water = 40;
-	DefaultProperties.tmpcity[5] = 60;
-	DefaultProperties.tmpcity[7] = 400;
-
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;

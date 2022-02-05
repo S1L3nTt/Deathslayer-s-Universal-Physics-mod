@@ -29,14 +29,11 @@ void Element::Element_SLTW()
 
 	Weight = 35;
 
-	HeatConduct = 75;
+	HeatConduct = 35;
 	Description = "Saltwater, conducts electricity, difficult to freeze.";
 
-	Properties = TYPE_LIQUID|PROP_CONDUCTS|PROP_LIFE_DEC|PROP_NEUTPENETRATE | PROP_WATER;
+	Properties = TYPE_LIQUID|PROP_CONDUCTS | PROP_WATER;
 
-	DefaultProperties.water = 80;
-	DefaultProperties.tmp4 = 50;
-	DefaultProperties.tmpcity[7] = 400;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;

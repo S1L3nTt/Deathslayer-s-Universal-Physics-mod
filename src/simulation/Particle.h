@@ -27,6 +27,8 @@ struct Particle
 	int carbons;
 	int hydrogens;
 	int water;
+	int sugar;
+	int salt;
 	unsigned int dcolour;
 //	String fullname;
 	/** Returns a list of properties, their type and offset within the structure that can be changed

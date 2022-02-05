@@ -90,7 +90,7 @@ static int update(UPDATE_FUNC_ARGS)
 						return 0;
 					}
 				}
-				else if ((TYP(r)==PT_FRZZ) && RNG::Ref().chance(1, 200))
+				else if ((TYP(r)==PT_FRZZ) && RNG::Ref().chance(1, 2000))
 				{
 					sim->part_change_type(ID(r),x+rx,y+ry,PT_ICEI);
 					parts[ID(r)].ctype = PT_FRZW;

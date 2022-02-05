@@ -33,10 +33,7 @@ void Element::Element_WATR()
 	HeatConduct = 29;
 	Description = "Water. Conducts electricity, freezes, essencial for life.";
 
-	Properties = TYPE_LIQUID|PROP_CONDUCTS|PROP_LIFE_DEC|PROP_NEUTPASS | PROP_WATER;
-
-	DefaultProperties.water = 100;
-	DefaultProperties.tmpcity[7] = 400;
+	Properties = TYPE_LIQUID|PROP_CONDUCTS| PROP_WATER;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
@@ -77,17 +74,20 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 			break;
 			case PT_SLTW:
 				parts[i].water = 100;
-				parts[i].tmp4 = 50;
+				parts[i].tmp4 = 100;
+				parts[i].ctype = PT_SALT;
 				parts[i].tmpcity[7] = 400;
 				break;
 
 			case PT_SWTR:
 				parts[i].water = 100;
-				parts[i].tmp4 = 200;
+				parts[i].tmp4 = 100;
 				parts[i].carbons = 100;
 				parts[i].hydrogens = 15;
 				parts[i].nitrogens = 5;
+				parts[i].ctype = PT_SUGR;
 				parts[i].tmpcity[7] = 400;
+				
 				break;
 			case PT_H2O2:
 					parts[i].water = 80;
@@ -302,15 +302,13 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 
 
 
+ 
 
-
-				 if (rt ==PT_SALT && RNG::Ref().chance(1, 50))
-				{
+				 if (parts[i].ctype == PT_SALT && parts[i].tmp4 > 10 && RNG::Ref().chance(1, 50))
 					sim->part_change_type(i,x,y,PT_SLTW);
-					// on average, convert 3 WATR to SLTW before SALT turns into SLTW
-					if (RNG::Ref().chance(1, 3))
-						sim->part_change_type(ID(r),x+rx,y+ry,PT_SLTW);
-				}
+				if(parts[i].ctype == PT_SUGR && parts[i].tmp4 > 10 && RNG::Ref().chance(1, 50))
+					sim->part_change_type(i,x,y,PT_SWTR);
+				
 				 if ((rt==PT_RBDM||TYP(r)==PT_LRBD) && (sim->legacy_enable||parts[i].temp>(273.15f+12.0f)) && RNG::Ref().chance(1, 100))
 				{
 					sim->part_change_type(i,x,y,PT_FIRE);
@@ -335,9 +333,9 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 
 
 				int capacity = parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
-
 				if ((sim->elements[rt].Properties & PROP_EDIBLE && !(sim->elements[rt].Properties & PROP_ANIMAL || sim->elements[rt].Properties & PROP_ORGANISM  || sim->elements[rt].Properties & PROP_WATER)) && capacity < parts[i].tmpcity[7] && RNG::Ref().chance(1, restrict_flt(800 - parts[i].temp, 1, MAX_TEMP)))
 				{
+					
 					if (parts[ID(r)].hydrogens > 0 || parts[ID(r)].oxygens > 0 || parts[ID(r)].carbons > 0 || parts[ID(r)].nitrogens > 0 || parts[ID(r)].water > 0)// (rt == PT_FLSH || (rt == PT_BRKN && parts[ID(r)].ctype == PT_FLSH) )
 					{
 						parts[i].carbons += std::min(10, parts[ID(r)].carbons);
@@ -360,7 +358,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 							sim->kill_part(ID(r));
 						}
 					}
-					if (parts[ID(r)].tmp4 > 0 && RNG::Ref().chance(1, 80))
+					if (parts[ID(r)].tmp4 > 0 && RNG::Ref().chance(1, 8))
 					{
 						
 							parts[i].tmp4 += std::min(10, parts[ID(r)].tmp4);

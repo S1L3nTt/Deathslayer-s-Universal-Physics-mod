@@ -28,17 +28,11 @@ void Element::Element_SWTR() {
 
 	Weight = 35;
 
-	HeatConduct = 75;
+	HeatConduct = 35;
 	Description = "Sugar water.";
 
-	DefaultProperties.tmpcity[7] = 400;
-	DefaultProperties.tmp4 = 100;
-	DefaultProperties.water = 100;
-	DefaultProperties.carbons = 100;
-	DefaultProperties.hydrogens = 15;
-	DefaultProperties.nitrogens = 5;
 
-	Properties = TYPE_LIQUID | PROP_CONDUCTS | PROP_NEUTPENETRATE | PROP_EDIBLE | PROP_WATER;
+	Properties = TYPE_LIQUID | PROP_CONDUCTS | PROP_EDIBLE | PROP_WATER;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
