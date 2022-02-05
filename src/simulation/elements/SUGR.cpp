@@ -31,8 +31,9 @@ void Element::Element_SUGR() {
 	DefaultProperties.tmpcity[7] = 400;
 	DefaultProperties.tmp4 = 150;
 	DefaultProperties.carbons = 100;
-	DefaultProperties.hydrogens = 15;
-	DefaultProperties.nitrogens = 5;
+	DefaultProperties.oxygens = 10;
+	DefaultProperties.hydrogens = 20;
+	DefaultProperties.nitrogens = 20;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
@@ -62,9 +63,11 @@ static int update(UPDATE_FUNC_ARGS) {
 				sim->part_change_type(i, x, y, PT_WATR);
 			else
 				sim->part_change_type(i, x, y, PT_DUST);
+				
 		}
 		else
 			sim->kill_part(i);
+		return 0;
 
 	}
 	if(parts[i].water > 10)

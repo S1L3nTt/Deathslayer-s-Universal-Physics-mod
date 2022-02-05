@@ -54,10 +54,10 @@ void Element::Element_MWAX()
 }
 
 static int update(UPDATE_FUNC_ARGS) {
-	//MWAX is a low carbon powder, it should not have any more than 7 carbons.
-	if (parts[i].carbons > 7)sim->part_change_type(i, x, y, PT_DESL);
+	//MWAX is a low carbon powder, it should not have any more than 7 carbons. but its frozen
+	//if (parts[i].carbons > 7)sim->part_change_type(i, x, y, PT_DESL);
 
-	int t = parts[i].temp - sim->pv[y / CELL][x / CELL];	//Pressure affects state transitions
+	int t = parts[i].temp - sim->pv[y / CELL][x / CELL] / 2;	//Pressure affects state transitions
 	//Freezing into WAX
 	if ((parts[i].carbons < 5 && t <= (-200 + 273.15)) || (parts[i].carbons > 5 && t <= (14.3f * sqrt((parts[i].carbons - 12))) + 273.15))
 		sim->part_change_type(i, x, y, PT_WAX);

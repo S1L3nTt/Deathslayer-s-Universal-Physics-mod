@@ -184,14 +184,14 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 			//	else
 				//	parts[i].ctype = rt;
 
-				 if (sim->elements[rt].Properties & PROP_WATER || rt == PT_BLOD) {
+				 if (sim->elements[rt].Properties & PROP_WATER || rt == PT_BLOD || rt == PT_HCL) {
 
 
 
 					if (rt == parts[i].type)
-						partnum += 5;
+						partnum += 10;
 					else
-						partnum += 2;
+						partnum += 5;
 
 					capacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
 					if (RNG::Ref().chance(1, 8) && capacity + 2 < parts[i].tmpcity[7])
@@ -375,8 +375,8 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 					
 					}
 
-					 if (sim->NoWeightSwitching && sim->pmap_count[y][x]<2 && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER))
-					 	{
+					 if (sim->NoWeightSwitching && sim->pmap_count[y][x]<2 && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER || TYP(r) == PT_HCL))
+					 	sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
 					//	  if(freeabove != 0 && parts[ID(r)].y > y)
 					//	 {
 						// parts[i].vx += freeabove;
@@ -388,11 +388,11 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 						 
 					    
 					//	 }
-						 sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
+						 
 						
 
 						 
-						 }
+						 
 				 
 				
 			

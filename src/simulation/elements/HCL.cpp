@@ -129,14 +129,14 @@ static int update(UPDATE_FUNC_ARGS) {
 			}*/
 
 			// stuff diffusion
-			if (rt == PT_HCL || rt == PT_WATR || rt == PT_DSTW || rt == PT_SLTW || rt == PT_SWTR || rt == PT_CBNW) {
+			if (sim->elements[rt].Properties & PROP_WATER || rt == PT_BLOD || rt == PT_HCL) {
 
 				
 
 				if (rt == parts[i].type)
-					partnum += 5;
+					partnum += 10;
 				else
-					partnum += 2;
+					partnum += 5;
 
 				capacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
 				if (RNG::Ref().chance(1, 8) && capacity + 2 < parts[i].tmpcity[7])
@@ -234,7 +234,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 
-			if (rt != PT_CLNE && rt != PT_PCLN && rt != PT_ACID && rt != PT_HCL && rt != PT_CAUS && RNG::Ref().chance(1, 8))
+			if (sim->elements[rt].Properties & PROP_WATER && rt != PT_CLNE && rt != PT_PCLN && rt != PT_ACID && rt != PT_HCL && rt != PT_CAUS && RNG::Ref().chance(1, 8))
 			{
 				capacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
 				if (RNG::Ref().chance(1, restrict_flt(sim->elements[rt2].Hardness + parts[i].water - parts[i].temp, 1, MAX_TEMP)) && (parts[i].ctype == rt || parts[i].ctype == 0) && capacity < parts[i].tmpcity[7]) {
@@ -249,18 +249,18 @@ static int update(UPDATE_FUNC_ARGS) {
 						{
 							if ((parts[ID(r)].hydrogens > 0 || parts[ID(r)].oxygens > 0 || parts[ID(r)].carbons > 0 || parts[ID(r)].nitrogens > 0 || parts[ID(r)].water > 0))// (rt == PT_FLSH || (rt == PT_BRKN && parts[ID(r)].ctype == PT_FLSH) )
 							{
-								parts[i].carbons += std::min(10, parts[ID(r)].carbons);
-								parts[i].oxygens += std::min(10, parts[ID(r)].oxygens);
-								parts[i].hydrogens += std::min(10, parts[ID(r)].hydrogens);
-								parts[i].nitrogens += std::min(10, parts[ID(r)].nitrogens);
-								parts[i].water += std::min(10, parts[ID(r)].water);
-								//parts[i].tmp4 += std::min(10, parts[ID(r)].tmp4);
-								parts[ID(r)].carbons -= std::min(10, parts[ID(r)].carbons);
-								parts[ID(r)].oxygens -= std::min(10, parts[ID(r)].oxygens);
-								parts[ID(r)].hydrogens -= std::min(10, parts[ID(r)].hydrogens);
-								parts[ID(r)].nitrogens -= std::min(10, parts[ID(r)].nitrogens);
-								parts[ID(r)].water -= std::min(10, parts[ID(r)].water);
-								//	parts[ID(r)].tmp4 -= std::min(10, parts[ID(r)].tmp4);
+								parts[i].carbons += std::min(20, parts[ID(r)].carbons);
+								parts[i].oxygens += std::min(20, parts[ID(r)].oxygens);
+								parts[i].hydrogens += std::min(20, parts[ID(r)].hydrogens);
+								parts[i].nitrogens += std::min(20, parts[ID(r)].nitrogens);
+								parts[i].water += std::min(20, parts[ID(r)].water);
+								parts[i].tmp4 += std::min(20, parts[ID(r)].tmp4);
+								parts[ID(r)].carbons -= std::min(20, parts[ID(r)].carbons);
+								parts[ID(r)].oxygens -= std::min(20, parts[ID(r)].oxygens);
+								parts[ID(r)].hydrogens -= std::min(20, parts[ID(r)].hydrogens);
+								parts[ID(r)].nitrogens -= std::min(20, parts[ID(r)].nitrogens);
+								parts[ID(r)].water -= std::min(20, parts[ID(r)].water);
+								parts[ID(r)].tmp4 -= std::min(20, parts[ID(r)].tmp4);
 								parts[i].temp++;
 
 								parts[i].ctype = rt;
@@ -274,8 +274,8 @@ static int update(UPDATE_FUNC_ARGS) {
 							}
 							if (parts[ID(r)].tmp4 > 0 && RNG::Ref().chance(1, 8))
 							{
-								parts[i].tmp4 += std::min(10, parts[ID(r)].tmp4);
-								parts[ID(r)].tmp4 -= std::min(10, parts[ID(r)].tmp4);
+								parts[i].tmp4 += std::min(20, parts[ID(r)].tmp4);
+								parts[ID(r)].tmp4 -= std::min(20, parts[ID(r)].tmp4);
 								parts[i].ctype = rt;
 
 							}
@@ -299,7 +299,7 @@ static int update(UPDATE_FUNC_ARGS) {
 					}
 				}
 				}
-						if (sim->NoWeightSwitching && sim->pmap_count[y][x]<2 && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER))
+					if (sim->NoWeightSwitching && sim->pmap_count[y][x]<2 && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) )
 				 	sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
 			}
 

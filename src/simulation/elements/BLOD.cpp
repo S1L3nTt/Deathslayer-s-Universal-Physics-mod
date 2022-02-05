@@ -566,7 +566,7 @@ static int update(UPDATE_FUNC_ARGS) {
 				 if ((sim->elements[TYP(r)].Properties & TYPE_PART ||
 					 sim->elements[TYP(r)].Properties & TYPE_SOLID) && RNG::Ref().chance(parts[i].tmp2, 5 + parts[i].water / 10))
 					 parts[i].vx = parts[i].vy = 0;
-						 if (sim->NoWeightSwitching && sim->pmap_count[y][x]<2 && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER))
+						 if (sim->NoWeightSwitching && sim->pmap_count[y][x]<2 && TYP(r) != parts[i].type && RNG::Ref().chance(1, 8) && (y > parts[ID(r)].y && RNG::Ref().chance(1, restrict_flt(sim->elements[i].Weight - pow(sim->elements[TYP(r)].Weight, 2) / 10.0f, 1, MAX_TEMP)) || y < parts[ID(r)].y && RNG::Ref().chance(1, 100)) && (sim->elements[TYP(r)].Properties & TYPE_PART || sim->elements[TYP(r)].Properties & TYPE_LIQUID) && !(sim->elements[TYP(r)].Properties & PROP_WATER|| TYP(r) == PT_HCL))
 					 	sim->better_do_swap(i, x, y, ID(r), parts[ID(r)].x, parts[ID(r)].y);
 			//if (rt == PT_BLOD && parts[i].tmpville[3] > 2 && parts[ID(r)].tmpville[3] > 2 && parts[i].tmpville[3] > parts[ID(r)].tmpville[3] && RNG::Ref().chance(1, 80))
 			//{

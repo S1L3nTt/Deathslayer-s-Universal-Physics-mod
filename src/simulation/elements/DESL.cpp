@@ -23,8 +23,8 @@ void Element::Element_DESL()
 	HotAir = 0.0f	* CFDS;
 	Falldown = 2;
 
-	Flammable = 2;
-	Explosive = 0;
+	Flammable = 5;
+	Explosive = 2;
 	Meltable = 0;
 	Hardness = 5;
 
@@ -52,7 +52,7 @@ void Element::Element_DESL()
 static int update(UPDATE_FUNC_ARGS)
 {
 
-
+//missing better B
 
 
 
@@ -63,12 +63,12 @@ static int update(UPDATE_FUNC_ARGS)
 	if (parts[i].carbons < 7)sim->part_change_type(i, x, y, PT_MWAX);
 	else if (parts[i].carbons > 19)sim->part_change_type(i, x, y, PT_OIL);
 
-	int t = parts[i].temp - sim->pv[y / CELL][x / CELL];	//Pressure affects state transitions
+	int t = parts[i].temp - sim->pv[y / CELL][x / CELL] / 2;	//Pressure affects state transitions
 	//Freezing into WAX
-	if (t < (14.3f * sqrt((parts[i].carbons - 12))) + 273.15 &&  RNG::Ref().chance(1, 20))
+	if (t < (14.3f * sqrt((parts[i].carbons - 12))) + 273.15 &&  RNG::Ref().chance(1, 50))
 		sim->part_change_type(i, x, y, PT_WAX);
 	//Boiling into GAS
-	if (t > (4 * sqrt(500 * (parts[i].carbons - 4))) + 273.15 && RNG::Ref().chance(1, 20))
+	if (t > (4 * sqrt(500 * (parts[i].carbons - 4))) + 273.15 && RNG::Ref().chance(1, 50))
 		sim->part_change_type(i, x, y, PT_GAS);
 	return 0;
 }

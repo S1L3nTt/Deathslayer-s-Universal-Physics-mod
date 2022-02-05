@@ -29,7 +29,7 @@ void Element::Element_DUST()
 
 	Weight = 85;
 
-	HeatConduct = 70;
+	HeatConduct = 20;
 	Description = "Very light dust. Flammable, edible for some reason.";
 
 	Properties = TYPE_PART | PROP_EDIBLE;
@@ -54,7 +54,7 @@ static int update(UPDATE_FUNC_ARGS)
 
 	if(parts[i].tmpcity[7] == 0)
 	parts[i].tmpcity[7] = 400;
-	if(parts[i].water > 10)
+	if(parts[i].water > 5)
 	sim->part_change_type(i, x, y, PT_WATR);
 
 	int r, rx, ry;

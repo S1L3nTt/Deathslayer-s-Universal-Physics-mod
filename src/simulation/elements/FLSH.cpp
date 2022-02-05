@@ -35,7 +35,7 @@ void Element::Element_FLSH() {
 	DefaultProperties.tmp3 = 100;
 	DefaultProperties.tmp4 = 100;
 	DefaultProperties.tmpcity[3] = 100;
-	DefaultProperties.tmpcity[7] = 600;
+	DefaultProperties.tmpcity[7] = 800;
 	DefaultProperties.tmpcity[9] = 0;
 	DefaultProperties.metabolism = 50;
 
