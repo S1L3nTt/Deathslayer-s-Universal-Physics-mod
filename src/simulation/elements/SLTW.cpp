@@ -41,8 +41,8 @@ void Element::Element_SLTW()
 	HighPressureTransition = NT;
 	LowTemperature = 252.05f;
 	LowTemperatureTransition = PT_ICEI;
-	HighTemperature = 383.0f;
-	HighTemperatureTransition = ST;
+	HighTemperature = 383.15f;
+	HighTemperatureTransition = PT_WTRV;
 
 	Update = &update;
 }

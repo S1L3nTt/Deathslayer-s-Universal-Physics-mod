@@ -53,17 +53,23 @@ void Element::Element_ICEI()
 static int update(UPDATE_FUNC_ARGS)
 {
 	int r, rx, ry;
+	int ctaype = parts[i].ctype;
 	if (parts[i].ctype == PT_BRKN && parts[i].tmp != 0)
 		parts[i].ctype = parts[i].tmp;
 	if (parts[i].tmp != parts[i].ctype && parts[i].tmp > 0 && parts[i].tmp < PT_NUM)
 		parts[i].ctype = parts[i].tmp;
 	
-			if (parts[i].ctype != 0 && sim->elements[parts[i].ctype].LowTemperature != ITL && sim->elements[parts[i].ctype].LowTemperature != ST && parts[i].temp - sim->pv[y / CELL][x / CELL] > sim->elements[parts[i].ctype].LowTemperature && RNG::Ref().chance(restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, sim->elements[parts[i].ctype].LowTemperature), sim->elements[parts[i].ctype].LowTemperature + 100))
+	if(parts[i].ctype == PT_SUGR)
+	ctaype = PT_SWTR;
+	else if(parts[i].ctype == PT_SALT)
+	ctaype = PT_SLTW;
+
+			if (ctaype != 0 && sim->elements[ctaype].LowTemperature != ITL && sim->elements[ctaype].LowTemperature != ST && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) > sim->elements[ctaype].LowTemperature && RNG::Ref().chance(restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, sim->elements[ctaype].LowTemperature), sim->elements[ctaype].LowTemperature + 100))
 			{
 				
 			
 				
-				sim->part_change_type(i, x, y, parts[i].ctype);
+				sim->part_change_type(i, x, y, ctaype);
 				return 1;
 			}
 
@@ -83,7 +89,7 @@ static int update(UPDATE_FUNC_ARGS)
 					continue;
 				if (TYP(r)==PT_SALT || TYP(r)==PT_SLTW)
 				{
-					if (parts[i].temp > sim->elements[PT_SLTW].LowTemperature && RNG::Ref().chance(1, 200))
+					if (parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) > sim->elements[PT_SLTW].LowTemperature && RNG::Ref().chance(1, 200))
 					{
 						sim->part_change_type(i,x,y,PT_SLTW);
 						sim->part_change_type(ID(r),x+rx,y+ry,PT_SLTW);

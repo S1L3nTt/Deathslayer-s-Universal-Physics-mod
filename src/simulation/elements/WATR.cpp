@@ -50,7 +50,7 @@ void Element::Element_WATR()
 
 int Element_WATR_update(UPDATE_FUNC_ARGS)
 {
-	if (parts[i].tmpcity[7] == 0 && sim->elements[parts[i].type].Properties & PROP_WATER)
+	if (parts[i].tmpcity[7] == 0 && parts[i].water == 0 && sim->elements[parts[i].type].Properties & PROP_WATER)
 	{
 		if(parts[i].water > 0)
 			parts[i].tmpcity[7] = 400;
@@ -118,7 +118,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 		parts[i].ctype = 0;
 	if (parts[i].ctype == 0 && parts[i].tmp4 > 0 && parts[i].type == PT_WATR)
 		parts[i].tmp4 = 0;
-		
+
 	if (parts[i].tmp4 <= 0 && parts[i].water > 0 && parts[i].type != PT_WATR && parts[i].type != PT_H2O2)
 		sim->part_change_type(i, x, y, PT_WATR);
 	else if (parts[i].water <= 0 && parts[i].type != PT_H2O2)
@@ -134,11 +134,11 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 	// Freezing
 
 	
-	if ((sim->elements[parts[i].ctype].LowTemperature > 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) < sim->elements[parts[i].ctype].LowTemperature  && RNG::Ref().chance(1, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, sim->elements[parts[i].ctype].LowTemperature))) ||
-	 (sim->elements[parts[i].ctype].LowTemperature <= 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) < 273.15f  && RNG::Ref().chance(1, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, 273.15f)))) 
+	if ((sim->elements[parts[i].type].LowTemperature > 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) < sim->elements[parts[i].type].LowTemperature  && RNG::Ref().chance(1, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, sim->elements[parts[i].type].LowTemperature))) ||
+	 (sim->elements[parts[i].type].LowTemperature <= 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) < 273.15f  && RNG::Ref().chance(1, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, 273.15f)))) 
 	 {
-	if(sim->elements[parts[i].ctype].LowTemperatureTransition > 0)
-		sim->part_change_type(i, x, y, sim->elements[parts[i].ctype].LowTemperatureTransition);
+	if(sim->elements[parts[i].type].LowTemperatureTransition > 0)
+		sim->part_change_type(i, x, y, sim->elements[parts[i].type].LowTemperatureTransition);
 	else
 		sim->part_change_type(i, x, y, PT_ICEI);
 	return 0;
@@ -146,13 +146,13 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 
 
 	// Boiling
-	if ((sim->elements[parts[i].ctype].HighTemperature > 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) > sim->elements[parts[i].ctype].HighTemperature && RNG::Ref().chance(restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, sim->elements[parts[i].ctype].HighTemperature), sim->elements[parts[i].ctype].HighTemperature)) ||
-	(sim->elements[parts[i].ctype].HighTemperature <= 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) > 373.15f && RNG::Ref().chance(restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, 373.15f), 373.15f)))
+	if ((sim->elements[parts[i].type].HighTemperature > 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) > sim->elements[parts[i].type].HighTemperature && RNG::Ref().chance(restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, sim->elements[parts[i].type].HighTemperature), sim->elements[parts[i].type].HighTemperature)) ||
+	(sim->elements[parts[i].type].HighTemperature <= 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) > 373.15f && RNG::Ref().chance(restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, 373.15f), 373.15f)))
 	{
+		switch(parts[i].type)
 
-	if(sim->elements[parts[i].ctype].HighTemperatureTransition > 0)
-		
-			sim->part_change_type(i, x, y, sim->elements[parts[i].ctype].HighTemperatureTransition);
+	if(sim->elements[parts[i].type].HighTemperatureTransition > 0)
+			sim->part_change_type(i, x, y, sim->elements[parts[i].type].HighTemperatureTransition);
 	else
 
 		sim->part_change_type(i, x, y, PT_WTRV);
@@ -221,6 +221,18 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 					
 			//	else
 				//	parts[i].ctype = rt;
+
+
+				
+				if(TYP(r) == PT_WTRV && parts[i].water + parts[ID(r)].water < 100 && parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].nitrogens == 0)
+				{
+					parts[i].water += parts[ID(r)].water;
+					sim->kill_part(ID(r));
+				
+				}
+
+
+
 
 				 if (sim->elements[rt].Properties & PROP_WATER || rt == PT_BLOD || rt == PT_HCL || rt == PT_MILK) {
 

@@ -73,18 +73,18 @@ static int update(UPDATE_FUNC_ARGS)
 		 sim->kill_part(i);
 		}
 
-	if (parts[i].ctype != 0 && sim->elements[parts[i].ctype].HighTemperature != ITH && sim->elements[parts[i].ctype].HighTemperature != ST && parts[i].temp + sim->pv[y / CELL][x / CELL] < sim->elements[parts[i].ctype].HighTemperature && RNG::Ref().chance(sim->elements[parts[i].ctype].HighTemperature - 100, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], sim->elements[parts[i].ctype].HighTemperature, MAX_TEMP)))
-	{
+	// if (parts[i].ctype != 0 && sim->elements[parts[i].ctype].HighTemperature != ITH && sim->elements[parts[i].ctype].HighTemperature != ST && parts[i].temp + sim->pv[y / CELL][x / CELL] < sim->elements[parts[i].ctype].HighTemperature && RNG::Ref().chance(sim->elements[parts[i].ctype].HighTemperature - 100, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], sim->elements[parts[i].ctype].HighTemperature, MAX_TEMP)))
+	// {
 
 
 
-		sim->part_change_type(i, x, y, parts[i].ctype);
-		if (parts[i].tmpcity[6] != 0)
-			parts[i].ctype = parts[i].tmpcity[6];
-		else
-			parts[i].ctype = 0;
-		return 1;
-	}
+	// 	sim->part_change_type(i, x, y, parts[i].ctype);
+	// 	if (parts[i].tmpcity[6] != 0)
+	// 		parts[i].ctype = parts[i].tmpcity[6];
+	// 	else
+	// 		parts[i].ctype = 0;
+	// 	return 1;
+	// }
 
 
 int r, rx, ry;
@@ -116,7 +116,7 @@ int r, rx, ry;
 				continue;
 				}
 
-				if(TYP(r) == PT_WTRV && parts[i].water + parts[ID(r)].water < 100 && parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].nitrogens == 0)
+				if(TYP(r) == PT_WTRV && parts[i].water + parts[ID(r)].water < 100 && parts[ID(r)].ctype + parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].hydrogens + parts[ID(r)].nitrogens == 0)
 				{
 					parts[i].water += parts[ID(r)].water;
 					sim->kill_part(ID(r));
