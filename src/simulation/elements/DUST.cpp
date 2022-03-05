@@ -57,6 +57,16 @@ static int update(UPDATE_FUNC_ARGS)
 	if(parts[i].water > 5)
 	sim->part_change_type(i, x, y, PT_WATR);
 
+	switch(parts[i].ctype)
+	{
+		case PT_SALT:
+		sim->part_change_type(i, x, y, PT_SALT);
+		break;
+		case PT_SUGR:
+		sim->part_change_type(i, x, y, PT_SUGR);
+		break;
+	}
+
 	int r, rx, ry;
 	for (rx=-1; rx<2; rx++)
 		for (ry=-1; ry<2; ry++)
@@ -64,7 +74,15 @@ static int update(UPDATE_FUNC_ARGS)
 				r = pmap[y+ry][x+rx];
 				int capacity = 0;
 				int partnum = 0;
-				if (!r) continue;
+							if (!r) 
+				{
+				if(parts[i].temp > 373.15f && parts[i].water > 0)
+				{
+				parts[sim->create_part(-1, x + rx, y + ry, PT_WTRV)].water = parts[i].water;
+					parts[i].water = 0;
+				}
+				continue;
+				}
 				int rt = TYP(r);
 				// Dissolve
 				// if (sim->elements[rt].Properties & PROP_WATER) {
@@ -78,9 +96,9 @@ static int update(UPDATE_FUNC_ARGS)
 
 
 						if (rt == parts[i].type)
-							partnum += 2;
-						else
 							partnum += 1;
+						else
+							partnum += 2;
 
 						capacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
 						if (RNG::Ref().chance(1, 8) && capacity + partnum < parts[i].tmpcity[7])

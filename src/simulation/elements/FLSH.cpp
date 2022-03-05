@@ -381,14 +381,14 @@ if (parts[i].tmpcity[7] == 0)
 			int partnum = 10;
 			if (!r) {
 
-				if (parts[i].tmpville[2] > 0 && parts[i].water > 40 && RNG::Ref().chance(1, 8))
+				if (parts[i].tmpville[2] > 0 && parts[i].water > 40 && RNG::Ref().chance(1, 800))
 				{
-					int tasjhfbaiuosysadijosa = RNG::Ref().between(20, 60);
+					int sweat = RNG::Ref().between(20, 60);
 					int ee = sim->create_part(-1, x + rx, y + ry, PT_WATR);
 					parts[i].water -= 100;
 					parts[ee].water += 100;
-					parts[i].temp -= tasjhfbaiuosysadijosa;
-					parts[ID(ee)].temp += tasjhfbaiuosysadijosa;
+					parts[i].temp -= sweat;
+					parts[ID(ee)].temp += sweat;
 					parts[i].tmpville[2]--;
 
 				}

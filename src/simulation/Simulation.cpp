@@ -3642,7 +3642,7 @@ void Simulation::UpdateParticles(int start, int end)
 #ifdef REALISTIC
 				if (t&&(t!=PT_HSWC||parts[i].life==10)&&(elements[t].HeatConduct*gel_scale))
 #else
-				if (t && (t!=PT_HSWC||parts[i].life==10) && RNG::Ref().chance(int(sqrt(elements[t].HeatConduct/2)*gel_scale), 250))
+				if (t && (t!=PT_HSWC||parts[i].life==10) && RNG::Ref().chance(int(sqrt(elements[t].HeatConduct)*gel_scale), 250))
 #endif
 				{
 					if (aheat_enable && !(elements[t].Properties&PROP_NOAMBHEAT))

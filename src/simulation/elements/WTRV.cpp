@@ -1,4 +1,5 @@
 #include "simulation/ElementCommon.h"
+#include <type_traits>
 
 static int update(UPDATE_FUNC_ARGS);
 
@@ -28,6 +29,8 @@ void Element::Element_WTRV()
 
 	Weight = 1;
 
+	DefaultProperties.tmpcity[7] = 400;
+	DefaultProperties.water = 100;
 	DefaultProperties.temp = R_TEMP + 100.0f + 273.15f;
 	HeatConduct = 78;
 	Description = "Steam. Produced from hot water.";
@@ -52,6 +55,24 @@ static int update(UPDATE_FUNC_ARGS)
 
 	// the best transition to ctype that you've ever seen (made while drunkj)
 
+	if (parts[i].tmpcity[7] == 0)
+	{
+	
+		parts[i].tmpcity[7] = 400;
+		if(parts[i].water == 0)
+		parts[i].water = 100;
+	}
+
+	if (parts[i].water <= 0)
+		{
+		if(parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].nitrogens + parts[i].tmp4 != 0)
+		sim->part_change_type(i, x, y, PT_DUST);
+		else if(parts[i].tmp4 > 0 && parts[i].ctype != 0)
+		sim->part_change_type(i, x, y, parts[i].ctype);
+		else
+		 sim->kill_part(i);
+		}
+
 	if (parts[i].ctype != 0 && sim->elements[parts[i].ctype].HighTemperature != ITH && sim->elements[parts[i].ctype].HighTemperature != ST && parts[i].temp + sim->pv[y / CELL][x / CELL] < sim->elements[parts[i].ctype].HighTemperature && RNG::Ref().chance(sim->elements[parts[i].ctype].HighTemperature - 100, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], sim->elements[parts[i].ctype].HighTemperature, MAX_TEMP)))
 	{
 
@@ -75,10 +96,34 @@ int r, rx, ry;
 				r = pmap[y + ry][x + rx];
 				if (!r)
 				{
-				if(parts[i].water > 50)
+				if(parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens+ parts[i].nitrogens != 0)
+				{
+					int dust = sim->create_part(-1, x + rx, y + ry, PT_DUST);
+					parts[dust].ctype = parts[i].ctype;
+					parts[dust].tmp4 = parts[i].tmp4;
+					parts[dust].carbons = parts[i].carbons;
+					parts[dust].nitrogens = parts[i].nitrogens;
+					parts[dust].oxygens = parts[i].oxygens;
+					parts[dust].hydrogens = parts[i].hydrogens;
+					parts[i].ctype = 0;
+					parts[i].tmp4 = 0;
+					parts[i].carbons = 0;
+					parts[i].nitrogens = 0;
+					parts[i].hydrogens = 0;
+					parts[i].oxygens = 0;
+				}
 
 				continue;
 				}
+
+				if(TYP(r) == PT_WTRV && parts[i].water + parts[ID(r)].water < 100 && parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].nitrogens == 0)
+				{
+					parts[i].water += parts[ID(r)].water;
+					sim->kill_part(ID(r));
+				
+				}
+
+
 				if ((TYP(r)==PT_RBDM||TYP(r)==PT_LRBD) && !sim->legacy_enable && parts[i].temp>(273.15f+12.0f) && RNG::Ref().chance(1, 100))
 				{
 					sim->part_change_type(i,x,y,PT_FIRE);

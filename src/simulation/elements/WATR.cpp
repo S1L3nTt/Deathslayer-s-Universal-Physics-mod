@@ -13,7 +13,7 @@ void Element::Element_WATR()
 	Enabled = 1;
 
 	Advection = 0.6f;
-	AirDrag = 0.01f * CFDS;
+	AirDrag = 0.02f * CFDS;
 	AirLoss = 0.98f;
 	Loss = 0.95f;
 	Collision = 0.1f;
@@ -107,10 +107,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 	}
 
 
-	if (parts[i].tmp4 <= 0 && parts[i].water > 0 && parts[i].type != PT_WATR && parts[i].type != PT_H2O2)
-		sim->part_change_type(i, x, y, PT_WATR);
-	else if (parts[i].tmp4 <= 0 && parts[i].water <= 0 && parts[i].type != PT_H2O2)
-		sim->part_change_type(i, x, y, PT_DUST);
+
 	if (parts[i].ctype == parts[i].type)
 		parts[i].ctype = 0;
 	//if(parts[i].water <= 0 && parts[i].ctype != 0)
@@ -121,7 +118,18 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 		parts[i].ctype = 0;
 	if (parts[i].ctype == 0 && parts[i].tmp4 > 0 && parts[i].type == PT_WATR)
 		parts[i].tmp4 = 0;
-
+		
+	if (parts[i].tmp4 <= 0 && parts[i].water > 0 && parts[i].type != PT_WATR && parts[i].type != PT_H2O2)
+		sim->part_change_type(i, x, y, PT_WATR);
+	else if (parts[i].water <= 0 && parts[i].type != PT_H2O2)
+		{
+		if(parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].nitrogens + parts[i].tmp4 != 0)
+		sim->part_change_type(i, x, y, PT_DUST);
+		else if(parts[i].tmp4 > 0 && parts[i].ctype != 0)
+		sim->part_change_type(i, x, y, parts[i].ctype);
+		else
+		 sim->kill_part(i);
+		}
 
 	// Freezing
 
@@ -148,22 +156,6 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 	else
 
 		sim->part_change_type(i, x, y, PT_WTRV);
-	if(parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens != 0)
-		{
-		int dust = sim->create_part(-3, x, y, PT_DUST);
-		parts[dust].ctype = parts[i].ctype;
-		parts[dust].tmp4 = parts[i].tmp4;
-		parts[dust].carbons = parts[i].carbons;
-		parts[dust].nitrogens = parts[i].nitrogens;
-		parts[dust].oxygens = parts[i].oxygens;
-		parts[dust].hydrogens = parts[i].hydrogens;
-		parts[i].ctype = 0;
-		parts[i].tmp4 = 0;
-		parts[i].carbons = 0;
-		parts[i].nitrogens = 0;
-		parts[i].hydrogens = 0;
-		parts[i].oxygens = 0;
-		}
 	
 	return 0;
 	}
@@ -350,9 +342,9 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 
  
 
-				 if (parts[i].ctype == PT_SALT && parts[i].tmp4 > 10 && RNG::Ref().chance(1, 50))
+				 if (parts[i].ctype == PT_SALT && parts[i].tmp4 > 30 && RNG::Ref().chance(1, 50))
 					sim->part_change_type(i,x,y,PT_SLTW);
-				if(parts[i].ctype == PT_SUGR && parts[i].tmp4 > 10 && RNG::Ref().chance(1, 50))
+				if(parts[i].ctype == PT_SUGR && parts[i].tmp4 > 30 && RNG::Ref().chance(1, 50))
 					sim->part_change_type(i,x,y,PT_SWTR);
 				
 				 if ((rt==PT_RBDM||TYP(r)==PT_LRBD) && (sim->legacy_enable||parts[i].temp>(273.15f+12.0f)) && RNG::Ref().chance(1, 100))
