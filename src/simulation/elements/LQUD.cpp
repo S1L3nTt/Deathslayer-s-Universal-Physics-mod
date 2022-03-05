@@ -8,8 +8,8 @@ void Element::Element_LQUD() {
 	Identifier = "DEFAULT_PT_LQUD";
 	Name = "LQUD";
 	Colour = PIXPACK(0xFFFFFF);
-	MenuVisible = 0;
-	MenuSection = SC_LIQUID;
+	MenuVisible = 1;
+	MenuSection = SC_SPECIAL;
 	Enabled = 1;
 
 	Advection = 0.6f;
@@ -47,12 +47,21 @@ void Element::Element_LQUD() {
 }
 
 static int update(UPDATE_FUNC_ARGS) {
-	if(parts[i].tmpcity[8] == 0)
+	if(parts[i].tmpcity[8] == 0 && parts[i].ctype > 0 && parts[i].ctype < PT_NUM)
+	{
 		sim->part_change_type(i, x, y, parts[i].ctype);
+		return 1;
+	}
+	else if(parts[i].tmpcity[8] == 1)
+	{
+		sim->part_change_type(i, x, y, PT_BRKN);
+		return 1;
+	}
 	if (parts[i].ctype == PT_WSTE && parts[i].water < 10)
 	{
 		parts[i].tmpcity[8] = 0;
 			sim->part_change_type(i, x, y, parts[i].ctype);
+			return 1;
 	}
 	if (parts[i].ctype < 0 || parts[i].ctype > PT_NUM || parts[i].ctype == PT_LQUD)
 		parts[i].ctype = 0;

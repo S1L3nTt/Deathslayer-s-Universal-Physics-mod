@@ -123,6 +123,52 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 		parts[i].tmp4 = 0;
 
 
+	// Freezing
+
+	
+	if ((sim->elements[parts[i].ctype].LowTemperature > 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) < sim->elements[parts[i].ctype].LowTemperature  && RNG::Ref().chance(1, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, sim->elements[parts[i].ctype].LowTemperature))) ||
+	 (sim->elements[parts[i].ctype].LowTemperature <= 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) < 273.15f  && RNG::Ref().chance(1, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, 273.15f)))) 
+	 {
+	if(sim->elements[parts[i].ctype].LowTemperatureTransition > 0)
+		sim->part_change_type(i, x, y, sim->elements[parts[i].ctype].LowTemperatureTransition);
+	else
+		sim->part_change_type(i, x, y, PT_ICEI);
+	return 0;
+	}
+
+
+	// Boiling
+	if ((sim->elements[parts[i].ctype].HighTemperature > 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) > sim->elements[parts[i].ctype].HighTemperature && RNG::Ref().chance(restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, sim->elements[parts[i].ctype].HighTemperature), sim->elements[parts[i].ctype].HighTemperature)) ||
+	(sim->elements[parts[i].ctype].HighTemperature <= 0 && parts[i].temp - (sim->pv[y / CELL][x / CELL] / 2) > 373.15f && RNG::Ref().chance(restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, 373.15f), 373.15f)))
+	{
+
+	if(sim->elements[parts[i].ctype].HighTemperatureTransition > 0)
+		
+			sim->part_change_type(i, x, y, sim->elements[parts[i].ctype].HighTemperatureTransition);
+	else
+
+		sim->part_change_type(i, x, y, PT_WTRV);
+	if(parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens != 0)
+		{
+		int dust = sim->create_part(-3, x, y, PT_DUST);
+		parts[dust].ctype = parts[i].ctype;
+		parts[dust].tmp4 = parts[i].tmp4;
+		parts[dust].carbons = parts[i].carbons;
+		parts[dust].nitrogens = parts[i].nitrogens;
+		parts[dust].oxygens = parts[i].oxygens;
+		parts[dust].hydrogens = parts[i].hydrogens;
+		parts[i].ctype = 0;
+		parts[i].tmp4 = 0;
+		parts[i].carbons = 0;
+		parts[i].nitrogens = 0;
+		parts[i].hydrogens = 0;
+		parts[i].oxygens = 0;
+		}
+	
+	return 0;
+	}
+
+
 
 	//water: amount of water
 	//tmpcity[7]: capacity for stuff
@@ -184,7 +230,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 			//	else
 				//	parts[i].ctype = rt;
 
-				 if (sim->elements[rt].Properties & PROP_WATER || rt == PT_BLOD || rt == PT_HCL) {
+				 if (sim->elements[rt].Properties & PROP_WATER || rt == PT_BLOD || rt == PT_HCL || rt == PT_MILK) {
 
 
 
@@ -224,7 +270,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 							parts[i].nitrogens += std::min(partnum, parts[ID(r)].nitrogens);
 							parts[ID(r)].nitrogens -= std::min(partnum, parts[ID(r)].nitrogens);
 						}
-						if (parts[i].water < parts[i].tmpcity[7] / 2 && parts[ID(r)].water > 0 && parts[i].water < parts[ID(r)].water && RNG::Ref().chance(1, 6))
+						if ((parts[i].water < 100 && parts[ID(r)].water > 0 && (parts[i].water < parts[ID(r)].water || parts[i].water > parts[ID(r)].water * 2) && RNG::Ref().chance(1, 6)))
 						{
 							parts[i].water += std::min(partnum, parts[ID(r)].water);
 							parts[ID(r)].water -= std::min(partnum, parts[ID(r)].water);
@@ -264,7 +310,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 									parts[i].nitrogens -= std::min(partnum, parts[i].nitrogens);
 
 								}
-								if (parts[ID(r)].water < parts[ID(r)].tmpcity[7] / 2 && parts[i].water > 0 && parts[ID(r)].water < parts[i].water && RNG::Ref().chance(1, 6))
+								if (parts[ID(r)].water < 100 && parts[i].water > 0 && (parts[ID(r)].water < parts[i].water && parts[i].water < parts[ID(r)].water * 2) && RNG::Ref().chance(1, 6))
 								{
 									parts[ID(r)].water += std::min(partnum, parts[i].water);
 									parts[i].water -= std::min(partnum, parts[i].water);

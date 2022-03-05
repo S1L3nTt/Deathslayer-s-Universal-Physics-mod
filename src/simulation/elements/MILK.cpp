@@ -33,7 +33,7 @@ void Element::Element_MILK() {
 	HeatConduct = 29;
 	Description = "Milk. Heals STKM, goes bad over time.";
 
-	Properties = TYPE_LIQUID | PROP_CONDUCTS | PROP_LIFE_DEC | PROP_NEUTPASS | PROP_EDIBLE;
+	Properties = TYPE_LIQUID | PROP_CONDUCTS | PROP_NEUTPASS | PROP_EDIBLE;
 	//FoodValue = 5;
 
 
@@ -106,9 +106,9 @@ static int update(UPDATE_FUNC_ARGS) {
 			if (!r) continue;
 			int rt = TYP(r);
 
-			// water diffusion
+			// diffusion
 
-			if (sim->elements[rt].Properties & PROP_WATER || rt == PT_BLOD) {
+			if (sim->elements[rt].Properties & PROP_WATER || rt == PT_BLOD || rt == PT_HCL) {
 
 
 

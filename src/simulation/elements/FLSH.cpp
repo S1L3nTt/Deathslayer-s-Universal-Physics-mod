@@ -34,8 +34,8 @@ void Element::Element_FLSH() {
 	DefaultProperties.water = 50;
 	DefaultProperties.tmp3 = 100;
 	DefaultProperties.tmp4 = 100;
-	DefaultProperties.tmpcity[3] = 100;
 	DefaultProperties.tmpcity[7] = 800;
+	DefaultProperties.tmpcity[3] = 100;
 	DefaultProperties.tmpcity[9] = 0;
 	DefaultProperties.metabolism = 50;
 
@@ -91,6 +91,124 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 	 * tmpville[2]? sweat?
 	 * nitrogens: something in blood
 	 */
+
+
+if (parts[i].tmpcity[7] == 0)
+	{
+			 
+	int typec = parts[i].type;
+	 if(parts[i].ctype != 0)
+	 typec = parts[i].ctype;
+
+		switch(typec)
+		{
+			case PT_FLSH:
+
+			parts[i].oxygens = 100;
+			parts[i].carbons = 100;
+			parts[i].water = 50;
+			parts[i].tmp3 = 100;
+			parts[i].tmp4 = 100;
+			parts[i].tmpcity[7] = 800;
+			parts[i].tmpcity[3] = 100;
+			parts[i].tmpcity[9] = 0;
+			parts[i].metabolism = 50;
+			parts[i].pavg[0] = 0;
+			break;
+
+			case PT_LUNG:
+			parts[i].carbons = 50;
+			parts[i].oxygens = 50;
+			parts[i].hydrogens = 10;
+			parts[i].water = 50;
+			parts[i].tmp3 = 100;
+			parts[i].tmp4 = 100;
+			parts[i].tmpcity[7] = 800;
+			parts[i].tmpcity[3] = 100;
+			parts[i].tmpcity[9] = 0;
+			parts[i].metabolism = 50;
+			parts[i].pavg[0] = 0;
+			break;
+			
+			case PT_STMH:
+			parts[i].oxygens = 100;
+			parts[i].carbons = 100;
+			parts[i].hydrogens = 100;
+			parts[i].water = 50;
+			parts[i].tmp3 = 100;
+			parts[i].tmp4 = 100;
+			parts[i].tmpcity[7] = 800;
+			parts[i].tmpcity[3] = 100;
+			parts[i].tmpcity[9] = 0;
+			parts[i].metabolism = 50;
+			parts[i].pavg[0] = 0;
+			break;
+
+			case PT_POPS:
+			parts[i].oxygens = 100;
+			parts[i].carbons = 100;
+			parts[i].hydrogens = 20;
+			parts[i].water = 50;
+			parts[i].tmp3 = 100;
+			parts[i].tmp4 = 100;
+			parts[i].tmpcity[7] = 800;
+			parts[i].tmpcity[3] = 100;
+			parts[i].tmpcity[9] = 0;
+			parts[i].metabolism = 50;
+			parts[i].pavg[0] = 0;
+
+			break;
+
+			case PT_UDDR:
+			parts[i].oxygens = 100;
+			parts[i].carbons = 100;
+			parts[i].hydrogens = 20;
+			parts[i].water = 50;
+			parts[i].tmp3 = 100;
+			parts[i].tmp4 = 100;
+			parts[i].tmpcity[7] = 800;
+			parts[i].tmpcity[3] = 100;
+			parts[i].tmpcity[9] = 0;
+			parts[i].metabolism = 50;
+			parts[i].pavg[0] = 0;
+			break;
+
+			case PT_BVSL:
+			parts[i].oxygens = 100;
+			parts[i].carbons = 100;
+			parts[i].hydrogens = 20;
+			parts[i].water = 50;
+			parts[i].tmp2 = 2;
+			parts[i].tmp3 = 100;
+			parts[i].tmp4 = 100;
+			parts[i].tmpcity[7] = 1000;
+			parts[i].tmpcity[9] = 0;
+			parts[i].tmpcity[3] = 100;
+			parts[i].tmpville[3] = 0;
+			parts[i].tmpville[4] = 0;
+			parts[i].metabolism = 50;
+			parts[i].pavg[0] = 0;
+			break;
+
+			default:
+			parts[i].oxygens = 100;
+			parts[i].carbons = 100;
+			parts[i].water = 50;
+			parts[i].tmp3 = 100;
+			parts[i].tmp4 = 100;
+			parts[i].tmpcity[7] = 800;
+			parts[i].tmpcity[3] = 100;
+			parts[i].tmpcity[9] = 0;
+			parts[i].metabolism = 50;
+			parts[i].pavg[0] = 0;
+			break;
+
+			
+
+		}
+	}
+
+
 	int r = 0;
 	int capacity = 0;
 	if (parts[i].tmp3 <= 0 && parts[i].pavg[0] != 2)
@@ -100,7 +218,7 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 	}
 
 
-	if (parts[i].temp - sim->pv[y / CELL][x / CELL] < 258.15f && RNG::Ref().chance(1, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 1, 100 + 273.15f))) {
+	if (parts[i].temp - sim->pv[y / CELL][x / CELL] < 258.15f && RNG::Ref().chance(1, restrict_flt(parts[i].temp - sim->pv[y / CELL][x / CELL], 2, 100 + 273.15f))) {
 		parts[i].tmp = parts[i].ctype;
 		parts[i].ctype = parts[i].type;
     	sim->part_change_type(i, x, y, PT_ICEI);
@@ -198,6 +316,13 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 		sim->part_change_type(i, x, y, PT_BRKN);
 		return 1;
 	}
+	else if(parts[i].tmpcity[8] == 2 && parts[i].type != PT_LQUD)
+	{
+	//	parts[i].tmp = parts[i].ctype;
+		parts[i].ctype = parts[i].type;
+		sim->part_change_type(i, x, y, PT_LQUD);
+		return 1;
+	}
 	if (parts[i].pavg[0] != 2)
 	{	
 		//damages 
@@ -222,7 +347,7 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 			
 		}
 		// Temperature
-		if ((parts[i].temp < 273.15f - 5.0f || parts[i].temp > 52.0f + 273.15f ) && RNG::Ref().chance(parts[i].temp, 1250.0f + 273.15f))
+		if ((parts[i].temp < 273.15f - 5.0f || parts[i].temp > 52.0f + 273.15f ) && RNG::Ref().chance(restrict_flt(parts[i].temp, 1, 1249.0f + 273.15f), 1250.0f + 273.15f))
 			parts[i].tmp3--;
 	 
 
@@ -234,7 +359,7 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 	if (sim->timer % 500 == 0 && parts[i].tmpville[2] > 0)
 		parts[i].tmpville[2]--;
 
-	if (parts[i].temp > 42.0f + 273.15f && RNG::Ref().chance(parts[i].temp, 50.0f + 273.15f) && parts[i].tmpville[2] < 2)
+	if (parts[i].temp > 42.0f + 273.15f && RNG::Ref().chance(restrict_flt(parts[i].temp, 1, 49.0f + 273.15f), 50.0f + 273.15f) && parts[i].tmpville[2] < 2)
 		parts[i].tmpville[2]++;
 
 		}
@@ -260,10 +385,10 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 				{
 					int tasjhfbaiuosysadijosa = RNG::Ref().between(20, 60);
 					int ee = sim->create_part(-1, x + rx, y + ry, PT_WATR);
-					parts[i].water -= 30;
-					parts[ee].water += 30;
-					parts[ID(ee)].temp += tasjhfbaiuosysadijosa;
+					parts[i].water -= 100;
+					parts[ee].water += 100;
 					parts[i].temp -= tasjhfbaiuosysadijosa;
+					parts[ID(ee)].temp += tasjhfbaiuosysadijosa;
 					parts[i].tmpville[2]--;
 
 				}
@@ -308,7 +433,7 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 						if (rt == PT_BVSL)
 							partnum += 40;
 						else if (rt == PT_BLOD)
-							partnum += 20;
+							partnum += 60; 
 						//take
 						capacity = parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
 						//take
@@ -418,7 +543,7 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 		parts[i].vx += 0.10f * sim->vx[y / CELL][x / CELL];
 		parts[i].vy += 0.10f * sim->vy[y / CELL][x / CELL];
 	}
-	if (parts[i].tmp2 > R_TEMP && RNG::Ref().chance(parts[i].tmp2, 2000))
+	if (parts[i].tmp2 > R_TEMP && RNG::Ref().chance(restrict_flt(parts[i].tmp2, 1, 1999), 2000))
 		parts[i].tmp2--;
 	parts[i].tmpcity[9]++;
 	return 0;

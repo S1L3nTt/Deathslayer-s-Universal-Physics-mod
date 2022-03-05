@@ -38,10 +38,10 @@ void Element::Element_SWTR() {
 	LowPressureTransition = NT;
 	HighPressure = IPH;
 	HighPressureTransition = NT;
-	LowTemperature = ITL;
-	LowTemperatureTransition = NT;
-	HighTemperature = ITH;
-	HighTemperatureTransition = NT;
+	LowTemperature = 273.15f;
+	LowTemperatureTransition = PT_ICEI;
+	HighTemperature = 373.15f;
+	HighTemperatureTransition = PT_WTRV;
 
 	Update = &update;
 }
@@ -58,22 +58,22 @@ static int update(UPDATE_FUNC_ARGS) {
 	Element_WATR_update(sim, i, x, y, surround_space, nt, parts, pmap);
 
 
-	if (parts[i].temp + sim->pv[y / CELL][x / CELL] > 383.15f)
-	{
+	// if (parts[i].temp + sim->pv[y / CELL][x / CELL] > 383.15f)
+	// {
 		
-		parts[sim->create_part(-3, x, y, PT_SUGR)].tmp4 = parts[i].tmp4;
-		parts[i].tmp4 = 0;
-		parts[i].ctype = parts[i].type;
-		sim->part_change_type(i, x, y, PT_WTRV);
-		return 1;
-	}
-	if (parts[i].temp - sim->pv[y / CELL][x / CELL] < 252.05f)
-	{
+	// 	parts[sim->create_part(-3, x, y, PT_SUGR)].tmp4 = parts[i].tmp4;
+	// 	parts[i].tmp4 = 0;
+	// 	parts[i].ctype = parts[i].type;
+	// 	sim->part_change_type(i, x, y, PT_WTRV);
+	// 	return 1;
+	// }
+	// if (parts[i].temp - sim->pv[y / CELL][x / CELL] < 252.05f)
+	// {
 
-		parts[i].ctype = parts[i].type;
-		sim->part_change_type(i, x, y, PT_ICEI);
-		return 1;
-	}
+	// 	parts[i].ctype = parts[i].type;
+	// 	sim->part_change_type(i, x, y, PT_ICEI);
+	// 	return 1;
+	// }
 
 
 	int r, rx, ry;

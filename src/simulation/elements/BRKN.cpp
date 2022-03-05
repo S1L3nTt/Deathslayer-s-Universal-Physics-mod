@@ -31,7 +31,7 @@ void Element::Element_BRKN() {
 	HeatConduct = 111;
 	Description = "A generic broken solid.";
 
-	Properties = TYPE_PART | PROP_CONDUCTS | PROP_LIFE_DEC;
+	Properties = TYPE_PART | PROP_CONDUCTS;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;
@@ -53,7 +53,15 @@ static int update(UPDATE_FUNC_ARGS) {
 	if (sim->elements[parts[i].ctype].Properties & PROP_ANIMAL)
 	{	
 		if(parts[i].tmpcity[8] == 0)
+		{
 			sim->part_change_type(i, x, y, parts[i].ctype);
+			return 1;
+		}
+			else if(parts[i].tmpcity[8] == 2)
+			{
+			sim->part_change_type(i, x, y, PT_LQUD);
+			return 1;
+			}
 		//parts[i].life = 4;
 		//parts[i].tmp = parts[i].ctype;
 		if (sim->elements[parts[i].ctype].Update)
@@ -63,6 +71,11 @@ static int update(UPDATE_FUNC_ARGS) {
 	}
 	else
 	{
+		if(parts[i].tmpcity[8] == 2)
+			{
+			sim->part_change_type(i, x, y, PT_LQUD);
+			return 1;
+			}
 		parts[i].tmp = parts[i].ctype;
 
 		bool flammable = false;
@@ -109,6 +122,9 @@ static int update(UPDATE_FUNC_ARGS) {
 		if (parts[i].ctype == PT_PAPR)
 			parts[i].dcolour = 0;
 	}
+	if(sim->elements[parts[i].ctype].Properties & PROP_LIFE_DEC)
+	parts[i].life--;
+
 	return 0;
 }
 

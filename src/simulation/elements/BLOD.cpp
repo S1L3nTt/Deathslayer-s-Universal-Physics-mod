@@ -30,7 +30,6 @@ void Element::Element_BLOD() {
 
 	Weight = 65;
 
-	DefaultProperties.temp = R_TEMP - 2.0f + 273.15f;
 	DefaultProperties.tmp2 = 2;
 	DefaultProperties.oxygens = 100;
 	DefaultProperties.carbons = 100;
@@ -40,6 +39,7 @@ void Element::Element_BLOD() {
 	DefaultProperties.tmp4 = 100;
 	DefaultProperties.tmpcity[7] = 800;
 	DefaultProperties.tmpcity[3] = 100;
+	DefaultProperties.tmpcity[9] = 0;
 	DefaultProperties.metabolism = 50;
 
 	HeatConduct = 69;
@@ -80,6 +80,26 @@ static int update(UPDATE_FUNC_ARGS) {
 		parts[i].oxygens = 0;
 	if (parts[i].oxygens > 100)
 		parts[i].oxygens = 100;*/
+
+
+
+if (parts[i].tmpcity[7] == 0)
+	{
+	parts[i].tmp2 = 2;
+	parts[i].oxygens = 100;
+	parts[i].carbons = 100;
+	parts[i].hydrogens = 20;
+	parts[i].water = 50;
+	parts[i].tmp3 = 100;
+	parts[i].tmp4 = 100;
+	parts[i].tmpcity[7] = 1000;
+	parts[i].tmpcity[3] = 100;
+	parts[i].tmpcity[9] = 0;
+	parts[i].metabolism = 50; 
+	}
+	
+
+
 
 
 	// Freezing
@@ -281,9 +301,9 @@ static int update(UPDATE_FUNC_ARGS) {
 						if (sim->elements[rt].Properties & PROP_ANIMAL && parts[ID(r)].pavg[0] != 2)
 						{
 							if (rt == PT_BVSL || rt == PT_BLOD)
-								partnum += 40;
+								partnum += 60;
 							else
-								partnum += 20;
+								partnum += 30;
 
 							
 							//take
@@ -555,7 +575,7 @@ static int update(UPDATE_FUNC_ARGS) {
 				 }
 
 				 if ((rt == PT_H2O2 || rt == PT_ACID || rt == PT_CAUS || rt == PT_PLUT || rt == PT_URAN ||
-					 rt == PT_ISOZ || rt == PT_ISZS || rt == PT_POLO || rt == PT_MERC || (rt == PT_HCL && parts[i].type != PT_STMH)) && parts[i].pavg[0] != 2 && RNG::Ref().chance(1, 20)) 
+					 rt == PT_ISOZ || rt == PT_ISZS || rt == PT_POLO || rt == PT_MERC  || sim->elements[rt].Properties & PROP_DEADLY  ||  (rt == PT_HCL && parts[i].type != PT_STMH)) && parts[i].pavg[0] != 2 && RNG::Ref().chance(1, 20)) 
 					 parts[i].tmp3--;
 				// Chance to kill VIRS
 			//	else if (RNG::Ref().chance(1, 10) && (rt == PT_VIRS || rt == PT_VRSG || rt == PT_VRSS))

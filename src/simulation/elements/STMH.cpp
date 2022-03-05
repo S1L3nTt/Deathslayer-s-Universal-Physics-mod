@@ -67,7 +67,7 @@ static int update(UPDATE_FUNC_ARGS) {
 	 * tmp2: Highest temperature
 	 * tmp3: Type 0 = inside, 1 = skin, 2 = dead
 	 * hydrogens: carbon dioxide & waste
-	 * c
+	 * tmpville[9] != 0 Deactivates hcl/water production
 	 */
 	Element_FLSH_update(sim, i, x, y, surround_space, nt, parts, pmap);
 	//if (parts[i].pavg[0] == 1) // Override skin formation
@@ -89,18 +89,18 @@ static int update(UPDATE_FUNC_ARGS) {
 			for (rx = -1; rx < 2; ++rx)
 			if (BOUNDS_CHECK && (rx || ry)) {
 				r = pmap[y + ry][x + rx];
-				if (!r && parts[i].tmpcity[5] > 0 && parts[i].water > 20 && parts[i].oxygens > 20 && RNG::Ref().chance(1, 8))
+				if (!r && parts[i].tmpcity[5] > 0 && parts[i].water > 30 && parts[i].oxygens > 30 && RNG::Ref().chance(1, 8) && parts[i].tmpville[9] == 0)
 				{
-					if (RNG::Ref().chance(1, 2))
+					if (RNG::Ref().chance(1, 3))
 					{
 					
-						parts[i].water -= 10;
-						parts[i].oxygens -= 10;
+						parts[i].water -= 20;
+						parts[i].oxygens -= 20;
 						parts[sim->create_part(-1, x + rx, y + ry, PT_HCL)].water += 10;
 					}
 					else
 					{
-						parts[i].water -= 10;
+						parts[i].water -= 20;
 						parts[sim->create_part(-1, x + rx, y + ry, PT_WATR)].water += 10;
 					}
 					parts[i].tmpcity[5]--;
@@ -173,16 +173,16 @@ static int update(UPDATE_FUNC_ARGS) {
 							parts[i].nitrogens += std::min(20, parts[ID(r)].nitrogens);
 							parts[ID(r)].nitrogens -= std::min(20, parts[ID(r)].nitrogens);
 						}
-						if (parts[ID(r)].water > 0 && parts[i].water < parts[i].tmpcity[7] / 3 && RNG::Ref().chance(1, 6))
+						if (parts[ID(r)].water > 0 && parts[i].water < parts[i].tmpcity[7] / 4 && RNG::Ref().chance(1, 6))
 						{
-							parts[i].water += std::min(20, parts[ID(r)].water);
-							parts[ID(r)].water -= std::min(20, parts[ID(r)].water);
+							parts[i].water += std::min(10, parts[ID(r)].water);
+							parts[ID(r)].water -= std::min(10, parts[ID(r)].water);
 						}
 						if (parts[ID(r)].tmp4 <= 0 && parts[ID(r)].hydrogens <= 0 && parts[ID(r)].oxygens <= 0 && parts[ID(r)].carbons <= 0 && parts[ID(r)].water <= 0 && parts[ID(r)].nitrogens <= 0 && RNG::Ref().chance(1, 10))
 							sim->kill_part(ID(r));
 
 						}
-					if(parts[ID(r)].tmp4 <= 0 && parts[ID(r)].hydrogens <= 0 && parts[ID(r)].oxygens <= 0 && parts[ID(r)].carbons <= 0 && parts[ID(r)].water <= 0 && parts[ID(r)].nitrogens <= 0 && (sim->elements[rt].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_WATER || rt == PT_HCL) && RNG::Ref().chance(parts[ID(r)].tmpcity[2], 100000))
+					if(parts[ID(r)].tmp4 <= 0 && parts[ID(r)].hydrogens <= 0 && parts[ID(r)].oxygens <= 0 && parts[ID(r)].carbons <= 0 && parts[ID(r)].water <= 0 && parts[ID(r)].nitrogens <= 0 && (sim->elements[rt].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_WATER || rt == PT_HCL) && RNG::Ref().chance(restrict_flt(parts[ID(r)].tmpcity[2],0 , 99999), 100000))
 						sim->kill_part(ID(r));
 
 						

@@ -3737,7 +3737,7 @@ void Simulation::UpdateParticles(int start, int end)
 						// particle type change due to high temperature
 #ifdef REALISTIC
 						float dbt = ctempl - pt;
-						if (elements[t].HighTemperatureTransition != PT_NUM)
+						if (elements[t].HighTemperatureTransition != PT_NUM && !(elements[t].Properties & PROP_WATER))
 						{
 							if (platent[t] <= (c_heat - (elements[t].HighTemperature - dbt)*c_Cm))
 							{
@@ -3849,7 +3849,7 @@ void Simulation::UpdateParticles(int start, int end)
 						// particle type change due to low temperature
 #ifdef REALISTIC
 						float dbt = ctempl - pt;
-						if (elements[t].LowTemperatureTransition != PT_NUM)
+						if (elements[t].LowTemperatureTransition != PT_NUM && !(elements[t].Properties & PROP_WATER)) 
 						{
 							if (platent[elements[t].LowTemperatureTransition] >= (c_heat - (elements[t].LowTemperature - dbt)*c_Cm))
 							{
