@@ -55,7 +55,10 @@ static int update(UPDATE_FUNC_ARGS)
 //missing better B
 
 
-
+// if (parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
+// 	{
+// 		parts[i].tmp4 = 100;
+// 		parts[i].tmpcity[7] = 400;
 
 
 	//cyens toy

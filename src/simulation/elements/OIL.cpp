@@ -53,15 +53,19 @@ static int update(UPDATE_FUNC_ARGS)
 {
 	
 	
-	if (parts[i].carbons == 0)
+	if (parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
 	{
+		parts[i].tmp4 = 100;
+		parts[i].tmpcity[7] = 400;
+
+
 		//Cyens toy
 		//Spawns with carbons (20-60), temp must be min 42 ?C 
-		sim->parts[i].carbons = RNG::Ref().between(20, 60);
-		sim->parts[i].hydrogens = makeAlk(sim->parts[i].carbons);
-		//sim->parts[i].carbons = rand() % 41 + 20;
-		if (sim->parts[i].hydrogens < 2 * sim->parts[i].carbons + 2)sim->parts[i].tmp3 = getBondLoc(sim->parts[i].carbons);
-		sim->parts[i].life = sim->parts[i].carbons + sim->parts[i].hydrogens;
+		parts[i].carbons = RNG::Ref().between(20, 60);
+		parts[i].hydrogens = makeAlk(parts[i].carbons);
+		//parts[i].carbons = rand() % 41 + 20;
+		if (parts[i].hydrogens < 2 * parts[i].carbons + 2)parts[i].tmp3 = getBondLoc(parts[i].carbons);
+		parts[i].life = parts[i].carbons + parts[i].hydrogens;
 	}
 
 

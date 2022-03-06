@@ -59,20 +59,22 @@ static int update(UPDATE_FUNC_ARGS) {
 	//Cyens toy
 	//Condensation
 	
-	if (parts[i].carbons == 0)
+	if (parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
 	{
+		parts[i].tmp4 = 100;
+		parts[i].tmpcity[7] = 400;
 		//Cyens toy
 	//Spawns with carbons (1-4)
-		sim->parts[i].carbons = RNG::Ref().between(1, 4);
-		if (sim->parts[i].carbons == 1) { //Creation of methane, can only be CH4 as a pure hydrocarbon
-			sim->parts[i].hydrogens = 4;
-			sim->parts[i].tmp3 = 0;
+		parts[i].carbons = RNG::Ref().between(1, 4);
+		if (parts[i].carbons == 1) { //Creation of methane, can only be CH4 as a pure hydrocarbon
+			parts[i].hydrogens = 4;
+			parts[i].tmp3 = 0;
 		}
 		else { //Creating any other type of hydrocarbon
-			sim->parts[i].hydrogens = makeAlk(sim->parts[i].carbons);
-			if (sim->parts[i].hydrogens < 2 * sim->parts[i].carbons + 2)sim->parts[i].tmp3 = getBondLoc(sim->parts[i].carbons);
+			parts[i].hydrogens = makeAlk(parts[i].carbons);
+			if (parts[i].hydrogens < 2 * parts[i].carbons + 2)parts[i].tmp3 = getBondLoc(parts[i].carbons);
 		}
-		sim->parts[i].life = sim->parts[i].carbons + sim->parts[i].hydrogens * 5;
+		parts[i].life = parts[i].carbons + parts[i].hydrogens * 5;
 	}
 	int t = parts[i].temp - sim->pv[y / CELL][x / CELL];	//Pressure affects state transitions
 
