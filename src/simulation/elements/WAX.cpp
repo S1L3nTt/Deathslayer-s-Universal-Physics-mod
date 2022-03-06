@@ -53,6 +53,36 @@ void Element::Element_WAX()
 		//WAX is a low to medium carbon solid, it should not have any more than 19 carbons.
 //		if (parts[i].carbons > 19)sim->part_change_type(i, x, y, PT_PRFN);
 
+
+
+	if (parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
+	{
+		parts[i].tmp4 = 100;
+		parts[i].tmpcity[7] = 400;
+
+		parts[i].carbons = RNG::Ref().between(15, 19);
+		parts[i].hydrogens = makeAlk(parts[i].carbons);
+		if (parts[i].hydrogens < 2 * parts[i].carbons + 2)parts[i].tmp3 = getBondLoc(parts[i].carbons);
+	}
+
+	if (parts[i].tmp4 <= 0)
+	{
+		if (parts[i].oxygens > 0 || parts[i].carbons > 0 || parts[i].hydrogens > 0 || parts[i].water > 0 || parts[i].nitrogens > 0)
+		{
+				sim->part_change_type(i, x, y, PT_DUST);
+				
+		}
+		else
+			sim->kill_part(i);
+		return 0;
+
+	}
+
+
+
+
+
+
 		int t = parts[i].temp - sim->pv[y / CELL][x / CELL];	//Pressure affects state transitions
 		//Melting
 		if ((parts[i].carbons <= 4 && t < -230 + parts[i].carbons * 50 + 273.15f) || (parts[i].carbons > 4 && parts[i].carbons < 12 && t >= (16.5f * parts[i].carbons - 200 + 273.15)) || (parts[i].carbons >= 12 && t > (14.3f * sqrt(parts[i].carbons - 12)) + 273.15))
@@ -69,7 +99,7 @@ void Element::Element_WAX()
 
 	static void create(ELEMENT_CREATE_FUNC_ARGS) {
 		//Spawns with carbons (15-19)
-		sim->parts[i].life = RNG::Ref().between(15, 19);
-		sim->parts[i].tmp = makeAlk(sim->parts[i].life);
-		if (sim->parts[i].tmp < 2 * sim->parts[i].life + 2)sim->parts[i].tmp2 = getBondLoc(sim->parts[i].life);
+		sim->parts[i].carbons = RNG::Ref().between(15, 19);
+		sim->parts[i].hydrogens = makeAlk(sim->parts[i].carbons);
+		if (sim->parts[i].hydrogens < 2 * sim->parts[i].carbons + 2)sim->parts[i].tmp3 = getBondLoc(sim->parts[i].carbons);
 	}

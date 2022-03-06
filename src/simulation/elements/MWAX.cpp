@@ -57,6 +57,34 @@ static int update(UPDATE_FUNC_ARGS) {
 	//MWAX is a low carbon powder, it should not have any more than 7 carbons. but its frozen
 	//if (parts[i].carbons > 7)sim->part_change_type(i, x, y, PT_DESL);
 
+
+	if (parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
+	{
+		parts[i].tmp4 = 100;
+		parts[i].tmpcity[7] = 400;
+
+		parts[i].life = RNG::Ref().between(15, 19);
+		parts[i].tmp = makeAlk(sim->parts[i].life);
+		if (parts[i].tmp < 2 * parts[i].life + 2)parts[i].tmp2 = getBondLoc(parts[i].life);
+	}
+
+	if (parts[i].tmp4 <= 0)
+	{
+		if (parts[i].oxygens > 0 || parts[i].carbons > 0 || parts[i].hydrogens > 0 || parts[i].water > 0 || parts[i].nitrogens > 0)
+		{
+				sim->part_change_type(i, x, y, PT_DUST);
+				
+		}
+		else
+			sim->kill_part(i);
+		return 0;
+
+	}
+
+
+
+
+
 	int t = parts[i].temp - sim->pv[y / CELL][x / CELL] / 2;	//Pressure affects state transitions
 	//Freezing into WAX
 	if ((parts[i].carbons < 5 && t <= (-200 + 273.15)) || (parts[i].carbons > 5 && t <= (14.3f * sqrt((parts[i].carbons - 12))) + 273.15))

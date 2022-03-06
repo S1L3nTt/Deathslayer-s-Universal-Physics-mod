@@ -68,6 +68,18 @@ static int update(UPDATE_FUNC_ARGS)
 		parts[i].life = parts[i].carbons + parts[i].hydrogens;
 	}
 
+	if (parts[i].tmp4 <= 0)
+	{
+		if (parts[i].oxygens > 0 || parts[i].carbons > 0 || parts[i].hydrogens > 0 || parts[i].water > 0 || parts[i].nitrogens > 0)
+		{
+				sim->part_change_type(i, x, y, PT_DUST);
+				
+		}
+		else
+			sim->kill_part(i);
+		return 0;
+
+	}
 
 	
 	//OIL is a high carbon liquid, it should not have any less than 20 carbons.

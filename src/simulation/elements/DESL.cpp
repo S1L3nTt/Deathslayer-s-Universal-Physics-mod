@@ -55,11 +55,31 @@ static int update(UPDATE_FUNC_ARGS)
 //missing better B
 
 
-// if (parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
-// 	{
-// 		parts[i].tmp4 = 100;
-// 		parts[i].tmpcity[7] = 400;
 
+	if (parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
+	{
+		parts[i].tmp4 = 100;
+		parts[i].tmpcity[7] = 400;
+
+		parts[i].carbons = RNG::Ref().between(8, 14);
+		parts[i].hydrogens = makeAlk(parts[i].carbons);
+
+		if (parts[i].hydrogens < 2 * parts[i].carbons + 2)
+		parts[i].tmp3 = getBondLoc(parts[i].carbons);
+	}
+
+	if (parts[i].tmp4 <= 0)
+	{
+		if (parts[i].oxygens > 0 || parts[i].carbons > 0 || parts[i].hydrogens > 0 || parts[i].water > 0 || parts[i].nitrogens > 0)
+		{
+				sim->part_change_type(i, x, y, PT_DUST);
+				
+		}
+		else
+			sim->kill_part(i);
+		return 0;
+
+	}
 
 	//cyens toy
 	//DESL is a medium carbon liquid, it should not have any more than 19 carbons or any less than 8.
