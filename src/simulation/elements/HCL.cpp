@@ -129,7 +129,7 @@ static int update(UPDATE_FUNC_ARGS) {
 			}*/
 
 			// stuff diffusion
-			if (sim->elements[rt].Properties & PROP_WATER || rt == PT_BLOD || rt == PT_HCL) {
+			if (sim->elements[rt].Properties & PROP_WATER || rt == PT_BLOD || rt == PT_HCL || rt == PT_MILK) {
 
 				
 
@@ -234,18 +234,18 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 
-			if (sim->elements[rt].Properties & PROP_WATER && rt != PT_CLNE && rt != PT_PCLN && rt != PT_ACID && rt != PT_HCL && rt != PT_CAUS && RNG::Ref().chance(1, 8))
+			if (rt != PT_CLNE && rt != PT_PCLN && rt != PT_ACID && rt != PT_HCL && rt != PT_CAUS && RNG::Ref().chance(1, 8))
 			{
 				capacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
 				if (RNG::Ref().chance(1, restrict_flt(sim->elements[rt2].Hardness + parts[i].water - parts[i].temp, 1, MAX_TEMP)) && (parts[i].ctype == rt || parts[i].ctype == 0) && capacity < parts[i].tmpcity[7]) {
 					if (sim->parts_avg(i, ID(r), PT_GLAS) != PT_GLAS) { // GLAS protects stuff from acid 
 						if (rt_is_noble_metl)
 							parts[i].ctype = rt2;
-						if (rt == PT_BRKN && parts[ID(r)].ctype != 0)
+						if ((rt == PT_BRKN || rt == PT_LQUD) && parts[ID(r)].ctype != 0)
 							rt = parts[ID(r)].ctype;
 
 
-						if (((sim->elements[rt].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_ORGANISM || sim->elements[rt].Properties & PROP_ANIMAL) && rt != PT_STMH) && RNG::Ref().chance(1, 8))
+						if (((sim->elements[rt].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_ORGANISM || sim->elements[rt].Properties & PROP_ANIMAL || (parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens != 0)) && rt != PT_STMH) && RNG::Ref().chance(1, 8))
 						{
 							if ((parts[ID(r)].hydrogens > 0 || parts[ID(r)].oxygens > 0 || parts[ID(r)].carbons > 0 || parts[ID(r)].nitrogens > 0 || parts[ID(r)].water > 0))// (rt == PT_FLSH || (rt == PT_BRKN && parts[ID(r)].ctype == PT_FLSH) )
 							{

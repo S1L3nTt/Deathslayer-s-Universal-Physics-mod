@@ -61,7 +61,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 			case PT_DSTW:
 			case PT_WTRV:
 			case PT_WATR:
-				parts[i].water = 100;
+				parts[i].water = 75;
 				parts[i].tmpcity[7] = 400;
 				break;
 
@@ -73,15 +73,15 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 
 			break;
 			case PT_SLTW:
-				parts[i].water = 100;
-				parts[i].tmp4 = 100;
+				parts[i].water = 75;
+				parts[i].tmp4 = 50;
 				parts[i].ctype = PT_SALT;
 				parts[i].tmpcity[7] = 400;
 				break;
 
 			case PT_SWTR:
-				parts[i].water = 100;
-				parts[i].tmp4 = 100;
+				parts[i].water = 75;
+				parts[i].tmp4 = 50;
 				parts[i].carbons = 100;
 				parts[i].hydrogens = 15;
 				parts[i].nitrogens = 5;
@@ -90,7 +90,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 				
 				break;
 			case PT_H2O2:
-					parts[i].water = 80;
+					parts[i].water = 75;
 					parts[i].oxygens = 100;
 					parts[i].tmpcity[7] = 400;
 
@@ -98,7 +98,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 
 
 			default:
-				parts[i].water = 100;
+				parts[i].water = 75;
 				parts[i].tmpcity[7] = 400;
 				break;
 
@@ -187,7 +187,7 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 					if (parts[i].water > 100)
 					{
 						parts[sim->create_part(-1, x + rx, y + ry, PT_WATR)].water = parts[i].water - 100;
-						parts[i].water = 100;
+						parts[i].water = 75;
 					}
 				//	if(ry == -1)
 				//	{

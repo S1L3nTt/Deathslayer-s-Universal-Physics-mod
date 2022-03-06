@@ -59,7 +59,7 @@ static int update(UPDATE_FUNC_ARGS) {
 if (parts[i].tmpcity[7] == 0)
 	{
 	parts[i].tmpcity[7] = 400;
-	parts[i].tmp4 = 150;
+	parts[i].tmp4 = 100;
 	parts[i].carbons = 100;
 	parts[i].oxygens = 10;
 	parts[i].hydrogens = 20;

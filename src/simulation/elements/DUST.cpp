@@ -52,8 +52,13 @@ void Element::Element_DUST()
 static int update(UPDATE_FUNC_ARGS) 
 {
 
-	if(parts[i].tmpcity[7] == 0)
+	if(parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
+	{
 	parts[i].tmpcity[7] = 400;
+	parts[i].tmp4 = 1;
+	}
+	if(parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].nitrogens + parts[i].water == 0)
+		sim->kill_part(i);
 	if(parts[i].water > 5)
 	sim->part_change_type(i, x, y, PT_WATR);
 
