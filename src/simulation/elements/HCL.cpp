@@ -234,7 +234,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 
-			if (rt != PT_CLNE && rt != PT_PCLN && rt != PT_ACID && rt != PT_HCL && rt != PT_CAUS && RNG::Ref().chance(1, 8))
+			if (!sim->elements[rt].Properties & PROP_WATER && rt != PT_CLNE && rt != PT_PCLN && rt != PT_ACID && rt != PT_HCL && rt != PT_CAUS && RNG::Ref().chance(1, 8))
 			{
 				capacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
 				if (RNG::Ref().chance(1, restrict_flt(sim->elements[rt2].Hardness + parts[i].water - parts[i].temp, 1, MAX_TEMP)) && (parts[i].ctype == rt || parts[i].ctype == 0) && capacity < parts[i].tmpcity[7]) {
