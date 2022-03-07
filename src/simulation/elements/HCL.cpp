@@ -245,7 +245,7 @@ static int update(UPDATE_FUNC_ARGS) {
 							rt = parts[ID(r)].ctype;
 
 
-						if (((sim->elements[rt].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_ORGANISM || sim->elements[rt].Properties & PROP_ANIMAL || sim->elements[rt].Properties & TYPE_LIQUID || (parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens != 0)) && rt != PT_STMH) && RNG::Ref().chance(1, 8))
+						if (((sim->elements[rt].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_ORGANISM || sim->elements[rt].Properties & PROP_ANIMAL || sim->elements[rt].Properties & TYPE_LIQUID || sim->elements[rt].Properties & TYPE_PART || (parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens != 0)) && rt != PT_STMH) && RNG::Ref().chance(1, 8))
 						{
 							if ((parts[ID(r)].hydrogens > 0 || parts[ID(r)].oxygens > 0 || parts[ID(r)].carbons > 0 || parts[ID(r)].nitrogens > 0 || parts[ID(r)].water > 0))// (rt == PT_FLSH || (rt == PT_BRKN && parts[ID(r)].ctype == PT_FLSH) )
 							{

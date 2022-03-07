@@ -62,15 +62,19 @@ static int update(UPDATE_FUNC_ARGS)
 	if(parts[i].water > 5)
 	sim->part_change_type(i, x, y, PT_WATR);
 
-	switch(parts[i].ctype)
-	{
-		case PT_SALT:
-		sim->part_change_type(i, x, y, PT_SALT);
-		break;
-		case PT_SUGR:
-		sim->part_change_type(i, x, y, PT_SUGR);
-		break;
-	}
+	if(parts[i].ctype == parts[i].type)
+	parts[i].ctype = 0;
+	if(parts[i].ctype > 0 && parts[i].tmp4 > 0)
+	sim->part_change_type(i, x, y, parts[i].ctype);
+	// switch(parts[i].ctype)
+	// {
+	// 	case PT_SALT:
+	// 	sim->part_change_type(i, x, y, PT_SALT);
+	// 	break;
+	// 	case PT_SUGR:
+	// 	sim->part_change_type(i, x, y, PT_SUGR);
+	// 	break;
+	// }
 
 	int r, rx, ry;
 	for (rx=-1; rx<2; rx++)

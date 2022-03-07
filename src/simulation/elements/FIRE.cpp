@@ -316,9 +316,9 @@ void Element::Element_FIRE()
 				else
 				{
 				
-					if (parts[ID(r)].oxygens > 0 && !((sim->elements[rt].Properties & PROP_ANIMAL || sim->elements[rt].Properties & PROP_ORGANISM) || (sim->elements[rt].Properties & PROP_WATER && rt != PT_H2O2)))
+					if (parts[ID(r)].oxygens > 0 && parts[i].life <= 0 && parts[i].type != PT_LAVA && !((sim->elements[rt].Properties & PROP_ANIMAL || sim->elements[rt].Properties & PROP_ORGANISM) || (sim->elements[rt].Properties & PROP_WATER && rt != PT_H2O2)))
 					{
-						parts[i].temp += parts[ID(r)].oxygens;
+						parts[i].temp += parts[ID(r)].oxygens * (parts[i].life / 100);
 							parts[ID(r)].oxygens--;
 							//parts[i].oxygens += 10;
 

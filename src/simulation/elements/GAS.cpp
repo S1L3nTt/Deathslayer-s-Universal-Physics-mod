@@ -150,7 +150,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 
-					if (parts[ID(r)].oxygens > 0 && parts[ID(r)].tmp3 > 0)
+					if (parts[ID(r)].oxygens > 0 && (parts[ID(r)].type == PT_O2 || parts[ID(r)].type == PT_LO2))
 					{
 						
 						oxyg = r; 
@@ -164,7 +164,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 							
 								surround_space += parts[ID(r)].oxygens / 5;
-							parts[ID(oxyg)].tmp3--;
+							parts[ID(oxyg)].oxygens--;
 
 						}
 						
@@ -252,7 +252,8 @@ static void create(ELEMENT_CREATE_FUNC_ARGS) {
 	}
 	else { //Creating any other type of hydrocarbon
 		sim->parts[i].hydrogens= makeAlk(sim->parts[i].carbons);
-		if (sim->parts[i].hydrogens< 2 * sim->parts[i].carbons + 2)sim->parts[i].tmp3 = getBondLoc(sim->parts[i].carbons);
+		if (sim->parts[i].hydrogens< 2 * sim->parts[i].carbons + 2)
+		sim->parts[i].tmp3 = getBondLoc(sim->parts[i].carbons);
 	}
 	sim->parts[i].life = sim->parts[i].carbons + sim->parts[i].hydrogens * 5;
 }
