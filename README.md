@@ -1,9 +1,12 @@
-Deathslayer's Universal physics mod
+Universal physics mod
 ==========================
 
 WIP
 
-So far Biological reactions/basic nuclear reactions
+Latest release and Discord server,
+https://discord.gg/wsWJ69d8ub
+
+So far Biological, chemical and physcial reactions/basic nuclear reactions
 
 proper documentation of additions needed, here is the link to a placeholder, https://docs.google.com/document/d/1yisGkPztXYYpDkmZkM6_jZcCM6gIrnptQuHc87NFUSY/edit?usp=sharing
 
@@ -43,6 +46,13 @@ Thanks
 * jacob1
 * mniip
 * LBPHacker
+* Deathslayer
+* Silent
+* Bowserinator
+* Circuit
+* firefreak11
+* DanielGalrito
+* And all the amazing testers
 
 Libraries and other assets used
 ===========================================================================
@@ -130,3 +140,44 @@ Command Line
 | `ptsave:SAVEID`       | Open online save, used by ptsave: URLs           | `ptsave:2198`                     |
 | `disable-network`     | Disables internet connections                    |                                   |
 | `redirect`            | Redirects output to stdout.txt / stderr.txt      |                                   |
+
+
+
+Animal creature guide.
+
+
+Press D/f13 to show advanced properties to see detailed information about each cell
+PROP tool to change specific properties
+
+Biology and chemistry properties
+energy(tmpcity[3])
+health(tmp3)
+nutrients(carbons)
+oxygen(oxygens)
+CO2(hydrogens)
+kinda of waste atm(nitrogens)
+water(water)
+
+metabolism speed property = lower is faster
+everytime tick count / metabolism == 0, cell uses 1 oxygens + 1 carbons to make 1 energy.
+
+energy capacity is 100
+if energy > 99, uses 1 water and 1 energy 
+if energy < 1 or water < 1, takes 1 health of damage.
+if health < 1, dies and decays into BCTR or other stuff
+
+Animal cells  have diffusion properties, mixing the properties on contact.
+WATR, HCL and OIL have similar properties, but they can dissolve solids and other things as well, like SUGR or FLSH.
+
+LUNG with O2 to absorb and to release CO2. If totally sealed, CO2 will build up on the closed lung and suffocate it overtime.
+
+STMH preferably sealed because the HCL(also produces WATR) it produces damages anything other than STMH.
+Absorbs nutriens, oxygen and water from WATR and HCL on contact,
+
+POPS on the bottom to release excess and waste materials/properties. Each combination of excess properties(water, oxygens, carbons, nitrogens, hydrogens) will yield a different waste material. Eg, carbons + water = OIL. carbons + oxygens = GAS(pretty arbitrary rn)
+
+BVSL and BLOD are used for better transport of the properties(water, oxygens, carbons, nitrogens, hydrogens) faster and better for distribution. if BVSL surrounded by 2 more BVLS, it turns into BLOD inside the BVSL.
+BLOD color indicates it's contents, more RED = O2, more BLUE = nutrients, more GREEN = CO2
+
+Example:
+https://media.discordapp.net/attachments/937827232133558281/974926971437985792/unknown.png
