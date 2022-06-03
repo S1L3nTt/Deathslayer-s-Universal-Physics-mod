@@ -3,7 +3,7 @@ Universal physics mod
 
 WIP
 
-Latest release and Discord server,
+Discord server:
 https://discord.gg/wsWJ69d8ub
 
 So far Biological, chemical and physcial reactions/basic nuclear reactions
