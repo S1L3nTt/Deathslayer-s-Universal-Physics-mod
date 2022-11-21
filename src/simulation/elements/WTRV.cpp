@@ -55,17 +55,17 @@ static int update(UPDATE_FUNC_ARGS)
 
 	// the best transition to ctype that you've ever seen (made while drunkj)
 
-	if (parts[i].tmpcity[7] == 0)
+	if (parts[i].capacity == 0)
 	{
 	
-		parts[i].tmpcity[7] = 400;
+		parts[i].capacity = 400;
 		if(parts[i].water == 0)
 		parts[i].water = 100;
 	}
 
 	if (parts[i].water <= 0)
 		{
-		if(parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].nitrogens + parts[i].tmp4 != 0)
+		if(parts[i].oxygens + parts[i].carbons + parts[i].co2 + parts[i].nitrogens + parts[i].tmp4 != 0)
 		sim->part_change_type(i, x, y, PT_DUST);
 		else if(parts[i].tmp4 > 0 && parts[i].ctype != 0)
 		sim->part_change_type(i, x, y, parts[i].ctype);
@@ -96,7 +96,7 @@ int r, rx, ry;
 				r = pmap[y + ry][x + rx];
 				if (!r)
 				{
-				if(parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens+ parts[i].nitrogens != 0)
+				if(parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].co2 + parts[i].nitrogens != 0)
 				{
 					int dust = sim->create_part(-1, x + rx, y + ry, PT_DUST);
 					parts[dust].ctype = parts[i].ctype;
@@ -105,11 +105,12 @@ int r, rx, ry;
 					parts[dust].nitrogens = parts[i].nitrogens;
 					parts[dust].oxygens = parts[i].oxygens;
 					parts[dust].hydrogens = parts[i].hydrogens;
+					parts[dust].co2 = parts[i].co2;
 					parts[i].ctype = 0;
 					parts[i].tmp4 = 0;
 					parts[i].carbons = 0;
 					parts[i].nitrogens = 0;
-					parts[i].hydrogens = 0;
+					parts[i].co2 = 0;
 					parts[i].oxygens = 0;
 				}
 
