@@ -55,10 +55,10 @@ void Element::Element_WAX()
 
 
 
-	if (parts[i].capacity == 0 && parts[i].tmp4 == 0)
+	if (parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
 	{
 		parts[i].tmp4 = 100;
-		parts[i].capacity = 400;
+		parts[i].tmpcity[7] = 400;
 
 		parts[i].carbons = RNG::Ref().between(15, 19);
 		parts[i].hydrogens = makeAlk(parts[i].carbons);
