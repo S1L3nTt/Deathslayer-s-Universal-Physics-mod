@@ -58,10 +58,10 @@ static int update(UPDATE_FUNC_ARGS) {
 	//if (parts[i].carbons > 7)sim->part_change_type(i, x, y, PT_DESL);
 
 
-	if (parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
+	if (parts[i].capacity == 0 && parts[i].tmp4 == 0)
 	{
 		parts[i].tmp4 = 100;
-		parts[i].tmpcity[7] = 400;
+		parts[i].capacity = 400;
 
 		parts[i].life = RNG::Ref().between(15, 19);
 		parts[i].tmp = makeAlk(sim->parts[i].life);

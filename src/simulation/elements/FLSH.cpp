@@ -83,7 +83,7 @@ int Element_FLSH_update(UPDATE_FUNC_ARGS) {
 	 * hydrogens: CO2
 	 * pavg[0]: Type 0 = inside, 1 = skin, 2 = dead
 	 * tmp3: health of part 0-100
-	 * tmpcity[3]: energy stored for use
+	 * tmpcity[3]----- energy: energy stored for use
 	 * tmpcity[8]:  != 0 breaks meat
 	 * water: water needed for life
 	 * tmpcity[7]: capacity for stuff
@@ -119,7 +119,7 @@ if (parts[i].tmpcity[7] == 0)
 			case PT_LUNG:
 			parts[i].carbons = 50;
 			parts[i].oxygens = 50;
-			parts[i].hydrogens = 10;
+			parts[i].co2 = 10;
 			parts[i].water = 50;
 			parts[i].tmp3 = 100;
 			parts[i].tmp4 = 100;
@@ -133,7 +133,7 @@ if (parts[i].tmpcity[7] == 0)
 			case PT_STMH:
 			parts[i].oxygens = 100;
 			parts[i].carbons = 100;
-			parts[i].hydrogens = 100;
+			parts[i].co2 = 100;
 			parts[i].water = 50;
 			parts[i].tmp3 = 100;
 			parts[i].tmp4 = 100;
@@ -147,7 +147,7 @@ if (parts[i].tmpcity[7] == 0)
 			case PT_POPS:
 			parts[i].oxygens = 100;
 			parts[i].carbons = 100;
-			parts[i].hydrogens = 20;
+			parts[i].co2 = 20;
 			parts[i].water = 50;
 			parts[i].tmp3 = 100;
 			parts[i].tmp4 = 100;
@@ -162,7 +162,7 @@ if (parts[i].tmpcity[7] == 0)
 			case PT_UDDR:
 			parts[i].oxygens = 100;
 			parts[i].carbons = 100;
-			parts[i].hydrogens = 20;
+			parts[i].co2 = 20;
 			parts[i].water = 50;
 			parts[i].tmp3 = 100;
 			parts[i].tmp4 = 100;
@@ -176,7 +176,7 @@ if (parts[i].tmpcity[7] == 0)
 			case PT_BVSL:
 			parts[i].oxygens = 100;
 			parts[i].carbons = 100;
-			parts[i].hydrogens = 20;
+			parts[i].co2 = 20;
 			parts[i].water = 50;
 			parts[i].tmp2 = 2;
 			parts[i].tmp3 = 100;
@@ -227,7 +227,7 @@ if (parts[i].tmpcity[7] == 0)
 	return 1;
 	}
 
-	if (parts[i].pavg[0] != 2 && sim->timer % parts[i].metabolism == 0)
+	if (parts[i].pavg[0] != 2 && sim->timer % (int)restrict_flt(parts[i].metabolism, 1, MAX_TEMP) == 0)
 	{
 
 			if (parts[i].oxygens > 0 && parts[i].carbons > 0 && parts[i].nitrogens < parts[i].tmpcity[7] / 5 && parts[i].tmpcity[3] < 100-1)
@@ -237,7 +237,7 @@ if (parts[i].tmpcity[7] == 0)
 				parts[i].carbons--;
 
 
-				parts[i].hydrogens++;
+				parts[i].co2++;
 				parts[i].tmpcity[3]+=2;
 
 				if (RNG::Ref().chance(1, 10))
@@ -435,7 +435,7 @@ if (parts[i].tmpcity[7] == 0)
 						else if (rt == PT_BLOD)
 							partnum += 60; 
 						//take
-						capacity = parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
+						capacity = parts[i].oxygens + parts[i].carbons + parts[i].co2 + parts[i].water + parts[i].nitrogens;
 						//take
 
 						if (capacity + 10 < parts[i].tmpcity[7] && RNG::Ref().chance(1, 8))
@@ -452,9 +452,9 @@ if (parts[i].tmpcity[7] == 0)
 								parts[i].carbons += std::min(partnum, parts[ID(r)].carbons - 10);
 								parts[ID(r)].carbons -= std::min(partnum, parts[ID(r)].carbons - 10);
 							}
-							if (parts[i].hydrogens < parts[i].tmpcity[7] / 3 && parts[ID(r)].hydrogens >= 10 + 10 && parts[i].hydrogens < parts[ID(r)].hydrogens)
+							if (parts[i].co2 < parts[i].tmpcity[7] / 3 && parts[ID(r)].hydrogens >= 10 + 10 && parts[i].co2 < parts[ID(r)].hydrogens)
 							{
-								parts[i].hydrogens += std::min(partnum, parts[ID(r)].hydrogens - 10);
+								parts[i].co2 += std::min(partnum, parts[ID(r)].hydrogens - 10);
 								parts[ID(r)].hydrogens -= std::min(partnum, parts[ID(r)].hydrogens - 10);
 							}
 							if (parts[i].nitrogens < parts[i].tmpcity[7] / 3 && parts[ID(r)].nitrogens >= 10 + 10 && parts[i].nitrogens < parts[ID(r)].nitrogens)
@@ -486,10 +486,10 @@ if (parts[i].tmpcity[7] == 0)
 								parts[ID(r)].carbons += std::min(partnum, parts[i].carbons - 10);
 								parts[i].carbons -= std::min(partnum, parts[i].carbons - 10);
 							}
-							if (parts[ID(r)].hydrogens < parts[ID(r)].tmpcity[7] / 3 && parts[i].hydrogens >= 10 + 10 && parts[ID(r)].hydrogens < parts[i].hydrogens)
+							if (parts[ID(r)].hydrogens < parts[ID(r)].tmpcity[7] / 3 && parts[i].co2 >= 10 + 10 && parts[ID(r)].hydrogens < parts[i].co2)
 							{
-								parts[ID(r)].hydrogens += std::min(partnum, parts[i].hydrogens - 10);
-								parts[i].hydrogens -= std::min(partnum, parts[i].hydrogens - 10);
+								parts[ID(r)].hydrogens += std::min(partnum, parts[i].co2 - 10);
+								parts[i].co2 -= std::min(partnum, parts[i].co2 - 10);
 							}
 							if (parts[ID(r)].nitrogens < parts[ID(r)].tmpcity[7] / 3 && parts[i].nitrogens >= 10 + 10 && parts[ID(r)].nitrogens < parts[i].nitrogens)
 							{
@@ -512,8 +512,8 @@ if (parts[i].tmpcity[7] == 0)
 					diff = parts[i].carbons - parts[ID(r)].carbons;
 					parts[i].carbons -= diff / 2;
 					parts[ID(r)].carbons += (diff + 1) / 2;
-					diff = parts[i].hydrogens - parts[ID(r)].hydrogens;
-					parts[i].hydrogens -= diff / 2;
+					diff = parts[i].co2 - parts[ID(r)].hydrogens;
+					parts[i].co2 -= diff / 2;
 					parts[ID(r)].hydrogens += (diff + 1) / 2;*/
 
 

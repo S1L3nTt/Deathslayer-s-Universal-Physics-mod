@@ -66,7 +66,8 @@ static int update(UPDATE_FUNC_ARGS) {
 	 * carbons:  Nutrients stored
 	 * tmp2: Highest temperature
 	 * tmp3: Type 0 = inside, 1 = skin, 2 = dead
-	 * hydrogens: carbon dioxide & waste
+	 * co2: carbon dioxide
+	 * hydrogens:  & waste?
 	 * water: water for life
 	 * tmpcity[7]: capacity for stuff
 	 */
@@ -93,9 +94,9 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 
-		if (parts[i].tmpcity[5] < 3 && RNG::Ref().chance(1, 8) && (parts[i].hydrogens > parts[i].tmpcity[7] / 4 || parts[i].oxygens > parts[i].tmpcity[7] / 4 || parts[i].carbons > parts[i].tmpcity[7] / 4 || parts[i].water > parts[i].tmpcity[7] / 4 || parts[i].nitrogens > 30))
+		if (parts[i].tmpcity[5] < 3 && RNG::Ref().chance(1, 8) && (parts[i].co2 > parts[i].capacity / 4 || parts[i].oxygens > parts[i].capacity / 4 || parts[i].carbons > parts[i].capacity / 4 || parts[i].water > parts[i].capacity / 4 || parts[i].nitrogens > 30))
 			parts[i].tmpcity[5]++;
-			//	if (parts[i].hydrogens > parts[i].tmpcity[7] / 2)
+			//	if (parts[i].co2 > parts[i].capacity / 2)
 				//{
 		//}
 				//if()
@@ -113,7 +114,7 @@ static int update(UPDATE_FUNC_ARGS) {
 						int wste = 0;
 						int dawaste = 0;
 
-						if (parts[i].hydrogens > 20 && parts[i].hydrogens > parts[i].tmpcity[7] / 6 && RNG::Ref().chance(1, 2))
+						if (parts[i].co2 > 20 && parts[i].co2 > parts[i].capacity / 6 && RNG::Ref().chance(1, 2))
 						{
 						/*	if (wste == 0 && )
 							 wste = sim->create_part(-1, x + rx, y + ry, RNG::Ref().chance(1, 3) ? PT_WSTE : PT_WATR);*/
@@ -122,7 +123,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 						}
-						if (parts[i].carbons > 20 && parts[i].carbons > parts[i].tmpcity[7] / 4 && RNG::Ref().chance(1, 2))
+						if (parts[i].carbons > 20 && parts[i].carbons > parts[i].capacity / 4 && RNG::Ref().chance(1, 2))
 						{
 						/*	if (wste == 0)
 								wste = sim->create_part(-1, x + rx, y + ry, RNG::Ref().chance(1, 3) ? PT_WSTE : PT_WATR);
@@ -131,7 +132,7 @@ static int update(UPDATE_FUNC_ARGS) {
 							
 						}
 
-						 if (parts[i].oxygens > 20 && parts[i].oxygens > parts[i].tmpcity[7] / 4 && RNG::Ref().chance(1, 2))
+						 if (parts[i].oxygens > 20 && parts[i].oxygens > parts[i].capacity / 4 && RNG::Ref().chance(1, 2))
 						{
 							// if (wste == 0)
 							//	 wste = sim->create_part(-1, x + rx, y + ry, RNG::Ref().chance(1, 3) ? PT_WSTE : PT_WATR);
@@ -148,7 +149,7 @@ static int update(UPDATE_FUNC_ARGS) {
 							 parts[wste].nitrogens += 10;
 							 parts[i].nitrogens -= 10;*/
 						}
-						if (parts[i].water > 20 && parts[i].water > parts[i].tmpcity[7] / 6 && RNG::Ref().chance(1, 2))
+						if (parts[i].water > 20 && parts[i].water > parts[i].capacity / 6 && RNG::Ref().chance(1, 2))
 						{
 							dawaste += 16;
 						/*	if (wste == 0)
@@ -168,7 +169,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 					//	parts[wste].hydrogens += 10;
-					//	parts[i].hydrogens -= 10;
+					//	parts[i].co2 -= 10;
 
 
 
@@ -188,7 +189,7 @@ static int update(UPDATE_FUNC_ARGS) {
 							parts[wste].carbons += 10;
 							parts[wste].hydrogens += 10;
 							parts[i].carbons -= 10;
-							parts[i].hydrogens -= 10;
+							parts[i].co2 -= 10;
 
 							parts[i].tmpcity[5]--;
 							break;
@@ -251,7 +252,7 @@ static int update(UPDATE_FUNC_ARGS) {
 							parts[wste].hydrogens += 10;
 							parts[i].carbons -= 10;
 							parts[i].water -= 10;
-							parts[i].hydrogens -= 10;
+							parts[i].co2 -= 10;
 
 
 
@@ -311,7 +312,7 @@ static int update(UPDATE_FUNC_ARGS) {
 							parts[wste].water += 10;
 							parts[i].nitrogens -= 10;
 							parts[i].carbons -= 10;
-							parts[i].hydrogens -= 10;
+							parts[i].co2 -= 10;
 							parts[i].water -= 10;
 
 
@@ -328,7 +329,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 
-				//	parts[i].carbons > 20 && parts[i].hydrogens > 20 && parts[i].water > 20 &&
+				//	parts[i].carbons > 20 && parts[i].co2 > 20 && parts[i].water > 20 &&
 				//	sim->create_part(-1, x + rx, y + ry, PT_OIL);
 				
 					
@@ -363,9 +364,9 @@ static int update(UPDATE_FUNC_ARGS) {
 				//if (rt == PT_BLOD || rt == PT_BVSL)
 				//{
 				//	partnum += 20;
-				//	//int capacity = parts[i].oxygens + parts[i].carbons + parts[i].hydrogens;
+				//	//int capacity = parts[i].oxygens + parts[i].carbons + parts[i].co2;
 				//	int capacity = parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].hydrogens + parts[ID(r)].water + parts[ID(r)].nitrogens;
-				//	if (parts[i].tmpcity[6] > 0 && RNG::Ref().chance(1, 8) && capacity + partnum < parts[i].tmpcity[7])
+				//	if (parts[i].tmpcity[6] > 0 && RNG::Ref().chance(1, 8) && capacity + partnum < parts[i].capacity)
 				//	{
 				//		
 
@@ -384,10 +385,10 @@ static int update(UPDATE_FUNC_ARGS) {
 
 				//	}
 
-				//	if (parts[ID(r)].hydrogens + partnum < parts[ID(r)].tmpcity[7] / 3 && parts[i].hydrogens >= partnum + 10 && parts[i].hydrogens > parts[ID(r)].hydrogens)
+				//	if (parts[ID(r)].hydrogens + partnum < parts[ID(r)].tmpcity[7] / 3 && parts[i].co2 >= partnum + 10 && parts[i].co2 > parts[ID(r)].hydrogens)
 				//	{
 				//		parts[ID(r)].hydrogens += partnum;
-				//		parts[i].hydrogens -= partnum;
+				//		parts[i].co2 -= partnum;
 
 				//	}
 				//	if (parts[ID(r)].water + partnum < parts[ID(r)].tmpcity[7] / 3 && parts[i].water >= partnum + 10 && parts[i].water > parts[ID(r)].water)
@@ -397,7 +398,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 				//	}
 				//}
-				//	capacity = parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
+				//	capacity = parts[i].oxygens + parts[i].carbons + parts[i].co2 + parts[i].water + parts[i].nitrogens;
 
 				//	//take stuff blood
 				//	if (parts[i].tmpcity[5] > 0 && RNG::Ref().chance(1, 8))
@@ -414,9 +415,9 @@ static int update(UPDATE_FUNC_ARGS) {
 				//			parts[ID(r)].carbons -= partnum;
 
 				//		}
-				//		if (capacity + partnum < 300 && parts[i].hydrogens + partnum < 300 && parts[ID(r)].hydrogens >= partnum + 10 && parts[i].hydrogens < parts[ID(r)].hydrogens)
+				//		if (capacity + partnum < 300 && parts[i].co2 + partnum < 300 && parts[ID(r)].hydrogens >= partnum + 10 && parts[i].co2 < parts[ID(r)].hydrogens)
 				//		{
-				//			parts[i].hydrogens += partnum;
+				//			parts[i].co2 += partnum;
 				//			parts[ID(r)].hydrogens -= partnum;
 
 				//		}
@@ -431,7 +432,7 @@ static int update(UPDATE_FUNC_ARGS) {
 						if (parts[ID(r)].ctype == PT_SUGR || parts[ID(r)].ctype == PT_SWTR)
 						{
 							parts[i].carbons += std::min(15, parts[ID(r)].tmp4);
-							parts[i].hydrogens += std::min(5, parts[ID(r)].tmp4);;
+							parts[i].co2 += std::min(5, parts[ID(r)].tmp4);;
 	
 							parts[ID(r)].tmp4 -= std::min(20, parts[ID(r)].tmp4);;
 						}
@@ -451,7 +452,7 @@ static int update(UPDATE_FUNC_ARGS) {
 						}
 						if (parts[ID(r)].hydrogens > 0)
 						{
-							parts[i].hydrogens += std::min(10, parts[ID(r)].hydrogens);
+							parts[i].co2 += std::min(10, parts[ID(r)].hydrogens);
 							parts[ID(r)].hydrogens -= std::min(10, parts[ID(r)].hydrogens);
 						}
 						}
