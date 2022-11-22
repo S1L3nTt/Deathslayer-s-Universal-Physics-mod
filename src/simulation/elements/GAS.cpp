@@ -59,10 +59,10 @@ static int update(UPDATE_FUNC_ARGS) {
 	//Cyens toy
 	//Condensation
 	
-	if (parts[i].capacity == 0 && parts[i].tmp4 == 0)
+	if (parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
 	{
 		parts[i].tmp4 = 100;
-		parts[i].capacity = 400;
+		parts[i].tmpcity[7] = 400;
 		//Cyens toy
 	//Spawns with carbons (1-4)
 		parts[i].carbons = RNG::Ref().between(1, 4);

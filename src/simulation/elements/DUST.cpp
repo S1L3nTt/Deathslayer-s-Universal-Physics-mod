@@ -52,12 +52,12 @@ void Element::Element_DUST()
 static int update(UPDATE_FUNC_ARGS) 
 {
 
-	if(parts[i].capacity == 0 && parts[i].tmp4 == 0)
+	if(parts[i].tmpcity[7] == 0 && parts[i].tmp4 == 0)
 	{
-	parts[i].capacity = 400;
+	parts[i].tmpcity[7] = 400;
 	parts[i].tmp4 = 1;
 	}
-	if(parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].co2 + parts[i].nitrogens + parts[i].water == 0)
+	if(parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].nitrogens + parts[i].water == 0)
 		sim->kill_part(i);
 	if(parts[i].water > 5)
 	sim->part_change_type(i, x, y, PT_WATR);
@@ -109,20 +109,20 @@ static int update(UPDATE_FUNC_ARGS)
 						else
 							partnum += 2;
 
-						capacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].co2 +  parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
-						if (RNG::Ref().chance(1, 8) && capacity + partnum < parts[i].capacity)
+						capacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].water + parts[i].nitrogens;
+						if (RNG::Ref().chance(1, 8) && capacity + partnum < parts[i].tmpcity[7])
 						{
 
 							// take
 
-							if (parts[i].water < parts[i].capacity / 2 && parts[ID(r)].water > 0 && parts[i].water < parts[ID(r)].water && RNG::Ref().chance(1, 6))
+							if (parts[i].water < parts[i].tmpcity[7] / 2 && parts[ID(r)].water > 0 && parts[i].water < parts[ID(r)].water && RNG::Ref().chance(1, 6))
 							{
 								parts[i].water += std::min(partnum, parts[ID(r)].water);
 								parts[ID(r)].water -= std::min(partnum, parts[ID(r)].water);
 
 							}
 						}
-						capacity = parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].hydrogens + parts[ID(r)].co2 + parts[ID(r)].water + parts[ID(r)].nitrogens;
+						capacity = parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].hydrogens + parts[ID(r)].water + parts[ID(r)].nitrogens;
 						if (RNG::Ref().chance(1, 8) && capacity + partnum < parts[ID(r)].tmpcity[7] && rt == parts[i].type)
 						{
 
