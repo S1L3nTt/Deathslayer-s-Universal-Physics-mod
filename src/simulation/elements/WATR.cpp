@@ -163,13 +163,13 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 
 
 	//water: amount of water
-	//tmpcity[7]: capacity for stuff
+	//capacity: lcapacity for stuff
 	//ctype: thing dissolved
 	//tmp4: amount of thing dissolved
 	//tmpville[5]:r  for color
 	//tmpville[6]:g  for color
 	//tmpville[7]:b  for color
-	int capacity = 0;
+	int lcapacity = 0;
 	int r, rx, ry;
 	//int freeabove;
 	for (ry=-1; ry<2; ry++)
@@ -243,8 +243,8 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 					else
 						partnum += 5;
 
-					capacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].co2 + parts[i].water + parts[i].nitrogens;
-					if (RNG::Ref().chance(1, 8) && capacity + 2 < parts[i].capacity)
+					lcapacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].co2 + parts[i].water + parts[i].nitrogens;
+					if (RNG::Ref().chance(1, 8) && lcapacity + 2 < parts[i].capacity)
 					{
 
 						// take
@@ -264,10 +264,10 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 							parts[i].carbons += std::min(partnum, parts[ID(r)].carbons);
 							parts[ID(r)].carbons -= std::min(partnum, parts[ID(r)].carbons);
 						}
-						if (parts[i].co2 < parts[i].capacity / 2 && parts[ID(r)].hydrogens > 0 && parts[i].co2 < parts[ID(r)].hydrogens && RNG::Ref().chance(1, 6))
+						if (parts[i].co2 < parts[i].capacity / 2 && parts[ID(r)].co2 > 0 && parts[i].co2 < parts[ID(r)].co2 && RNG::Ref().chance(1, 6))
 						{
-							parts[i].co2 += std::min(partnum, parts[ID(r)].hydrogens);
-							parts[ID(r)].hydrogens -= std::min(partnum, parts[ID(r)].hydrogens);
+							parts[i].co2 += std::min(partnum, parts[ID(r)].co2);
+							parts[ID(r)].co2 -= std::min(partnum, parts[ID(r)].co2);
 						}
 						if (parts[i].nitrogens < parts[i].capacity / 2 && parts[ID(r)].nitrogens > 0 && parts[i].nitrogens < parts[ID(r)].nitrogens && RNG::Ref().chance(1, 6))
 						{
@@ -281,34 +281,34 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 						}
 					}
 					//give
-					capacity = parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].hydrogens + parts[ID(r)].water + parts[ID(r)].nitrogens;
-					if (RNG::Ref().chance(1, 8) && capacity + 2 < parts[ID(r)].tmpcity[7])
+					lcapacity = parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].co2 + parts[ID(r)].water + parts[ID(r)].nitrogens;
+					if (RNG::Ref().chance(1, 8) && lcapacity + 2 < parts[ID(r)].capacity)
 					{
 
 							{
-							if (parts[ID(r)].tmp4 < parts[ID(r)].tmpcity[7] / 2 && parts[i].tmp4 > parts[ID(r)].tmp4 && (parts[ID(r)].tmp4 == 0 || parts[i].ctype == parts[ID(r)].ctype || parts[ID(r)].ctype == 0) && RNG::Ref().chance(1, 6))
+							if (parts[ID(r)].tmp4 < parts[ID(r)].capacity / 2 && parts[i].tmp4 > parts[ID(r)].tmp4 && (parts[ID(r)].tmp4 == 0 || parts[i].ctype == parts[ID(r)].ctype || parts[ID(r)].ctype == 0) && RNG::Ref().chance(1, 6))
 							{
 								parts[ID(r)].tmp4 += std::min(20, parts[i].tmp4);
 								parts[i].tmp4 -= std::min(20, parts[i].tmp4);
 								parts[ID(r)].ctype = parts[i].ctype;
 							}
 								//((parts[ID(r)].tmp4 == 0 && parts[ID(r)].ctype == 0) || parts[ID(r)].ctype == parts[i].ctype)
-								if (parts[ID(r)].oxygens < parts[ID(r)].tmpcity[7] / 2 && parts[i].oxygens > 0 && parts[ID(r)].oxygens < parts[i].oxygens && RNG::Ref().chance(1, 6))
+								if (parts[ID(r)].oxygens < parts[ID(r)].capacity / 2 && parts[i].oxygens > 0 && parts[ID(r)].oxygens < parts[i].oxygens && RNG::Ref().chance(1, 6))
 								{
 									parts[ID(r)].oxygens += std::min(partnum, parts[i].oxygens);
 									parts[i].oxygens -= std::min(partnum, parts[i].oxygens);
 								}
-								if (parts[ID(r)].carbons < parts[ID(r)].tmpcity[7] / 2 && parts[i].carbons > 0 && parts[ID(r)].carbons < parts[i].carbons && RNG::Ref().chance(1, 6))
+								if (parts[ID(r)].carbons < parts[ID(r)].capacity / 2 && parts[i].carbons > 0 && parts[ID(r)].carbons < parts[i].carbons && RNG::Ref().chance(1, 6))
 								{
 									parts[ID(r)].carbons += std::min(partnum, parts[i].carbons);
 									parts[i].carbons -= std::min(partnum, parts[i].carbons);
 								}
-								if (parts[ID(r)].hydrogens < parts[ID(r)].tmpcity[7] / 2 && parts[i].co2 > 0 && parts[ID(r)].hydrogens < parts[i].co2 && RNG::Ref().chance(1, 6))
+								if (parts[ID(r)].co2 < parts[ID(r)].capacity / 2 && parts[i].co2 > 0 && parts[ID(r)].co2 < parts[i].co2 && RNG::Ref().chance(1, 6))
 								{
-									parts[ID(r)].hydrogens += std::min(partnum, parts[i].co2);
+									parts[ID(r)].co2 += std::min(partnum, parts[i].co2);
 									parts[i].co2 -= std::min(partnum, parts[i].co2);
 								}
-								if (parts[ID(r)].nitrogens < parts[ID(r)].tmpcity[7] / 2 && parts[i].nitrogens > 0 && parts[ID(r)].nitrogens < parts[i].nitrogens && RNG::Ref().chance(1, 6))
+								if (parts[ID(r)].nitrogens < parts[ID(r)].capacity / 2 && parts[i].nitrogens > 0 && parts[ID(r)].nitrogens < parts[i].nitrogens && RNG::Ref().chance(1, 6))
 								{
 									parts[ID(r)].nitrogens += std::min(partnum, parts[i].nitrogens);
 									parts[i].nitrogens -= std::min(partnum, parts[i].nitrogens);
@@ -382,27 +382,27 @@ int Element_WATR_update(UPDATE_FUNC_ARGS)
 
 
 
-				int capacity = parts[i].oxygens + parts[i].carbons + parts[i].co2 + parts[i].water + parts[i].nitrogens;
-				if ((sim->elements[rt].Properties & PROP_EDIBLE && !(sim->elements[rt].Properties & PROP_ANIMAL || sim->elements[rt].Properties & PROP_ORGANISM  || sim->elements[rt].Properties & PROP_WATER)) && capacity < parts[i].capacity && RNG::Ref().chance(1, restrict_flt(800 - parts[i].temp, 1, MAX_TEMP)))
+				int lcapacity = parts[i].oxygens + parts[i].carbons + parts[i].co2 + parts[i].water + parts[i].nitrogens;
+				if ((sim->elements[rt].Properties & PROP_EDIBLE && !(sim->elements[rt].Properties & PROP_ANIMAL || sim->elements[rt].Properties & PROP_ORGANISM  || sim->elements[rt].Properties & PROP_WATER)) && lcapacity < parts[i].capacity && RNG::Ref().chance(1, restrict_flt(800 - parts[i].temp, 1, MAX_TEMP)))
 				{
 					
-					if (parts[ID(r)].hydrogens > 0 || parts[ID(r)].oxygens > 0 || parts[ID(r)].carbons > 0 || parts[ID(r)].nitrogens > 0 || parts[ID(r)].water > 0)// (rt == PT_FLSH || (rt == PT_BRKN && parts[ID(r)].ctype == PT_FLSH) )
+					if (parts[ID(r)].co2 > 0 || parts[ID(r)].oxygens > 0 || parts[ID(r)].carbons > 0 || parts[ID(r)].nitrogens > 0 || parts[ID(r)].water > 0)// (rt == PT_FLSH || (rt == PT_BRKN && parts[ID(r)].ctype == PT_FLSH) )
 					{
 						parts[i].carbons += std::min(10, parts[ID(r)].carbons);
 						parts[i].oxygens += std::min(10, parts[ID(r)].oxygens);
-						parts[i].co2 += std::min(10, parts[ID(r)].hydrogens);
+						parts[i].co2 += std::min(10, parts[ID(r)].co2);
 						parts[i].nitrogens += std::min(10, parts[ID(r)].nitrogens);
 						parts[i].water += std::min(10, parts[ID(r)].water);
 					//	parts[i].tmp4 += std::min(10, parts[ID(r)].tmp4);
 						parts[ID(r)].carbons -= std::min(10, parts[ID(r)].carbons);
 						parts[ID(r)].oxygens -= std::min(10, parts[ID(r)].oxygens);
-						parts[ID(r)].hydrogens -= std::min(10, parts[ID(r)].hydrogens);
+						parts[ID(r)].co2 -= std::min(10, parts[ID(r)].co2);
 						parts[ID(r)].nitrogens -= std::min(10, parts[ID(r)].nitrogens);
 						parts[ID(r)].water -= std::min(10, parts[ID(r)].water);
 					//	parts[ID(r)].tmp4 -= std::min(10, parts[ID(r)].tmp4);
 
 
-						if (parts[ID(r)].hydrogens <= 0 && parts[ID(r)].oxygens <= 0 && parts[ID(r)].carbons <= 0 && parts[ID(r)].tmp4 <= 0 && parts[ID(r)].nitrogens <= 0 && parts[ID(r)].water <= 0)
+						if (parts[ID(r)].co2 <= 0 && parts[ID(r)].oxygens <= 0 && parts[ID(r)].carbons <= 0 && parts[ID(r)].tmp4 <= 0 && parts[ID(r)].nitrogens <= 0 && parts[ID(r)].water <= 0)
 						{
 
 							sim->kill_part(ID(r));
