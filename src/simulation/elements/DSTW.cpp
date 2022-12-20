@@ -37,7 +37,7 @@ void Element::Element_DSTW()
 
 
 	DefaultProperties.water = 100;
-	DefaultProperties.capacity = 400;
+	DefaultProperties.tmpcity[7] = 400;
 
 	LowPressure = IPL;
 	LowPressureTransition = NT;

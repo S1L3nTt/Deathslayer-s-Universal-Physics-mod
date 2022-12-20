@@ -28,11 +28,11 @@ void Element::Element_SUGR() {
 
 	Properties = TYPE_PART | PROP_NEUTPASS | PROP_EDIBLE;
 
-	DefaultProperties.capacity = 400;
+	DefaultProperties.tmpcity[7] = 400;
 	DefaultProperties.tmp4 = 150;
 	DefaultProperties.carbons = 100;
 	DefaultProperties.oxygens = 10;
-	DefaultProperties.co2 = 20;
+	DefaultProperties.hydrogens = 20;
 	DefaultProperties.nitrogens = 20;
 
 	LowPressure = IPL;
@@ -69,7 +69,7 @@ if (parts[i].capacity == 0)
 
 	if (parts[i].tmp4 <= 0)
 	{
-		if (parts[i].oxygens > 0 || parts[i].carbons > 0 || parts[i].co2 > 0 || parts[i].co2 > 0|| parts[i].water > 0 || parts[i].nitrogens > 0)
+		if (parts[i].oxygens > 0 || parts[i].carbons > 0 || parts[i].hydrogens > 0 || parts[i].co2 > 0|| parts[i].water > 0 || parts[i].nitrogens > 0)
 		{
 			if (parts[i].water > 0)
 				sim->part_change_type(i, x, y, PT_WATR);
@@ -112,7 +112,7 @@ if (parts[i].capacity == 0)
 		for (ry=-1; ry<2; ry++)
 			if (BOUNDS_CHECK && (rx || ry)) {
 				r = pmap[y+ry][x+rx];
-				int lcapacity = 0;
+				int capacity = 0;
 				int partnum = 0;
 				if (!r) 
 				{
@@ -140,8 +140,8 @@ if (parts[i].capacity == 0)
 						else
 							partnum += 2;
 
-						lcapacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].co2  + parts[i].co2 + parts[i].water + parts[i].nitrogens;
-						if (RNG::Ref().chance(1, 8) && lcapacity + partnum < parts[i].capacity)
+						capacity = parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens  + parts[i].co2 + parts[i].water + parts[i].nitrogens;
+						if (RNG::Ref().chance(1, 8) && capacity + partnum < parts[i].capacity)
 						{
 
 							// take
@@ -153,11 +153,11 @@ if (parts[i].capacity == 0)
 
 							}
 						}
-						lcapacity = parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].co2 + parts[ID(r)].co2 + parts[ID(r)].water + parts[ID(r)].nitrogens;
-						if (RNG::Ref().chance(1, 8) && lcapacity + partnum < parts[ID(r)].capacity && rt == parts[i].type)
+						capacity = parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].hydrogens + parts[ID(r)].co2 + parts[ID(r)].water + parts[ID(r)].nitrogens;
+						if (RNG::Ref().chance(1, 8) && capacity + partnum < parts[ID(r)].tmpcity[7] && rt == parts[i].type)
 						{
 
-							if (parts[ID(r)].water < parts[ID(r)].capacity / 2 && parts[i].water > 0 && parts[ID(r)].water < parts[i].water && RNG::Ref().chance(1, 6))
+							if (parts[ID(r)].water < parts[ID(r)].tmpcity[7] / 2 && parts[i].water > 0 && parts[ID(r)].water < parts[i].water && RNG::Ref().chance(1, 6))
 							{
 								parts[ID(r)].water += std::min(partnum, parts[i].water);
 								parts[i].water -= std::min(partnum, parts[i].water);
