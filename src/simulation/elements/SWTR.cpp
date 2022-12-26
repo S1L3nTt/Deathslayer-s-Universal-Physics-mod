@@ -82,10 +82,10 @@ static int update(UPDATE_FUNC_ARGS) {
 			if (BOUNDS_CHECK && (rx || ry)) {
 				r = pmap[y+ry][x+rx];
 				switch TYP(r) {
-			//	case PT_SUGR: // Grow sugar crystals
-			//		if (RNG::Ref().chance(1, 200 + pow(parts[i].water, 2)))
-		//				sim->part_change_type(i, parts[i].x, parts[i].y, PT_SUGR);
-		//			break;
+				case PT_SUGR: // Grow sugar crystals
+					if (RNG::Ref().chance(1, 200 + pow(parts[i].water, 2)))
+						sim->part_change_type(i, parts[i].x, parts[i].y, PT_SUGR);
+					break;
 				case PT_PLNT:
 					if (RNG::Ref().chance(1, 2000))
 						sim->part_change_type(i, parts[i].x, parts[i].y, PT_PLNT);
