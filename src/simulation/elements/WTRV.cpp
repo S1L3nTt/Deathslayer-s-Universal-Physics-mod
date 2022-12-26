@@ -29,7 +29,7 @@ void Element::Element_WTRV()
 
 	Weight = 1;
 
-	DefaultProperties.capacity = 400;
+	DefaultProperties.tmpcity[7] = 400;
 	DefaultProperties.water = 100;
 	DefaultProperties.temp = R_TEMP + 100.0f + 273.15f;
 	HeatConduct = 78;
@@ -96,7 +96,7 @@ int r, rx, ry;
 				r = pmap[y + ry][x + rx];
 				if (!r)
 				{
-				if(parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].co2 + parts[i].co2 + parts[i].nitrogens != 0)
+				if(parts[i].ctype + parts[i].tmp4 + parts[i].oxygens + parts[i].carbons + parts[i].hydrogens + parts[i].co2 + parts[i].nitrogens != 0)
 				{
 					int dust = sim->create_part(-1, x + rx, y + ry, PT_DUST);
 					parts[dust].ctype = parts[i].ctype;
@@ -104,7 +104,7 @@ int r, rx, ry;
 					parts[dust].carbons = parts[i].carbons;
 					parts[dust].nitrogens = parts[i].nitrogens;
 					parts[dust].oxygens = parts[i].oxygens;
-					parts[dust].co2 = parts[i].co2;
+					parts[dust].hydrogens = parts[i].hydrogens;
 					parts[dust].co2 = parts[i].co2;
 					parts[i].ctype = 0;
 					parts[i].tmp4 = 0;
@@ -117,7 +117,7 @@ int r, rx, ry;
 				continue;
 				}
 
-				if(TYP(r) == PT_WTRV && parts[i].water + parts[ID(r)].water < 100 && parts[ID(r)].ctype + parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].co2 + parts[ID(r)].nitrogens == 0)
+				if(TYP(r) == PT_WTRV && parts[i].water + parts[ID(r)].water < 100 && parts[ID(r)].ctype + parts[ID(r)].tmp4 + parts[ID(r)].oxygens + parts[ID(r)].carbons + parts[ID(r)].hydrogens + parts[ID(r)].nitrogens == 0)
 				{
 					parts[i].water += parts[ID(r)].water;
 					sim->kill_part(ID(r));

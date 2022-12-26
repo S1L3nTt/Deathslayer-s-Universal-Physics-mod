@@ -36,11 +36,11 @@ void Element::Element_STMH() {
 
 	DefaultProperties.oxygens = 100;
 	DefaultProperties.carbons = 100;
-//	DefaultProperties.co2 = 100;
+//	DefaultProperties.hydrogens = 100;
 	DefaultProperties.water = 50;
 	DefaultProperties.tmp3 = 100;
 	DefaultProperties.tmp4 = 100;
-	DefaultProperties.capacity = 800;
+	DefaultProperties.tmpcity[7] = 800;
 	DefaultProperties.tmpcity[9] = 0;
 	DefaultProperties.tmpcity[3] = 100;
 	DefaultProperties.metabolism = 50;
@@ -66,8 +66,8 @@ static int update(UPDATE_FUNC_ARGS) {
 	 * carbons:  Nutrients stored
 	 * tmp2: Highest temperature
 	 * tmp3: Type 0 = inside, 1 = skin, 2 = dead
-	 * co2: carbon dioxide & waste
-	 * tmpcity[5] ??
+	 * hydrogens: carbon dioxide & waste
+	 * tmpcity[5] signal to produce hcl/watere
 	 * tmpville[9] != 0 Deactivates hcl/water production
 	 */
 	Element_FLSH_update(sim, i, x, y, surround_space, nt, parts, pmap);
@@ -85,7 +85,7 @@ static int update(UPDATE_FUNC_ARGS) {
 
 	
 		int rx, ry, r, rt;
-		int lcapacity = 0;
+		int capacity = 0;
 		for (ry = -1; ry < 2; ++ry)
 			for (rx = -1; rx < 2; ++rx)
 			if (BOUNDS_CHECK && (rx || ry)) {
@@ -94,21 +94,23 @@ static int update(UPDATE_FUNC_ARGS) {
 				{
 					if (RNG::Ref().chance(1, 3))
 					{
-					
+						
 						parts[i].water -= 20;
 						parts[i].oxygens -= 20;
 						parts[sim->create_part(-1, x + rx, y + ry, PT_HCL)].water += 10;
+						parts[i].tmpcity[5]--;
 					}
 					else
 					{
 						parts[i].water -= 20;
 						parts[sim->create_part(-1, x + rx, y + ry, PT_WATR)].water += 10;
+						parts[i].tmpcity[5]--;
 					}
-					parts[i].tmpcity[5]--;
+					
 				}
 				if (!r) continue;
 				rt = TYP(r);
-				if(parts[ID(r)].tmpcity[5] && ((parts[ID(r)].tmpcity[0] == 1 && RNG::Ref().chance(1, 2)) || (parts[ID(r)].tmpcity[0] == 2 && RNG::Ref().chance(1, 3)) || (parts[ID(r)].tmpcity[0] == 0 && RNG::Ref().chance(1, 10))))
+				if(parts[i].tmpcity[5] && ( RNG::Ref().chance(1, 8)))
 				{
 					parts[ID(r)].tmpcity[5]++;
 					parts[i].tmpcity[5]--;
@@ -116,14 +118,16 @@ static int update(UPDATE_FUNC_ARGS) {
 
 
 	
-
+						//make signal to release hcl/water
+				if (sim->elements[rt].Properties & PROP_EDIBLE && parts[ID(r)].tmp4 > 0 && parts[i].tmpcity[0] == 1 && parts[i].tmpcity[5] == 0 && RNG::Ref().chance(1, 50))
+					parts[i].tmpcity[5]++;
 
 
 				//Getting food dissolved in hcl and water
 				if (rt == PT_HCL || (sim->elements[rt].Properties & PROP_WATER && rt != PT_H2O2))
 				{
-					lcapacity = parts[i].oxygens + parts[i].carbons + parts[i].co2 + parts[i].water + parts[i].nitrogens;
-					if (parts[ID(r)].tmp4 > 0 && lcapacity < parts[i].capacity / 1.5 && (sim->elements[parts[ID(r)].ctype].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_WATER || rt == PT_HCL)  && !(TYP(r) == PT_FLSH && parts[ID(r)].pavg[0] != 2) && RNG::Ref().chance(1, 8))
+					capacity = parts[i].oxygens + parts[i].carbons + parts[i].co2 + parts[i].water + parts[i].nitrogens;
+					if (parts[ID(r)].tmp4 > 0 && capacity < parts[i].capacity / 1.5 && (sim->elements[parts[ID(r)].ctype].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_WATER || rt == PT_HCL)  && !(TYP(r) == PT_FLSH && parts[ID(r)].pavg[0] != 2) && RNG::Ref().chance(1, 8))
 					{
 
 					/*if (parts[ID(r)].ctype == PT_SUGR || parts[ID(r)].ctype == PT_SWTR && parts[i].co2 < 290)
@@ -157,10 +161,10 @@ static int update(UPDATE_FUNC_ARGS) {
 							parts[i].co2 += std::min(20, parts[ID(r)].co2);
 							parts[ID(r)].co2 -= std::min(20, parts[ID(r)].co2);
 						}
-						if (parts[ID(r)].co2 > 0 && parts[i].co2 < parts[i].capacity / 3 && RNG::Ref().chance(1, 6))
+						if (parts[ID(r)].hydrogens > 0 && parts[i].hydrogens < parts[i].capacity / 3 && RNG::Ref().chance(1, 6))
 						{
-							parts[i].co2 += std::min(20, parts[ID(r)].co2);
-							parts[ID(r)].co2 -= std::min(20, parts[ID(r)].co2);
+							parts[i].hydrogens += std::min(20, parts[ID(r)].hydrogens);
+							parts[ID(r)].hydrogens -= std::min(20, parts[ID(r)].hydrogens);
 						}
 						if (parts[ID(r)].nitrogens > 0 && parts[i].nitrogens < parts[i].capacity / 3 && RNG::Ref().chance(1, 6))
 						{
@@ -172,11 +176,11 @@ static int update(UPDATE_FUNC_ARGS) {
 							parts[i].water += std::min(10, parts[ID(r)].water);
 							parts[ID(r)].water -= std::min(10, parts[ID(r)].water);
 						}
-						if (parts[ID(r)].tmp4 <= 0 && parts[ID(r)].co2 <= 0 && parts[ID(r)].co2 <= 0 && parts[ID(r)].oxygens <= 0 && parts[ID(r)].carbons <= 0 && parts[ID(r)].water <= 0 && parts[ID(r)].nitrogens <= 0 && RNG::Ref().chance(1, 10))
+						if (parts[ID(r)].tmp4 <= 0 && parts[ID(r)].hydrogens <= 0 && parts[ID(r)].co2 <= 0 && parts[ID(r)].oxygens <= 0 && parts[ID(r)].carbons <= 0 && parts[ID(r)].water <= 0 && parts[ID(r)].nitrogens <= 0 && RNG::Ref().chance(1, 10))
 							sim->kill_part(ID(r));
 
 						}
-					if(parts[ID(r)].tmp4 <= 0 && parts[ID(r)].co2 <= 0 && parts[ID(r)].oxygens <= 0 && parts[ID(r)].co2 <= 0 && parts[ID(r)].carbons <= 0 && parts[ID(r)].water <= 0 && parts[ID(r)].nitrogens <= 0 && (sim->elements[rt].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_WATER || rt == PT_HCL) && RNG::Ref().chance(restrict_flt(parts[ID(r)].tmpcity[2],0 , 99999), 100000))
+					if(parts[ID(r)].tmp4 <= 0 && parts[ID(r)].hydrogens <= 0 && parts[ID(r)].oxygens <= 0 && parts[ID(r)].co2 <= 0 && parts[ID(r)].carbons <= 0 && parts[ID(r)].water <= 0 && parts[ID(r)].nitrogens <= 0 && (sim->elements[rt].Properties & PROP_EDIBLE || sim->elements[rt].Properties & PROP_WATER || rt == PT_HCL) && RNG::Ref().chance(restrict_flt(parts[ID(r)].tmpcity[2],0 , 99999), 100000))
 						sim->kill_part(ID(r));
 
 						
